@@ -1,4 +1,5 @@
 references
+notes.md
 
 # ignore all PDFs except the main one
 **/**.pdf

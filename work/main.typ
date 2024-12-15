@@ -1,5 +1,9 @@
 #import "dhbw_template/lib.typ": dhbw_template
 
+#let abstract_en = lorem(200)
+
+#let abstract_de = lorem(200)
+
 #show:  dhbw_template.with(
   title: [Exploring WebAssembly for versatile plugin systems through the example of a text editor],
   author: "Hartung, Florian",
@@ -9,30 +13,13 @@
   workperiod_until: datetime(year: 2024, month: 04, day: 15),
   matr_num: 6622800,
   supervisor: "Gerhards, Holger, Prof. Dr.",
-  abstract: include "abstract.typ",
+  abstract: abstract_en,
+  abstract_de: abstract_de,
 )
 
-= Introduction
-= Fundamentals
-== WebAssembly
-== Plugin systems
-== Rust
-= Plugin system requirements
-= Related work
-// research and projects
-= WebAssembly for plugin systems
-== Overview
-== Choosing a plugin API
-// native/wat/wasi
-== Safety
-== Performance
-== Summary 
-= Implementing a plugin system for a text editor
-== Requirements
-== Design
-== Implementation
-== Example plugin development 
-// preferable in different languages to demonstrate interoperability
-== Verification and validation
-= Discussion
-= Conclusion
+#include "sections/introduction.typ"
+#include "sections/fundamentals.typ"
+#include "sections/generic_requirements.typ"
+#include "sections/wasm_plugin_systems.typ"
+#include "sections/implementation.typ"
+#include "sections/results_discussion_outlook.typ"
