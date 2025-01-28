@@ -113,7 +113,6 @@
       elems.last()
     }
   }
-  ;
 
   // General formatting for contents
   #set par(justify: true, first-line-indent: 5mm)
@@ -137,12 +136,19 @@
   // Reset page counter
   #counter(page).update(1)
 
-  #show heading.where(level: 1): it => {
-    is_on_new_section_page.update(true)
-    pagebreak(weak: true)
-    it
-    is_on_new_section_page.update(false)
-  }
+  #[
+    #show heading.where(level: 1): it => {
+      is_on_new_section_page.update(true)
+      pagebreak(weak: true)
+      it
+      is_on_new_section_page.update(false)
+    }
+    #contents
+  ]
 
-  #contents
-];
+  // Don't ask about this, idk either
+  #is_on_new_section_page.update(true)
+  #pagebreak(weak: true)
+  #bibliography("../bib.yml")
+  #is_on_new_section_page.update(false)
+]

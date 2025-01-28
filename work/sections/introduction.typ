@@ -1,10 +1,14 @@
-#import "../util.typ": *
+#import "../wip.typ": *
 
 = Introduction
+
 == Motivation & problem statement
 // Motivation
-- Plugin systems are great!
-- WASM is great 
+- Plugin systems are suitable architecture for highly individual software like text editors
+- WASM is relativly modern bytecode that provides speed, safety, ... by default.
+
+- Can WAS
+
 #todo[write motivation last]
 
 // Problem statement
@@ -12,7 +16,7 @@
 - Plugin systems suffer from many issues: Security, interoperability, Portability, (Developer experience?)
 
 == Research question
-- Can WebAssembly be _the_ universal technology for building versatile plugin systems?
+Is WebAssembly the best technology choice for designing versatile plugin systems specifically for text editors?
 
 == Method (structure of this work)
 - How will this work be structured?

@@ -1,0 +1,26 @@
+spec:
+  type: web
+  title: WebAssembly Core Specification
+  author: ["WebAssembly Community Group", "Andreas Rossberg (editor)"]
+  date: 2025-01-21
+  url: https://webassembly.github.io/spec/core
+
+tanenbaum-structured:
+  type: book
+  title: Structured Computer Organization
+  author: "Andrew S. Tanenbaum"
+  # TODO remove url
+  url: https://csc-knu.github.io/sys-prog/books/Andrew%20S.%20Tanenbaum%20-%20Structured%20Computer%20Organization.pdf
+
+# TODO Find different benchmark in non-web environment
+wasm-vs-native:
+  type: web
+  url: https://git.edik.cn/book/awesome-wasm-zh/raw/commit/ec62ca8ee2714806d187bc3530958e1027e6cbf1/spec/1901.09056.pdf
+
+wasm-design-docs:
+  type: web
+  url: https://github.com/WebAssembly/design
+
+opcode-table:
+  type: web
+  url: https://pengowray.github.io/wasm-ops/

@@ -17,9 +17,12 @@
   abstract_de: abstract_de,
 )
 
-#include "sections/introduction.typ"
-#include "sections/fundamentals.typ"
-#include "sections/generic_requirements.typ"
-#include "sections/wasm_plugin_systems.typ"
-#include "sections/implementation.typ"
-#include "sections/results_discussion_outlook.typ"
+#include("sections/introduction.typ")
+#include("sections/fundamentals.typ")
+#include("sections/generic_requirements.typ")
+#include("sections/wasm_plugin_systems.typ")
+#include("sections/implementation.typ")
+#include("sections/results_discussion_outlook.typ")
+
+
+// #bibliography("bib.yml")
