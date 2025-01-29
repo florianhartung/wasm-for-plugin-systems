@@ -4,17 +4,19 @@
 This section introduces technical fundamentals for some technologies in this work.
 // Separation between theoretical, technical, methodical
 
-== WebAssembly
-// (virtual) instruction set architecture?
-WebAssembly (Wasm) is virtual instruction set architecture (ISA) for a portable, time- and space-efficient code format@spec.
-According to its specification it designed mostly for code execution on the Web, however it is not limited to the Web as its execution environement by design.
-
+== Instruction set architectures
 // Basics of structed computer organization
-In the field of structured computer organization Tanenbaum defines the ISA as a level in a multilayered computer system @tanenbaum-structured. The ISA level defines a machine language (also sometimes referred to as machine code) with a fixed set of instructions @tanenbaum-structured.
+In the field of structured computer organization Tanenbaum defines the instruction set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
+The ISA level defines a machine language (also sometimes referred to as machine code) with a fixed set of instructions @tanenbaum-structured.
 According to Tanenbaum the ISA level then acts as a common interface between the hardware and software.
 This allows software in the form of ISA instructions to manipulate the hardware @tanenbaum-structured.
 Software written in a higher level machine language (Assembly, C, Java, ...) can not be executed directly by the hardware.
 Instead higher level machine codes are compiled to ISA machine code or interpreted by a program, that is present in ISA machine code itself @tanenbaum-structured.
+
+== WebAssembly
+// (virtual) instruction set architecture?
+WebAssembly (Wasm) is virtual ISA for a portable, time- and space-efficient code format @spec. // WTF? remove space before @
+According to its specification it designed mostly for code execution on the Web, however it is not limited to the Web as an environement by design.
 
 // Wasm as virtual ISA
 Even though one could design specific hardware that executes the WebAssembly ISA directly, this usually is not the case#footnote[There are a couple toy projects which tried to execute Wasm directly, for example the discontinued `wasmachine` project with FPGAs.].
@@ -36,6 +38,16 @@ Most of these compiled languages like C, C++, Rust, Zig or even Haskell can be c
 However most compilers are still being actively worked on and improved over time to support not only the basic WebAssembly specification but also extensions such as the Wasm Systems Interface and the Wasm Component Model, which are covered in @wasm_component_model and @wasi respectively.
 
 // What makes WASM unique?
+Java bytecode is very similar to Wasm:
+- Both define a virtual ISA
+- Wasm is sandboxed by default, JVMs allow restrictions through a ```SecurityManager```#footnote[#link("https://docs.oracle.com/javase/tutorial/essential/environment/security.html")]
+- Wasm is optimized to be parsed and compiled quickly. It allows for parsing/compilation to start while the bytecode is still being streamed/downloaded.
+- Java uses GC, which may not be useful in time-critical software #todo[cite java usage in avionics]
+- Wasm's machine language is more minimal and simpler, it thus is easier to compile a lot of languages to Wasm #todo[provide numbers for number of ops]
+
+Wasm is designed with specific goals specifically suited for the web and efficiency in mind.
+
+They include fast execution, 
 - Designed with specific goals in mind: ...
     - Fast Runtime:
         - Parsable by a single-pass compiler: e.g. no backwards-jumps allowed (except loops), branches are referenced relativly and not absolutely (like jumps and addresses)
