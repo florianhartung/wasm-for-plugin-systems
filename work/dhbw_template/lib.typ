@@ -17,7 +17,7 @@
   contents,
 ) = [
   // General formatting
-  #set text(size: 12pt, font: "Arial", lang: "en")
+  #set text(size: 12pt, font: "TeX Gyre Termes", lang: "en")
   #set page(paper: "a4", margin: 25mm)
 
   #let in-outline = state("in-outline", false)
@@ -116,7 +116,7 @@
 
   // General formatting for contents
   #set par(justify: true, first-line-indent: 5mm)
-  #set heading(numbering: "1.1   ")
+  #set heading(numbering: "1.1.1.A")
   #set page(
     numbering: "1",
     margin: ("top": 35mm, "left": 25mm, "right": 40mm, "bottom": 30mm),
@@ -149,6 +149,6 @@
   // Don't ask about this, idk either
   #is_on_new_section_page.update(true)
   #pagebreak(weak: true)
-  #bibliography("../bib.yml")
+  #bibliography("../bib.yml", style: "institute-of-electrical-and-electronics-engineers")
   #is_on_new_section_page.update(false)
 ]

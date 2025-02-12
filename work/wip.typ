@@ -1,8 +1,5 @@
 #let todo(c) = {
-  if c.fields().len() == 0 {
-    c = [TODO]
-  } else {
-    c = [TODO: ] + c
-  }
-  text(red, weight: "bold", style: "italic", c)
+  text(red, weight: "bold", style: "italic", [TODO: ] + c)
 };
+
+#let td = text(red, weight: "bold", style: "italic", "TODO")

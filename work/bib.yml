@@ -24,3 +24,15 @@ wasm-design-docs:
 opcode-table:
   type: web
   url: https://pengowray.github.io/wasm-ops/
+
+wasm-potential-embedded:
+  type: web
+  url: https://arxiv.org/html/2405.09213v1
+
+wasm-potential-distributed:
+  type: article
+  author: ["Hoque, Mohammed Nurul", "Harras, Khaled A."]
+  journal: "IEEE Communications Standards Magazine"
+  title: "WebAssembly for Edge Computing: Potential and Challenges"
+  date: 2022
+  doi: "10.1109/MCOMSTD.0001.2000068"

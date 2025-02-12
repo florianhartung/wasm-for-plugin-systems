@@ -1,3 +1,3 @@
-= Results & Discussion
+= Results & Discussion (2 pages)
 
-= Outlook
+= Outlook (1 page)
