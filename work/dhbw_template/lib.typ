@@ -135,6 +135,9 @@
 
   // Reset page counter
   #counter(page).update(1)
+  #set figure(placement: top)
+  // #show figure.caption: it => it + v(1.5em)
+  #show figure.caption: it => it + v(2em)
 
   #[
     #show heading.where(level: 1): it => {

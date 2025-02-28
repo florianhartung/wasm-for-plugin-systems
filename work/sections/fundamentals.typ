@@ -4,8 +4,8 @@
 This section introduces theoretical and technical fundamentals used in this work.
 // TODO are there any methodical fundamentals?
 
-== Instrucion set architectures
-In the field of structured computer organization Tanenbaum defines a instruction set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
+== Instruction set architectures
+In the field of structured computer organization Tanenbaum defines a instrucion set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
 The ISA level defines a machine language with a fixed set of instructions @tanenbaum-structured.
 According to Tanenbaum the ISA level then acts as a common interface between the hardware and software.
 This allows software in the form of ISA instructions to manipulate the hardware @tanenbaum-structured.
@@ -20,8 +20,10 @@ Instead higher level machine codes are compiled to ISA machine code or interpret
 // Bounds are checked on every memory-access.
 
 // Wasm as virtual ISA
-WebAssembly (Wasm) is an ISA for a portable, time- and space-efficient code format, designed for but not limited to the web@spec.
-In the web it is used to execute code on a Wasm runtime, that is usually shipped with the client's internet browser.
+WebAssembly (Wasm) is a stack-based ISA for a portable, efficient and safe code format.
+Originally it was designed by engineers from the four major vendors to enable high-performance code execution on the web @bringing-the-web-up-to-speed.
+However it is also becoming increasingly interesting for researchers and developers in non-web contexts.
+Some examples are avionics for Wasm's safe and deterministic execution @wasm-in-avionics, distributed computing for its portability and migratability @wasm-for-edge-computing or embedded  systems for its portability and safety @potential-of-wasm-for-embedded.
 
 // When was WASM made?
 // #todo[source for 1.0 and date]
@@ -45,7 +47,7 @@ We call this virtualized environment the *host environment* (used by the specifi
         [Digial logic level],
     ),
     caption: [#todo[This figure needs annotations for compilation/interpretation and level numbers]. A multilevel computer system running Wasm code. Inspired by Figure 1-2 in @tanenbaum-structured]
-)
+) <my_figure>
 #todo[Descripe Wasm in a multilevel computer system with a figure and give examples for levels]
 // In a multilevel computer system the Wasm runtime, which is written in a level
 // The task of the Wasm runtime is to translate the Wasm code given to it into machine-specific ISA either through interpretation or compilation.
@@ -62,7 +64,27 @@ This is by design, as WebAssembly is mor of a compilation target for higher leve
 Those higher level languages can then build upon Wasms basic types and instructions and implement their own abstractions like memory layouts or control flow constructs on top.
 This is analogous to the non-virtual ISA machine code in a conventional computer, which also acts as a compilation target for most low-level languages such as Assembly, C, or Rust.
 Most of these compiled languages like C, C++, Rust, Zig or even Haskell can be compiled to WebAssembly moderatly easily nowadays#footnote[#todo[provide examples for compilers that can target Wasm]].
-However most compilers are still being actively worked on and improved over time.
+// However most compilers are still being actively worked on and improved over time.
+
+=== Execution model
+This section presents the Wasm execution model and lifecycle of a Wasm module.
+
+#figure(image("../images/wasm_execution.svg"), caption: [Flowchart for the creation and execution of a Wasm module from a higher-level language]) <fig:wasm-execution-model>
+
+@fig:wasm-execution-model shows the different stages a Wasm module goes through.
+First a developer writes a program in some language such as C, C++ or Rust.
+Then a compiler, which needs to support Wasm as a compiler backend is used to compile the source code to a Wasm module.
+This Wasm module is fully self-contained in one singular `.wasm` file.
+It consists of different sections, that contain functions with their instructions, data segments, import- and export definition, etc.
+
+The previously generted Wasm module can then be transferred to any target device or platform.
+In @fig:wasm-execution-model this device/platform is called the _runtime environment_.
+
+In a web context a server might provide this Wasm module to the client's browser, which contains a Wasm runtime#footnote[Most modern browsers come with a Wasm runtime: See #link("https://caniuse.com/wasm") for detailed information.]
+For distributed computing this Wasm module could be distributed among multiple different nodes of different architectures.
+Those nodes could then perform heavy computations and split work between each other by communicating through conventional methods like HTTP.
+
+The only restriction for a device/platform is, that a Wasm runtime has to be provided.
 
 === Design goals
 // The design goals are listed here, so they can be later referenced
@@ -70,25 +92,38 @@ However most compilers are still being actively worked on and improved over time
 
 Wasm was designed with certain design goals in mind.
 // TODO also prove some things like speed, small-binary-size, safety using third-party papers
-This section presents the design goals according to the specification @spec.
+This section presents these most relevant design goals necessary for this work.
 Each design goal is accompanied by related information from various papers and articles for a deeper understanding of each goal.
 
-Some of these design goals are specific to the web, most notably @design_streamable or @design_compact.
-However it turns out that most properties are generally desireable in non-web contexts too#footnote[e.g. portability and compactness for embedded systems @wasm-potential-embedded or portability, modularity and safety for distributed computing @wasm-potential-distributed ].
-// Examples for non-web contexts are embedded systems @wasm-potential-embedded or distributed computing @wasm-potential-distributed.
+// However it turns out that most properties are generally desireable in non-web contexts too#footnote[e.g. portability and compactness for embedded systems @wasm-potential-embedded or portability, modularity and safety for distributed computing @wasm-potential-distributed ].
 
 ==== Fast <design_fast>
-- Fast Runtime
-    - Parsable by a single-pass compiler: e.g. no backwards-jumps allowed (except loops), branches are referenced relativly and not absolutely (like jumps and addresses)
-    - Minimal translation of opcodes: small set of basic opcodes, that exist on most architectures(#todo[insert screenshot of opcode table] (+ proposals for more additional instructions like SIMD, atomics, etc.)
-    - Fast startup time (especially web): Runtime can start parsing a WebAssembly module that is still being downloaded. Goes hand in hand with @design_streamable
-- WASM bytecode execute by WASM RT: AOT, JIT, interpreted
-    - RT can switch between fast execution (AOT, JIT) or fast startup time (interpreted)
+Wasm is designed to be fast both during startup and execution @spec.
+// It is designed so its bytecode can be quickly read and parsed by a Wasm 
 
+Startup time is optimized through the Wasm bytecode format.
+Wasm's bytecode format is designed to make the runtime's work easier.
+
+Why does Wasm provide fast startup time?
+- Single-pass compiler, e.g. backwards jumps are disallowed (except for loops). Branches are referenced relativly by nesting depth per function.
+
+
+This is done through a defined ordering of sections, e.g. by being parsable by a single-pass compiler
+
+- Fast Runtime
+    - Minimal set of opcodes
+    - Parsable by a single-pass compiler: e.g. no backwards-jumps allowed (except loops), branches are referenced relativly by nesting depth per function (not absolutely with jumps to addresses)
 #td
 
+// - WASM bytecode can be execute in a number of different ways:
+An additional property of Wasm bytecode is that it can be either compiled, interpreted or just-in-time compiled by a runtime.
+This allows users to customize Wasm runtimes for their specific needs and usecases.
+For example one could choose compilation to achieve faster execution at the cost of slow startup times due to compilation.
+On the other end users might prefer interpretation where execution speeds are less of a priority and fast startup times or relocatable runtime instances (see @other_features) are needed.
+
+
 ==== Safe <design_safe>
-- safe by default in sandbox
+- safe by default
 - Sandboxed
     - Memory access is safe: Wasm is stack based & provides a linear memory, which can only be accessed through indices with bounds checks on every access.
     - Can only interact with host enviroment through functions that are explicitly exposed by the host
@@ -96,40 +131,71 @@ However it turns out that most properties are generally desireable in non-web co
     - This again reduces risk of (safety-critical) bugs
 - Properties like portability and safety are especially important in the context of the web, where untrusted software from a foreign host is executed on a client's device.
 - This makes WASM, a sandboxed and fast execution enviroment, interesting for safety-critical fields like avionics (#todo[ref?], automotive (#todo[ref] https://oxidos.io/), #todo[what else?]
+- Note: Applications inside Wasm can still corrupt their own memory.
 #td
 
-==== Well-defined <design_well_defined>
+
+==== Portable <design_portable>
+// This includes goals: hardware-independent, platform-independent
+Wasm is designed to be able to be portable for a lot of different hardwares and platforms.
+- minimal set of opcodes (172), that exist on all architectures(#todo[insert screenshot of opcode table] (+ proposals for more additional instructions like SIMD, atomics, etc.)
+#figure(todo[opcode table], caption: [All WebAssembly opcodes. Opcodes for proposals are encoded by specific marker bytes, which indicate that the following opcodes are to be interpreted as different instructions.])
+
+Independence of hardware:
+- Desktop architectures
+- Mobile device architectures
+- Embedded system architectures
+
+Independece of platform:
+- Browsers
+- Other environments which only require some kind of a Wasm runtime
+
 #td
 
-==== Independence of hardware, language and platform <design_independence>
-#td
+==== Independence of language <design_independence_language>
+Not designed for a specific language, programming model or object model@spec
+- Should act as a compilation target for all kinds of higher-level machine languages
+- Some Examples for languages that can be used at the time of writing are: #td
 
-==== Open <design_open>
 #td
 
 ==== Compact <design_compact>
+Wasm bytecode representation format should be compact.
+Smaller binary files are easier and faster to transmit especially in web contexts @spec.
+Also smaller files can be loaded into memory faster at runtime, which might lead to a slightly faster execution overall, but this is more of a speculation.
+
 #td
 
 ==== Modular <design_modular>
+Programs consist of smaller modules, which allows modules to be "transmitted, cached and consumed separatly" @spec.
+
 #td
 
-==== Efficient <design_efficient>
-#td
 
-==== Streamable <design_streamable>
-#td
-
-==== Parallelizable <design_parallelizable>
-#td
-
-==== Portable <design_portable>
-- portable across architectures: Compilation target for higher level languages like C, C++, Rust
-- embedding higher-level languages such as Python or JavaScript is also possible. In this case their runtimes are compiled to Wasm and shipped with the main Python/JS application.
-#td
-
-==== Other noteworthy features
+==== Other noteworthy design goals & features <other_features>
+// <design_well_defined>
+- *Goal: Well-defined*: Wasm is designed in such a way that it is "easy to reason about informally and formally" @spec.
+// <design_open>
+- *Goal: Open*: #td
+- *Goal: Efficient*: Wasm bytecode is efficient to read and parse, regardless of whether AOT or JIT compilation or interpretation is used at runtime @spec.
+- *Goal: Parallelizable*: \
+    Working with Wasm bytecode should be easily parallelizable.
+    This applies to all steps: decoding, validation, compilation.
+    This property allows for a faster startup time.
+- *Goal: Streamable*: \
+    This goal is especially important for the web.
+    It should be possible to parse Wasm code while it is still being streamed/received.
+    On the web data can be transferred in separate blocks called chunks.
+    Wasm bytecode allows a Wasm runtime to decode, validate and compile a chunk before the full bytecode has arrived.
+    This reduces startup time for Wasm applications especially on the web.
 - *Determinism*: Indeterminism has only 3 sources: host functions, float NaNs, growing memory/tables
 - *Backwards-compatibility*: #td
+
+// TODO: consider this property for non-web contexts
+// In non-web contexts this property might be used by Wasm runtimes to read and parse a Wasm file sequentially
+#td
+
+#td
     // Wasm is also designed with backwards compatibility in mind.
     // This is especially important on the web, where Wasm bytecode, that was compiled with a previous compiler, still has to be able to run in newer Wasm runtimes.
     // To minimize technical debt due to backwards compatibility, a standardization process for new feature proposals is employed.
@@ -144,6 +210,8 @@ However it turns out that most properties are generally desireable in non-web co
 - *Migratability/Relocatability*: Running Wasm instances can be serialized and migrated to another computer system. However for this to be easy the Wasm runtime should only execute Wasm code through interpretation.
 
 
+// Missing
+// WASM is formally specified with no "loopholes"
 
 
 === Challenges & Limitations
@@ -196,11 +264,3 @@ This section deals with common challenges and limitations of Wasm in non-web con
 // - What are plugin systems?
 // - Why are plugin systems important?
 // - Where are plugin systems used?
-
-== Rust
-#todo[Is a Rust section necessary?]
-
-// - Short explaination of why Rust is used for this project:
-// - The text editor, for which a plugin system will be implemented as a proof of concept is written in Rust.
-// - However this work is not about any technology in particular, and instead it will focus more on WebAssembly, which may be used from pretty much any language where a runtime exists.
-// The text editor probably uses Rust for safety and performance reasons.

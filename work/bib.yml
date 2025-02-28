@@ -7,10 +7,36 @@ spec:
 
 tanenbaum-structured:
   type: book
-  title: Structured Computer Organization
+  title: "Structured Computer Organization"
   author: "Andrew S. Tanenbaum"
   # TODO remove url
   url: https://csc-knu.github.io/sys-prog/books/Andrew%20S.%20Tanenbaum%20-%20Structured%20Computer%20Organization.pdf
+
+bringing-the-web-up-to-speed:
+  type: article
+  title: Bringing the Web up to Speed with WebAssembly
+
+wasm-in-avionics:
+  type: article
+  title: WebAssembly in Avionics
+
+wasm-for-edge-computing:
+  type: article
+  title: 'WebAssembly for Edge Computing: Potential and Challenges'
+  author: ["Hoque, Mohammed Nurul", "Harras, Khaled A."]
+  journal: "IEEE Communications Standards Magazine"
+  date: 2022
+  doi: "10.1109/MCOMSTD.0001.2000068"
+
+potential-of-wasm-for-embedded:
+  type: web
+  title: Potential of WebAssembly for Embedded Systems
+  url: https://arxiv.org/html/2405.09213v1
+
+understanding-the-performance-of-wasm:
+  type: web
+  title: Understanding the Performance of WebAssembly Applications
+  url: https://dl.acm.org/doi/abs/10.1145/3487552.3487827
 
 # TODO Find different benchmark in non-web environment
 wasm-vs-native:
@@ -24,15 +50,3 @@ wasm-design-docs:
 opcode-table:
   type: web
   url: https://pengowray.github.io/wasm-ops/
-
-wasm-potential-embedded:
-  type: web
-  url: https://arxiv.org/html/2405.09213v1
-
-wasm-potential-distributed:
-  type: article
-  author: ["Hoque, Mohammed Nurul", "Harras, Khaled A."]
-  journal: "IEEE Communications Standards Magazine"
-  title: "WebAssembly for Edge Computing: Potential and Challenges"
-  date: 2022
-  doi: "10.1109/MCOMSTD.0001.2000068"

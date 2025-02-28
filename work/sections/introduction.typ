@@ -14,11 +14,9 @@
 // - Distributed systems: microservices, distributed computing
 
 == Motivation & problem statement
-// Motivation
+// Motivation in two parts:
 // - Plugin systems are suitable architecture for highly individual software like text editors
 // - WASM is relativly modern bytecode that provides speed, safety, ... by default.
-
-// - Can WAS
 
 // #todo[write motivation last]
 
@@ -29,6 +27,7 @@
 == Research question
 Is WebAssembly the best technology choice for designing versatile plugin systems for text editors?
 
-== Method
+== Methodology
+// TODO this section might not be necessary
 // - How will this work be structured?
 // - What technologies, languages and terms are used?

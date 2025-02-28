@@ -5,8 +5,25 @@
 == Definition of requirements
 #todo[Define key requirements that are important for plugin systems of any kind, also discuss the requirements for text editors specifically]
 
-// - Plugin portability
-// - Plugin development
+- Extensibility for new features/interfaces (relativ)
+  - Can the API be changed easily?
+- Plugin Safety/Isolation
+  - Checklist for safety to find out what is the worst case:
+  - full access to the underlying hardware e.g. root privileges on os
+  - full access to current user profile
+  - access to peripherals e.g. network, connected disks, keyboard
+- Plugin portability
+  - Scores: not portable, portable but very hard (e.g. an entire VM is necessary), portable with runtime, portable without runtime (basically impossible, fat binaries for multi-architecture?)
+- Language interoperability for plugin development  (which/how many languages are supported)
+  - Advantages:
+    - More accessibility for developers without knowledge of a singular specific language.
+  - Scores: a domain-specific language (custom language), multiple programming languages (JS, Python), a compilation target (JVM), no restrictions (machine code)
+  - Some languages can be embedded reasonably well into others (e.g. JS in C)
+- Plugin performance
+  - Guess based on existing benchmarks (no time to write custom benchmarks)
+  - Overhead of context switches between plugin system and plugins might be important?
+- Plugin size
+  - Guess based on existing benchmarks (no time to write custom benchmarks)
 
 == Market analysis of existing plugin systems
 #todo[What is this section about?] \
@@ -16,13 +33,14 @@
 #todo[How and why are these projects chosen?]
 
 
-- Zed (text editor with Wasm plugin system, no windows support)
-- VSCode (text editor)
+- VSCode (versatile text editor)
 - IntelliJ-family (IDE)
-- Eclipse (IDE)
-- Microsoft flight simulator (has a Wasm plugin system)
+- Zed (text editor with Wasm plugin system, no windows support)
+// - Eclipse (IDE) [very similar to IntelliJ-based editors, less popular than IntellIJ nowadays]
+// - Microsoft flight simulator (has a Wasm plugin system) [lacks documentation, is not free/open-source]
 - ZelliJ (terminal multiplexer, has a Wasm plugin system)
-- Extism (generic Wasm plugin system library usable in many different languages)
+- DLL-based plugins (e.g. FL studio)
+// - Extism (generic Wasm plugin system library usable in many different languages)
 
 === Evaluation of key requirements
 #todo[define a scale for rating each requirement] \
@@ -76,3 +94,4 @@ It is originally written in Rust and provides bindings (Host SDKs) and shims (Pl
 
 === Summary
 #todo[Present findings in a table]
+#todo[Which other technologies might also be interesting? Which ones were left out?]
