@@ -72,19 +72,38 @@ This section presents the Wasm execution model and lifecycle of a Wasm module.
 #figure(image("../images/wasm_execution.svg"), caption: [Flowchart for the creation and execution of a Wasm module from a higher-level language]) <fig:wasm-execution-model>
 
 @fig:wasm-execution-model shows the different stages a Wasm module goes through.
-First a developer writes a program in some language such as C, C++ or Rust.
-Then a compiler, which needs to support Wasm as a compiler backend is used to compile the source code to a Wasm module.
+// Source code
+The lifetime of a Wasm program starts with a developer writing source code.
+This source code can be written in an arbitrary programming language such as C, C++ or Rust.
+// Compiler
+Then a compiler for that specific programming language creates a Wasm module.
+Compiling to Wasm requires explicit support from the chosen compiler.
+// LLVM makes things easy and enables a lot of compilers to easily compile to Wasm
+- LLVM is used for a lot of projects
+- What exactly is LLVM
+- Example projects using LLVM
+// *.wasm file
 This Wasm module is fully self-contained in one singular `.wasm` file.
 It consists of different sections, that contain functions with their instructions, data segments, import- and export definition, etc.
+// TODO more details about sections
 
+// Runtime environment
 The previously generted Wasm module can then be transferred to any target device or platform.
 In @fig:wasm-execution-model this device/platform is called the _runtime environment_.
+// Wasm runtime
+This runtime environment requires a Wasm runtime to be present.
+The Wasm runtime is able to parse the Wasm module file, instantiate a _Wasm instance_ from it and provide an Application Programming Interface (API) for interaction with the Wasm instance.
+APIs can differ from one Wasm runtime to another.
+Some runtimes exist as standalone programs that can run Wasm modules comparable to how native binaries can be executes.
+Others are in the form of libraries, that can only be used from a host application to embed a Wasm runtime into them.
+// TODO name all important common interfaces for Wasm runtime libraries
+These Wasm runtime libraries often provide common operations to the host application like calling Wasm functions, reading and writing operations for Wasm memories, linking mechanisms between Wasm modules, exposing host-defined functions for Wasm instances to call, etc.
 
+// Example environment: web
 In a web context a server might provide this Wasm module to the client's browser, which contains a Wasm runtime#footnote[Most modern browsers come with a Wasm runtime: See #link("https://caniuse.com/wasm") for detailed information.]
-For distributed computing this Wasm module could be distributed among multiple different nodes of different architectures.
+// Example environment: distributed nodes
+For distributed computing this Wasm module could be distributed among multiple different nodes regardless of their architectures#footnote[This assumes that a Wasm runtime is available for those specific architectures. However here the system administrator could opt for different Wasm runtimes specifically tailored to each system. For example one might use an interpreter to avoid compilation complexity for compilers and JIT-compilation only on embedded devices.].
 Those nodes could then perform heavy computations and split work between each other by communicating through conventional methods like HTTP.
-
-The only restriction for a device/platform is, that a Wasm runtime has to be provided.
 
 === Design goals
 // The design goals are listed here, so they can be later referenced
@@ -92,7 +111,7 @@ The only restriction for a device/platform is, that a Wasm runtime has to be pro
 
 Wasm was designed with certain design goals in mind.
 // TODO also prove some things like speed, small-binary-size, safety using third-party papers
-This section presents these most relevant design goals necessary for this work.
+This section presents the most relevant design goals as necessary for this work.
 Each design goal is accompanied by related information from various papers and articles for a deeper understanding of each goal.
 
 // However it turns out that most properties are generally desireable in non-web contexts too#footnote[e.g. portability and compactness for embedded systems @wasm-potential-embedded or portability, modularity and safety for distributed computing @wasm-potential-distributed ].
@@ -172,7 +191,10 @@ Programs consist of smaller modules, which allows modules to be "transmitted, ca
 #td
 
 
-==== Other noteworthy design goals & features <other_features>
+==== Other features of WebAssembly <other_features>
+This section lists some of Wasm's other noteworthy features.
+These are not directly related to this work, however they provide a better overview over Wasm's potential usecases and applications.
+
 // <design_well_defined>
 - *Goal: Well-defined*: Wasm is designed in such a way that it is "easy to reason about informally and formally" @spec.
 // <design_open>
