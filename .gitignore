@@ -4,3 +4,5 @@ notes.md
 # ignore all PDFs except the main one
 **/**.pdf
 !main.pdf
+
+direnv/
