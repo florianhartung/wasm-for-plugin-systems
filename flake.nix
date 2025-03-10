@@ -46,14 +46,31 @@
           name = "work";
           packages = with pkgs; [
             typst
+            tinymist
+            lato
           ];
+          
+          env = [
+            {
+              name = "TYPST_FONT_PATHS";
+              value = "${pkgs.lato}/share/fonts/lato";
+            }
+          ];
+          
           commands = [
             {
               name = "watch";
               command = ''
                 typst watch --root "$PRJ_ROOT/work" "$PRJ_ROOT/work/main.typ"
               '';
-              help = "watch the main typst project and recompile when changes are detected";
+              help = "watch the main typst project and recompile on changes";
+            }
+            {
+              name = "watch-pres";
+              command = ''
+                typst watch --root "$PRJ_ROOT/presentation" "$PRJ_ROOT/presentation/main.typ"
+              '';
+              help = "watch the presentation typst project and recompile on changes";
             }
           ];
         });

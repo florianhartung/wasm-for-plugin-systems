@@ -5,4 +5,4 @@ notes.md
 **/**.pdf
 !main.pdf
 
-direnv/
+.direnv/

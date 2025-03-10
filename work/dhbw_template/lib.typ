@@ -106,7 +106,8 @@
     if is_on_new_section_page.get() {
       return []
     }
-    let elems = query(selector(heading).before(here())).filter(elem => elem.outlined)
+
+    let elems = query(selector(heading).before(here())).filter(elem => elem.outlined).filter(elem => elem.level <= 3)
     if elems == () {
       []
     } else {

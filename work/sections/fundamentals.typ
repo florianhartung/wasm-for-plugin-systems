@@ -5,7 +5,7 @@ This section introduces theoretical and technical fundamentals used in this work
 // TODO are there any methodical fundamentals?
 
 == Instruction set architectures
-In the field of structured computer organization Tanenbaum defines a instrucion set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
+In the field of structured computer organization Tanenbaum defines a instruction set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
 The ISA level defines a machine language with a fixed set of instructions @tanenbaum-structured.
 According to Tanenbaum the ISA level then acts as a common interface between the hardware and software.
 This allows software in the form of ISA instructions to manipulate the hardware @tanenbaum-structured.
