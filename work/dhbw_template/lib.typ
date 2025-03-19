@@ -107,7 +107,7 @@
       return []
     }
 
-    let elems = query(selector(heading).before(here())).filter(elem => elem.outlined).filter(elem => elem.level <= 3)
+    let elems = query(selector(heading).before(here())).filter(elem => elem.outlined).filter(elem => elem.level <= 2)
     if elems == () {
       []
     } else {
