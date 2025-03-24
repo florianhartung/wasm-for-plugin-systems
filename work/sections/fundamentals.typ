@@ -7,12 +7,14 @@ Then it gives an overview over WebAssembly, its features, challenges, limitation
 Finally, plugin systems are explained as a software architecture model.
 
 == Instruction set architectures
-In the field of structured computer organization Tanenbaum defines a instruction set architecture (ISA) as a level in a multilayered computer system @tanenbaum-structured.
-The ISA level defines a machine language with a fixed set of instructions @tanenbaum-structured.
+In his book "Structured Computer Organization"@tanenbaum-structured Tanenbaum defines an instruction set architecture (ISA) as a level in a multilayered computer system.
+The ISA level defines a machine language with a fixed set of instructions.
 According to Tanenbaum the ISA level then acts as a common interface between the hardware and software.
-This allows software in the form of ISA instructions to manipulate the hardware @tanenbaum-structured.
+This allows software in the form of ISA instructions to manipulate the hardware.
 Software written in a higher level machine language (Assembly, C, Java, ...) can not be executed directly by the hardware.
 Instead higher level machine codes are compiled to ISA machine code or interpreted by a program, that is present in ISA machine code itself @tanenbaum-structured.
+
+// TODO Move ISA figure here and only lightly explain it later.
 
 == WebAssembly
 === Overview
@@ -30,7 +32,7 @@ Some examples are avionics for Wasm's safe and deterministic execution @wasm-in-
 // TODO When was WASM made?
 
 What is special about Wasm is that it is a _virtual_ ISA @spec.
-There is no agreed-upon definition for a virtual ISA, however the term _virtual_ can be assumed to refer to an ISA that is running in a virtualized environment on a higher level in a multilevel computer#footnote[There are a couple toy projects which have tried to execute Wasm directly. One example is the discontinued `wasmachine` project, which tried to execute Wasm on FPGAs.].
+There is no agreed-upon definition for a virtual ISA, however the term _virtual_ can be assumed to refer to an ISA that is running in a virtualized environment on a higher level in a multilevel computer#footnote[There exist projects which have tried to execute Wasm directly. One example is the discontinued `wasmachine` project, which tried executing Wasm on FPGAs: #link("https://github.com/piranna/wasmachine")].
 We call this virtualized environment the *host environment* (used by the specification) or the *WebAssembly runtime* (used by most technical documentation).
 
 #figure(table(columns: (auto, auto),
@@ -49,13 +51,14 @@ We call this virtualized environment the *host environment* (used by the specifi
 
 // Multi-level computer and the wasm environment
 If one considers a system running Wasm code as a multi-level computer system, the Wasm runtime can be modeled as a separate layer.
-@multi-level-wasm shows a multi-level computer system based on Tanenbaum's definition @tanenbaum-structured.
+@multi-level-wasm shows a multi-level computer system based on Tanenbaum's model from @tanenbaum-structured.
 Here each level is executed by logic implemented in the next lower level either through compilation or interpretation.
-The digital logic level itself only exists in the form of individual gates, consisting of transistors@tanenbaum-structured and tracks on the processors' chip.
-This level runs the next microarchitecture and ISA levels, which are also often implemented directly in hardware@tanenbaum-structured.
+The digital logic level itself only exists in the form of individual gates, consisting of transistors and tracks on the processors' chip.
+This level runs the next microarchitecture and ISA levels, which are also often implemented directly in hardware.
 The ISA level then provides a fixed set of instructions for higher levels to use.
 Operating systems build on top of this and provide another level for user space programs, which exist on the assembly language level.
-Then there are problem-oriented languages such as C, C++ or Rust, which are specifically made for humans to write code in@tanenbaum-structured.
+Then there are problem-oriented languages such as C, #box[C++] or Rust, which are specifically made for humans to write code in@tanenbaum-structured.
+
 One program written in a problem-oriented language is the Wasm runtime, which itself is a layer here.
 Its task it to interpret or (JIT-)compile higher-level Wasm code to lower-level problem-oriented or even the assembly language level.
 However for this work all layers starting with the Wasm runtime level until the digital logic level can be seen as a single hardware specific layer called the _Wasm runtime environment_.
@@ -71,8 +74,9 @@ Instead it provides most basic features and instructions, which exist on almost 
 This is by design, as WebAssembly is more of a compilation target for higher level languages@spec.
 Those higher level languages can then build upon Wasm's basic types and instructions and implement their own abstractions like memory layouts or control flow constructs on top.
 This is analogous to the non-virtual ISA machine code in a conventional computer, which also acts as a compilation target for most low-level languages such as Assembly, C, or Rust.
-Most of these compiled languages like C, C++, Rust, Zig or even Haskell can be compiled to WebAssembly moderately easily nowadays#footnote[#todo[provide examples for compilers that can target Wasm]].
-However most compilers are still being actively worked on and improved over time.
+Nowadays there are compilers for most popular languages already.
+Some of which are `clang` for C/C++, `rustc` for Rust or the official Zig and Haskell compilers.
+However most compilers are still being actively worked on and improved over time to support the latest Wasm proposals.
 
 === Execution model and lifecycle
 #figure(
@@ -118,10 +122,15 @@ These Wasm runtime libraries often provide common operations to the host applica
 // TODO name all important common interfaces for Wasm runtime libraries
 
 // Web (example)
-In a web context a server might provide this Wasm module to the client's browser, which contains a Wasm runtime#footnote[Most modern browsers come with a Wasm runtime: See #link("https://caniuse.com/wasm") for detailed information.]
-// Distributed computing (example)
-For distributed computing this Wasm module could be distributed among multiple different nodes regardless of their architectures#footnote[This assumes that a Wasm runtime is available for those specific architectures. However here the system administrator could opt for different Wasm runtimes specifically tailored to each system. For example one might use an interpreter to avoid compilation complexity for compilers and JIT-compilation only on embedded devices.].
-Those nodes could then perform heavy computations and split work between each other by communicating through conventional methods like HTTP.
+In a web context a server might provide this Wasm module to the client's browser, which usually comes with a Wasm runtime.
+Detailed information on the current status of Wasm support for internet browsers can be viewed at #link("https://caniuse.com/wasm").
+A concrete example is Ebay using Wasm for their barcode scanner algorithm to achieve higher performance#footnote(link("https://innovation.ebayinc.com/tech/engineering/webassembly-at-ebay-a-real-world-use-case/")).
+
+// Distributed computing and serverless (example)
+For distributed computing a compiled Wasm module could be distributed among multiple different nodes regardless of their platform and architecture... #td
+// TODO also include serverless aspect, which might become very important in the future
+// TODO only requirement is wasm runtime 
+// TODO name multiple examples: wasmedge, fermyon spin
 
 === Design goals
 // The design goals are listed here, so they can be later referenced
@@ -201,7 +210,7 @@ Wasm is designed to be able to be portable for a lot of different hardwares and 
 
 ==== Modular <design_modular>
 #todo[
-    - Programs consist of smaller modules, which allows modules to be "transmitted, cached and consumed separably" @spec.
+    - Programs consist of smaller modules, which allows modules to be "transmitted, cached and consumed separably"
     - Modules can also be combined/linked together at runtime
 ]
 

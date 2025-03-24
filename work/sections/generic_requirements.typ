@@ -3,28 +3,40 @@
 = Criteria for plugin systems (20 pages)
 // TODO Normally a technology comparison defined weights for each score
 To evaluate whether Wasm is a viable technology for versatile plugin systems, one must first understand what criteria make a plugin system good and versatile.
-This section will perform a technology comparison between multiple technologies and existing software projects.
-First a list of criteria is defined.
-Along with each criterion a scale from 0 to 5 is defined. 
-This scale enables an objective comparison between multiple scores.
-
-Then a set of technologies and software projects, each with a different approach to plugin systems, are chosen.
-The previously defined criteria are then evaluated for each technology or project.
-
-In the end the results can be combined and visualized in a technology comparison matrix.
-This matrix can be analyzed to gain further insight on the current state of the art of plugin systems.
+This section will perform a technology comparison between several technologies and existing software projects.
+First, a set of criteria is defined.
+Then, appropriate technologies and software projects are selected to represent a spectrum of different plugin systems.
+Next, the technologies and projects are evaluated against the previously defined criteria.
+Finally, a technology comparison matrix is used to summarize and visualize the results.
 
 == Definition of criteria
-In this section criteria for a good plugin system are defined.
-While some are considered important for software in general, others are specific to plugin systems for text editors.
+In this section criteria for good plugin systems are defined.
+// TODO Mention, that choice of criteria should be specifically suited for text editor plugin systems?
+Each criterion will define a scale from 0 to 5, along with requirements for each score.
+This scale will be useful later to enable an objective evaluation and comparison of technologies and projects.
 
 === Performance
+A computer's performance usually refers to the speed it is able to execute software at.
+Generally one wants every piece of code to run as fast as possible.
+However in some scenarios one might also choose other features such as less memory usage or dynamic typing over performance.
+
+In the context of plugin systems, performance also refers to the speed at which software is executed.
+Here the most important software components are the host system, a plugin system and a plugin.
+In this case performance describes how quickly a host system can temporarily transfer execution to a plugin system, that then loads and invokes a plugin's entry point.
+
+While performance can be measured quantitatively through benchmarks, in practice this is quite hard for plugin systems.
+To benchmark different plugin systems one would have to implement a variety of algorithms and scenarios for multiple plugin systems.
+Then one could measure the time each plugin system and plugin takes to execute.
+
+Due to time-constraints and the wide spectrum of knowledge necessary for such a benchmark, this work will not utilize quantitative benchmarks to measure performance.
+Instead performance will be rated through educated guesses based on benchmarks and comparisons already available for chosen technologies.
+This section presents a rough outline for the scores used, but the final score has to be determined for each technology individually.
+
+#td Performance scores
+
 // Improvements
 // - Maybe differentiate between individual plugins and plugin systems?
 // - Overhead of context switches between plugin system and plugins might be important?
-
-- No quantitative scale, due to time-constrains and complexity
-- Guess based on existing benchmarks
 
 === Plugin size
 #todo[Maybe look at sizes of plugin systems as well? e.g. native has no overhead at all vs. JS needs an entire runtime with jit compiler]
@@ -32,45 +44,39 @@ While some are considered important for software in general, others are specific
 - memory footprint might impact performance
 
 === Plugin isolation
-#figure(table(
-    columns: (auto, auto, 1fr, 1fr),
-    align: (center, center, left, left),
-    table.header([Score], [Name], [Worst-case], [Description]),
-    [0], [No isolation, requires\ elevated privileges], [Elevated privilege access to current system], [#td],
-    [1], [No isolation], [Full access to the current user's system and peripherals], todo[Limited privilege access to current system, inherits host privileges],
-    [2], [In isolation with\ host application], [Full access to host application], [#td /*Example: Game engine plugin*/],
-    [3], [Partially\ sandboxed], [Full access to host application], todo[An attempt is made to restrict the plugin's access to the host system.],
-    [4], [Fully sandboxed,\ dynamic interface], [Access to parts of the host application not meant to be exposed due to a bug in the interface], [#td],
-    [5], [Fully sandboxed,\ static interface], [Indeterminable, a major bug in the sandboxing mechanism would be required], [
-      The plugin runs fully sandboxed.
+Often times plugins contain foreign code.
+This is especially the case for text editors, where plugins are often downloaded from a central registry, also known as plugin/extension marketplaces.
+Event though there might be checks in place to check for malicious contents, plugins are still foreign code.
+
+
+- isolation is property how isolated plugin is from its host execution environment
+- the interface between plugin and host plays a big role: only if it can be abused in unexpected ways, isolation is violated
+
+
+Isolation is a property of plugins, that describes how isolated a plugin is from its outside execution environment.
+// Additional notes:
+// One might even go a step further and consider plugins as untrusted code.
+// A plugin system could employ a zero-trust strategy, where plugins are executed fully sandboxed and given permissions to certain interfaces only through the user.
+// Then the plugin system could also monitor and analyze plugins and their behavior and warn or disable them when suspicious behavior is detected.
+
+/ 0 -- No isolation, required elevated privileges: #td \
+  _Worst case: Elevated privilege access to current system._
+/ 1 -- No isolation: #todo[Limited privilege access to current system, inherits host privileges] \
+  _Worst case: Full access to the current user's system and peripherals._
+/ 2 -- In isolation with host application: #td \ // game engine plugin
+  _Worst case: Full access to host application._
+/ 3 -- Partially sandboxed: #todo[An attempt is made to restrict the plugin's access to the host system] \
+  _Worst case: Full access to host application._
+/ 4 -- Fully sandboxed, dynamic interface: #td \
+  _Worst case: Access to parts of the host application not meant to be exposed due to a bug in the interface._
+/ 5 -- Fully sandboxed, static interface: The plugin runs fully sandboxed.
       It has no way of interacting with the host system, except for statically checked interfaces.
       Here statically checked interfaces refers to interfaces, that can be proven safe during compilation (or alternatively development) of the plugin system.
       One way to achieve this might be an interface definition in a common interface definition language.
-      This restriction was chosen because it disallows plugin systems giving full access to parts of a host application without a proper interface definition.
-    ],
-  ),
-  caption: [#todo[Fix table size and positioning] Scores for the plugin isolation criterion],
-) <scores-isolation>
-
-#todo[plugin isolation. scores can be seen in @scores-isolation]
+      This restriction was chosen because it disallows plugin systems giving full access to parts of a host application without a proper interface definition. \
+  _Worst case: Indeterminable, a major bug in the sandboxing mechanism is required._
 
 === Plugin portability <crit-plugin-portability>
-#figure(table(
-    columns: (auto, auto, 1fr),
-    align: (center, center, left),
-    table.header([Score], [Name], [Description]),
-    [0], [Not portable], [The plugin is not portable between different platforms. It is theoretically and practically impossible to run the plugin on different platforms.],
-    [1], [Theoretically portable], [The plugin is theoretically portable between different platforms. In practice this might be very complex and costly, e.g. having to run each plugin in its own dedicated virtual machine.],
-    [2-4], [Portable\ with a runtime], [
-      The plugin is portable between different platforms, but it requires a runtime on the target platform.
-      Because these runtimes can vary from one plugin system to another, a score range from 2 to 4 is specified here.
-      During evaluation the specific runtime has to be analyzed regarding its complexity and impact on the host system.
-      A more lightweight runtime could also enable higher portability of the plugin system itself as described in @crit-plugin-portability.
-    ],
-    [5], [Portable by design], [The plugin is portable between different platforms without requiring a runtime on each host application. In practice this is very hard to achieve. Advanced technologies such as fat binaries, which are binaries that encapsulate compiled machine code for multiple different architectures, might be necessary. ]
-  ),
-  caption: [Scores for the plugin portability criterion]
-) <scores-portability>
 
 Portability stems from the field of distributed systems.
 A high portability refers to software components, that can be moved from one distributed system A to another distributed system B without having to make any modifications@distributed.
@@ -82,7 +88,18 @@ In the context of plugin systems for text editors, portability can be interprete
 This work considers only the first scenario, in which portability refers to each individual plugin.
 // TODO Why was the first scenario chosen?
 
-@scores-portability shows different levels of plugin portability.
+/ 0 -- Not portable: The plugin is not portable between different platforms.
+  It is theoretically and practically impossible to run the plugin on different platforms.
+/ 1 -- Theoretically portable: The plugin is theoretically portable between different platforms.
+  In practice this might be very complex and costly, e.g. having to run each plugin in its own dedicated virtual machine.
+/ 2,3,4 -- Portable with a runtime: The plugin is portable between different platforms, but it requires a runtime on the target platform.
+  Because these runtimes can vary from one plugin system to another, a score range from 2 to 4 is specified here.
+  During evaluation the specific runtime has to be analyzed regarding its complexity and impact on the host system.
+  A more lightweight runtime could also enable higher portability of the plugin system itself as described in @crit-plugin-portability.
+/ 5 -- Portable by design: The plugin is portable between different platforms without requiring a runtime on each host application.
+  In practice this is very hard to achieve.
+  Advanced technologies such as fat binaries, which are binaries that encapsulate compiled machine code for multiple different architectures, might be necessary. 
+
 Note that the most extreme scores 0 and 5 are very unlikely for any imaginable plugin system.
 0 requires a plugin not to be portable at all, while 5 requires that a plugin is portable to different platforms and architectures which is very hard to implement on a technical level.
 
@@ -157,7 +174,7 @@ Similar commonly known terminal multiplexers are Tmux, xterm or the Windows Term
 // - API unabhängig von der Sprache mit Protobuf (Message-basiertes System, https://protobuf.dev/)
 // - Permission System gruppiert Events & Commands zusammen
 
-=== Summary
+=== Summary <technology-comparison-matrix>
 #todo[Present findings in a table]
 #todo[What could have been done better?]
 #todo[Which other technologies and criteria might also be interesting? Which ones were left out?]
