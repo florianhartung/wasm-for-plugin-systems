@@ -122,6 +122,7 @@
     numbering: "1",
     margin: ("top": 35mm, "left": 25mm, "right": 40mm, "bottom": 30mm),
     header: [
+      #set text(size: 0.8em)
       #get_current_heading
       #line(length: 100%)
     ],

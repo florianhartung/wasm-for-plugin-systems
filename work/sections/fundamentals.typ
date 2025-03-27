@@ -7,12 +7,14 @@ Then it gives an overview over WebAssembly, its features, challenges, limitation
 Finally, plugin systems are explained as a software architecture model.
 
 == Instruction set architectures
-In his book "Structured Computer Organization"@tanenbaum-structured Tanenbaum defines an instruction set architecture (ISA) as a level in a multilayered computer system.
+In his book "Structured Computer Organization" Tanenbaum defines an instruction set architecture (ISA) as a level in a multilayered computer system@tanenbaum-structured[sec.~1.1.2].
 The ISA level defines a machine language with a fixed set of instructions.
 According to Tanenbaum the ISA level then acts as a common interface between the hardware and software.
 This allows software in the form of ISA instructions to manipulate the hardware.
 Software written in a higher level machine language (Assembly, C, Java, ...) can not be executed directly by the hardware.
-Instead higher level machine codes are compiled to ISA machine code or interpreted by a program, that is present in ISA machine code itself @tanenbaum-structured.
+Instead higher level machine codes are compiled to ISA machine code or interpreted by a program, that is present in ISA machine code itself @tanenbaum-structured[sec.~1.1.2].
+
+#todo[move @multi-level-wasm here and explain basics of multi-level systems here separately]
 
 // TODO Move ISA figure here and only lightly explain it later.
 
@@ -31,9 +33,9 @@ Some examples are avionics for Wasm's safe and deterministic execution @wasm-in-
 
 // TODO When was WASM made?
 
-What is special about Wasm is that it is a _virtual_ ISA @spec.
-There is no agreed-upon definition for a virtual ISA, however the term _virtual_ can be assumed to refer to an ISA that is running in a virtualized environment on a higher level in a multilevel computer#footnote[There exist projects which have tried to execute Wasm directly. One example is the discontinued `wasmachine` project, which tried executing Wasm on FPGAs: #link("https://github.com/piranna/wasmachine")].
-We call this virtualized environment the *host environment* (used by the specification) or the *WebAssembly runtime* (used by most technical documentation).
+What is special about Wasm is that it is a _virtual_ ISA @spec[sec.~1.1.2].
+There is no agreed-upon definition for a virtual ISA, however the term _virtual_ can be assumed to refer to an ISA that is running in a virtualized environment on a higher level in a multilevel computer#footnote[Projects that try to execute Wasm directly exist. One example is the discontinued `wasmachine` project, which tried executing Wasm on FPGAs: #link("https://github.com/piranna/wasmachine")].
+We call this virtualized environment the *host environment* (used by the specification@spec[sec.~1.2.1]) or the *WebAssembly runtime* (used by most technical documentation).
 
 #figure(table(columns: (auto, auto),
         [WebAssembly code], table.cell(stroke: none, []),
@@ -51,16 +53,16 @@ We call this virtualized environment the *host environment* (used by the specifi
 
 // Multi-level computer and the wasm environment
 If one considers a system running Wasm code as a multi-level computer system, the Wasm runtime can be modeled as a separate layer.
-@multi-level-wasm shows a multi-level computer system based on Tanenbaum's model from @tanenbaum-structured.
+@multi-level-wasm shows a multi-level computer system based on Tanenbaum's model @tanenbaum-structured[sec.~1.1.2].
 Here each level is executed by logic implemented in the next lower level either through compilation or interpretation.
 The digital logic level itself only exists in the form of individual gates, consisting of transistors and tracks on the processors' chip.
 This level runs the next microarchitecture and ISA levels, which are also often implemented directly in hardware.
 The ISA level then provides a fixed set of instructions for higher levels to use.
 Operating systems build on top of this and provide another level for user space programs, which exist on the assembly language level.
-Then there are problem-oriented languages such as C, #box[C++] or Rust, which are specifically made for humans to write code in@tanenbaum-structured.
+Then there are problem-oriented languages such as C, #box[C++] or Rust, which are specifically made for humans to write code in@tanenbaum-structured[sec.~1.1.2].
 
 One program written in a problem-oriented language is the Wasm runtime, which itself is a layer here.
-Its task it to interpret or (JIT-)compile higher-level Wasm code to lower-level problem-oriented or even the assembly language level.
+Its task it to interpret or compile higher-level Wasm code to lower-level problem-oriented or even the assembly language level.
 However for this work all layers starting with the Wasm runtime level until the digital logic level can be seen as a single hardware specific layer called the _Wasm runtime environment_.
 
 // Wasm is very simple
@@ -71,7 +73,7 @@ For example it provides only a handful of types: Signed/unsigned integers, float
 // Wasm is a compilation target
 WebAssembly also does not provide any way to specify memory layouts as it can be done in higher-level languages with structs, classes, records, etc.
 Instead it provides most basic features and instructions, which exist on almost all modern computer architectures like integer and floating point arithmetic, memory operations or simple control flow constructs.
-This is by design, as WebAssembly is more of a compilation target for higher level languages@spec.
+This is by design, as WebAssembly is more of a compilation target for higher level languages#footnote[#link("https://webassembly.org/")].
 Those higher level languages can then build upon Wasm's basic types and instructions and implement their own abstractions like memory layouts or control flow constructs on top.
 This is analogous to the non-virtual ISA machine code in a conventional computer, which also acts as a compilation target for most low-level languages such as Assembly, C, or Rust.
 Nowadays there are compilers for most popular languages already.
@@ -97,7 +99,7 @@ These languages are often used because they have compilers that support Wasm.
 The compiler then compiles this source code to a _Wasm module_.
 This step requires a compiler that support Wasm as a compilation target.
 // LLVM makes things easy
-Many modern compilers such as `clang` or `rustc` use the LLVM project for optimization and code generation.
+Many modern compilers such as `clang` or `rustc` use the LLVM#footnote[According to its official website the acronym _LLVM_ was once short for _Low Level Virtual Machine_, however now it has "grown to be an umbrella project" referred to simply as the LLVM project. #link("https://llvm.org/")] project for optimization and code generation.
 These compilers compile source code to LLVM's intermediate representation (LLVM IR) and pass this to LLVM.
 LLVM can then perform optimizations and compile this IR to any compilation target, which can be selected by choosing a LLVM backend.
 One such LLVM backend targets Wasm.
@@ -137,11 +139,11 @@ For distributed computing a compiled Wasm module could be distributed among mult
 // This section also contains related information, such as measurements, interesting proofs, etc. that verify that the design goals were really achieved
 
 Wasm was designed with certain design goals in mind.
-This section presents the design goals relevant for this work according to the official Wasm specification @spec.
+This section presents the design goals relevant for this work according to the official Wasm specification @spec[sec.~1.1.1].
 Each design goal is accompanied by related information from various papers and articles for a deeper understanding of each goal.
 
 ==== Fast <design_fast>
-Wasm is designed to be fast both during startup and execution @spec.
+Wasm is designed to be fast both during startup and execution @spec[sec.~1.1.1].
 // It is designed so its bytecode can be quickly read and parsed by a Wasm 
 Startup time is mostly optimized through the structure of the Wasm bytecode format, which is optimized for fast parsing and compiling of Wasm code.
 A Wasm module in its binary format consists of 11 different sections
@@ -196,7 +198,7 @@ Wasm is designed to be able to be portable for a lot of different hardwares and 
 
 ==== Independence of language <design_independence_language>
 #todo[
-    - Not designed for a specific language, programming model or object model@spec
+    - Not designed for a specific language, programming model or object model@spec[sec.~1.1.1]
     - Should act as a compilation target for all kinds of higher-level machine languages
     - Some Examples for languages that can be used at the time of writing are: #td
 ]
@@ -219,9 +221,9 @@ Wasm is designed to be able to be portable for a lot of different hardwares and 
 This section lists some other noteworthy features of Wasm.
 These are not directly related to this work, however they provide a better overview over Wasm's potential use cases and applications.
 
-- *Well-defined*: #todo[Wasm is designed in such a way that it is "easy to reason about informally and formally" @spec.]
+- *Well-defined*: #todo[Wasm is designed in such a way that it is "easy to reason about informally and formally" @spec[sec.~1.1.1].]
 - *Open*: #td
-- *Efficient*: #todo[Wasm bytecode is efficient to read and parse, regardless of whether AOT or JIT compilation or interpretation is used at runtime @spec.]
+- *Efficient*: #todo[Wasm bytecode is efficient to read and parse, regardless of whether AOT or Just-in-time (JIT) compilation or interpretation is used at runtime @spec.]
 - *Parallelizable*: #todo[
         Working with Wasm bytecode should be easily parallelizable.
         This applies to all steps: decoding, validation, compilation.

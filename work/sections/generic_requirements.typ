@@ -17,37 +17,54 @@ This scale will be useful later to enable an objective evaluation and comparison
 
 === Performance
 A computer's performance usually refers to the speed it is able to execute software at.
-Generally one wants every piece of code to run as fast as possible.
-However in some scenarios one might also choose other features such as less memory usage or dynamic typing over performance.
+For interactive computer systems one generally wants every piece of code to run as fast as possible to minimize its time on the CPU.
+// However in some scenarios one might prefer other properties such as less memory usage or dynamic typing over performance.
 
 In the context of plugin systems, performance also refers to the speed at which software is executed.
 Here the most important software components are the host system, a plugin system and a plugin.
 In this case performance describes how quickly a host system can temporarily transfer execution to a plugin system, that then loads and invokes a plugin's entry point.
 
 While performance can be measured quantitatively through benchmarks, in practice this is quite hard for plugin systems.
-To benchmark different plugin systems one would have to implement a variety of algorithms and scenarios for multiple plugin systems.
+Plugin systems are often very heterogeneous, because they use different technologies depending on the exact use case.
+To benchmark different plugin systems one would have to implement a variety of algorithms and scenarios for a variety of plugin systems.
 Then one could measure the time each plugin system and plugin takes to execute.
 
-Due to time-constraints and the wide spectrum of knowledge necessary for such a benchmark, this work will not utilize quantitative benchmarks to measure performance.
+Due to time-constraints and the broad spectrum of knowledge necessary, this work does not use quantitative benchmarks to measure performance.
 Instead performance will be rated through educated guesses based on benchmarks and comparisons already available for chosen technologies.
-This section presents a rough outline for the scores used, but the final score has to be determined for each technology individually.
+This section presents a rough outline for the scores used, however each score has to be determined on a case-by-case basis.
 
-#td Performance scores
+/ 0 -- Very slow: The transfer of execution to the plugin systems and invocation of a plugin is highly inefficient.
+  Thus the plugin system is not viable for use within interactive software.
+  Reasons for significant bottlenecks might include heavy serialization or expensive VM-based sandboxing.
+/ 1, -- Slow: Both the plugin system and plugins are very slow to run. Transferring execution between the host system and a plugin is inefficient. Thus this plugin system is also not viable for use in interactive software.
+/ 2, 3 -- Acceptable: The plugin system and plugins are not fast but their performance is acceptable for interactive software such as text editors.
+/ 4 -- Fast: Transferring execution to the plugin system and/or executing a plugin is fast, with only a small overhead, not noticeable by a user.
+/ 5 -- Optimal: Transferring execution and invoking a plugin appears instantaneous, and thus it does not have any measurable overhead.
+  All Plugins' code is executed as fast as if they were implemented within the host system natively.
 
 // Improvements
 // - Maybe differentiate between individual plugins and plugin systems?
 // - Overhead of context switches between plugin system and plugins might be important?
 
 === Plugin size
-#todo[Maybe look at sizes of plugin systems as well? e.g. native has no overhead at all vs. JS needs an entire runtime with jit compiler]
-- Guess based on existing benchmarks (no time to write custom benchmarks)
-- memory footprint might impact performance
+Plugin size refers to the average size of a plugin for a specific plugin system technology.
+This property does not refer to the size of each individual plugin.
+Rather it is used to be able to compare different plugin system technologies and how compact and small written for them are.
+
+The importance of plugin size depends on each specific use case and user requirements.
+For text editors a smaller plugin size might result in faster startup times and less time spent downloading or updating the plugin.
+Terminal-based text editors specifically try to maintain a small memory footprint, which can be affected by large plugins.
+
+#td
+// #todo[Maybe look at sizes of plugin systems as well? e.g. native has no overhead at all vs. JS needs an entire runtime with jit compiler]
+// - Guess based on existing benchmarks (no time to write custom benchmarks)
+// - memory footprint might impact performance
 
 === Plugin isolation
 Often times plugins contain foreign code.
-This is especially the case for text editors, where plugins are often downloaded from a central registry, also known as plugin/extension marketplaces.
-Event though there might be checks in place to check for malicious contents, plugins are still foreign code.
-
+This is especially true for text editors, where plugins are often downloaded from a central registry, also known as plugin/extension marketplaces.
+This means that plugins downloaded from such sources should be treated as foreign code.
+Even though there might be checks in place for malicious contents, foreign code should not be trusted to not access its host environment unless otherwise allowed.
 
 - isolation is property how isolated plugin is from its host execution environment
 - the interface between plugin and host plays a big role: only if it can be abused in unexpected ways, isolation is violated
@@ -55,7 +72,7 @@ Event though there might be checks in place to check for malicious contents, plu
 
 Isolation is a property of plugins, that describes how isolated a plugin is from its outside execution environment.
 // Additional notes:
-// One might even go a step further and consider plugins as untrusted code.
+// One could even go a step further and consider plugins as untrusted code and adopt a zero trust strategy.
 // A plugin system could employ a zero-trust strategy, where plugins are executed fully sandboxed and given permissions to certain interfaces only through the user.
 // Then the plugin system could also monitor and analyze plugins and their behavior and warn or disable them when suspicious behavior is detected.
 
@@ -68,7 +85,7 @@ Isolation is a property of plugins, that describes how isolated a plugin is from
 / 3 -- Partially sandboxed: #todo[An attempt is made to restrict the plugin's access to the host system] \
   _Worst case: Full access to host application._
 / 4 -- Fully sandboxed, dynamic interface: #td \
-  _Worst case: Access to parts of the host application not meant to be exposed due to a bug in the interface._
+  _Worst case: Access to parts of the host application not meant to be exposed due to a bug in the interface._ // TODO: bypass, exploit?
 / 5 -- Fully sandboxed, static interface: The plugin runs fully sandboxed.
       It has no way of interacting with the host system, except for statically checked interfaces.
       Here statically checked interfaces refers to interfaces, that can be proven safe during compilation (or alternatively development) of the plugin system.

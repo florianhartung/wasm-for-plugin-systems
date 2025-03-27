@@ -1,57 +1,104 @@
 spec:
   type: web
-  title: WebAssembly Core Specification
-  author: ["WebAssembly Community Group", "Andreas Rossberg (editor)"]
-  date: 2025-01-21
-  url: https://webassembly.github.io/spec/core
+  title: WebAssembly Core Specification (Release 2.0, Draft 2025-01-28)
+  author: ["WebAssembly Community Group", "Rossberg, Andreas"]
+  date: 2025-01-28
+  url:
+    value: https://webassembly.github.io/spec/core
+    date: 2025-03-27
 
 tanenbaum-structured:
   type: book
-  title: "Structured Computer Organization"
-  author: "Andrew S. Tanenbaum"
-  # TODO remove url
-  url: https://csc-knu.github.io/sys-prog/books/Andrew%20S.%20Tanenbaum%20-%20Structured%20Computer%20Organization.pdf
+  title: Structured Computer Organization
+  edition: 6
+  author: ["Tanenbaum, Andrew S.", "Austin, Todd"]
+  publisher: Pearson Education, Inc.
+  date: 2025-01-01
+  serial-number:
+    isbn: 9780132916523
+
 
 distributed:
   type: book
-  title: "Distributed Systems: Principles and Paradigms"
-  author: ["Maarten Van Steen", "Andrew S. Tanenbaum"]
+  title: 'Distributed Systems: Principles and Paradigms'
+  edition: edition 4, version 03
+  author: ["van Steen, Maarten", "Tanenbaum, Andrew S."]
+  publisher: Maarten van Steen
+  date: 2025-01
+  url: 
+    value: https://www.distributed-systems.net/index.php/books/ds4/
+    date: 2025-03-27
+  serial-number:
+    isbn: 9789081540643
 
 bringing-the-web-up-to-speed:
   type: article
   title: Bringing the Web up to Speed with WebAssembly
+  author: ["Haas, Andreas", "Rossberg, Andreas", "Schuff, Derek L. Schuff", "Titzer, Ben L.", "Holman, Michael", "Gohman, Dan", "Wagner, Luke", "Zakai, Alon", "Bastien, JF"]
+  publisher: Association for Computing Machinery
+  date: 2017-06
+  serial-number:
+    isbn: 9781450349888
+    doi: 10.1145/3062341.3062363
+  page-range: 185-200
+  parent:
+    type: proceedings
+    title: ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI) 2017
+
 
 wasm-in-avionics:
   type: article
-  title: WebAssembly in Avionics
+  title: 'WebAssembly in Avionics: Decoupling Software from Hardware'
+  author: ["Zaeske, Wanja", "Friedrich, Sven", "Schubert, Tim", "Durak, Umut"]
+  date: 2023-11
+  serial-number:
+    doi: 10.1109/dasc58513.2023.10311207
+    isbn: 979-835033357-2
+  parent:
+    type: proceedings
+    title: IEEE/AIAA 42nd Digital Avionics Systems Conference (DASC)
 
 wasm-for-edge-computing:
   type: article
   title: 'WebAssembly for Edge Computing: Potential and Challenges'
   author: ["Hoque, Mohammed Nurul", "Harras, Khaled A."]
-  journal: "IEEE Communications Standards Magazine"
+  publisher: IEEE
   date: 2022
-  doi: "10.1109/MCOMSTD.0001.2000068"
+  serial-number:
+    doi: 10.1109/MCOMSTD.0001.2000068
+  page-range: 68-73
+  parent:
+    type: proceedings
+    title: IEEE Communications Standards Magazine
 
 potential-of-wasm-for-embedded:
-  type: web
+  type: article
   title: Potential of WebAssembly for Embedded Systems
-  url: https://arxiv.org/html/2405.09213v1
+  author: ["Wallentowitz, Stefan", "Kersting, Bastian", "Dumitriu, Dan Mihai"]
+  publisher: IEEE
+  date: 2022-06
+  serial-number:
+    doi: 10.1109/meco55406.2022.9797106
+  parent:
+    type: proceedings
+    title: 11th Mediterranean Conference on Embedded Computing (MECO)
 
-understanding-the-performance-of-wasm:
-  type: web
-  title: Understanding the Performance of WebAssembly Applications
-  url: https://dl.acm.org/doi/abs/10.1145/3487552.3487827
+  # url: https://arxiv.org/html/2405.09213v1
+
+# understanding-the-performance-of-wasm:
+#   type: web
+#   title: Understanding the Performance of WebAssembly Applications
+#   url: https://dl.acm.org/doi/abs/10.1145/3487552.3487827
 
 # TODO Find different benchmark in non-web environment
-wasm-vs-native:
-  type: web
-  url: https://git.edik.cn/book/awesome-wasm-zh/raw/commit/ec62ca8ee2714806d187bc3530958e1027e6cbf1/spec/1901.09056.pdf
+# wasm-vs-native:
+#   type: web
+#   url: https://git.edik.cn/book/awesome-wasm-zh/raw/commit/ec62ca8ee2714806d187bc3530958e1027e6cbf1/spec/1901.09056.pdf
 
-wasm-design-docs:
-  type: web
-  url: https://github.com/WebAssembly/design
+# wasm-design-docs:
+#   type: web
+#   url: https://github.com/WebAssembly/design
 
-opcode-table:
-  type: web
-  url: https://pengowray.github.io/wasm-ops/
+# opcode-table:
+#   type: web
+#   url: https://pengowray.github.io/wasm-ops/
