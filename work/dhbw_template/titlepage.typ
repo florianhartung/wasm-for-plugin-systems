@@ -19,17 +19,14 @@
   #align(right)[#image("dhbw_icon.png", height: 2.2cm)]
 
   #set align(center)
-  #v(15mm)
-  *THEMA STUDIENARBEIT*
-  #v(8mm)
+  #v(35mm)
   #text(size: 20pt)[
     *#title*
   ]
-  #v(20mm)
+  #v(25mm)
   im Studiengang
-  #v(5mm)
   #course
-  #v(5mm)
+  #v(3mm)
   an der _Duale Hochschule Baden-Württemberg Mannheim_
   #v(10mm)
   von

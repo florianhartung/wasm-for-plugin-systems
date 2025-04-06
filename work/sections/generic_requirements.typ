@@ -21,39 +21,61 @@ For interactive computer systems one generally wants every piece of code to run 
 // However in some scenarios one might prefer other properties such as less memory usage or dynamic typing over performance.
 
 In the context of plugin systems, performance also refers to the speed at which software is executed.
-Here the most important software components are the host system, a plugin system and a plugin.
-In this case performance describes how quickly a host system can temporarily transfer execution to a plugin system, that then loads and invokes a plugin's entry point.
+The three relevant software components necessary to define performance of a plugin system technology are the host system, the plugin system and the plugins managed and called by the plugin system.
+For this work we define performance as the property that describes how quickly a host system can temporarily transfer execution to a plugin system, which then loads and invokes a plugin's function.
 
 While performance can be measured quantitatively through benchmarks, in practice this is quite hard for plugin systems.
-Plugin systems are often very heterogeneous, because they use different technologies depending on the exact use case.
+Plugin systems and their technologies often vary between host applications as they are by nature highly individual.
 To benchmark different plugin systems one would have to implement a variety of algorithms and scenarios for a variety of plugin systems.
 Then one could measure the time each plugin system and plugin takes to execute.
 
-Due to time-constraints and the broad spectrum of knowledge necessary, this work does not use quantitative benchmarks to measure performance.
-Instead performance will be rated through educated guesses based on benchmarks and comparisons already available for chosen technologies.
-This section presents a rough outline for the scores used, however each score has to be determined on a case-by-case basis.
+Due to time-constraints and the broad spectrum of knowledge about programming languages and host applications necessary, this work does not use quantitative benchmarks to measure performance.
+Instead performance is judged through educated guesses based on benchmarks and comparisons already available for the technologies chosen and built upon by plugin systems.
 
 / 0 -- Very slow: The transfer of execution to the plugin systems and invocation of a plugin is highly inefficient.
   Thus the plugin system is not viable for use within interactive software.
   Reasons for significant bottlenecks might include heavy serialization or expensive VM-based sandboxing.
-/ 1, -- Slow: Both the plugin system and plugins are very slow to run. Transferring execution between the host system and a plugin is inefficient. Thus this plugin system is also not viable for use in interactive software.
+/ 1, -- Slow: Both the plugin system and plugins run very slowly.
+  Transferring execution between the host system and a plugin is inefficient.
+  Therefore this plugin system is also not recommended for use in interactive software, unless these inefficiencies can be somewhat mitigated, e.g. by offloading to other threads.
 / 2, 3 -- Acceptable: The plugin system and plugins are not fast but their performance is acceptable for interactive software such as text editors.
+  They can negatively impact the user experience by causing stuttering or slow loading times, but there are workarounds to minimize the impact of these problems.
 / 4 -- Fast: Transferring execution to the plugin system and/or executing a plugin is fast, with only a small overhead, not noticeable by a user.
-/ 5 -- Optimal: Transferring execution and invoking a plugin appears instantaneous, and thus it does not have any measurable overhead.
-  All Plugins' code is executed as fast as if they were implemented within the host system natively.
+  While there is still a small overhead present, it is usually negligible in practice, except in scenarios with real-time requirements.
+/ 5 -- Optimal: Transferring execution and invoking a plugin is virtually instantaneous. There is no measurable overhead.
+  All plugin code executes as fast as if it were implemented natively within the host system.
 
-// Improvements
-// - Maybe differentiate between individual plugins and plugin systems?
-// - Overhead of context switches between plugin system and plugins might be important?
+The scoring outline presented here is intentionally not very specific, without any hard lines between all scores.
+It is meant to give only a rough guideline for evaluation, which then needs to be done very carefully on a case-by-case basis.
+For example, one could evaluate plugin systems based on whether plugins are compiled/interpreted or how large and thus slow plugins might be to load.
 
 === Plugin size
 Plugin size refers to the average size of a plugin for a specific plugin system technology.
-This property does not refer to the size of each individual plugin.
-Rather it is used to be able to compare different plugin system technologies and how compact and small written for them are.
+This property does not refer to the size of one specific plugin,
+but rather it is used to compare different plugin system technologies and how compact and small plugins are generally.
+The average plugin size may vary from technology to technology due to factors such as static vs. dynamic linking of libraries or the size of the specific language's standard library.
 
-The importance of plugin size depends on each specific use case and user requirements.
-For text editors a smaller plugin size might result in faster startup times and less time spent downloading or updating the plugin.
-Terminal-based text editors specifically try to maintain a small memory footprint, which can be affected by large plugins.
+The importance of plugin size depends on the specific use case and user requirements.
+For text editors specifically a smaller plugin size might result in faster startup times and less time spent downloading or updating the plugin.
+Terminal-based text editors specifically try to maintain a small memory footprint, which can be affected by large plugins #todo[Speculation as of now, needs source].
+
+Also note that this section only refers to the plugin size and not the size of an entire plugin system.
+While the plugin system's size is also very important for the memory impact of the host application, it is harder to measure.
+This is due to the fact that plugin systems are usually very tightly coupled with the host application.
+To check a plugin system's size, one would have to disable the plugin system of chosen host application, without breaking the host application itself.
+Due to the high complexity, the plugin system's size will not be taken into account in this work.
+
+The following scores will be used to evaluate a plugin's size.
+They are chosen specifically for plugin systems for text editors.
+
+/ 0 -- Very large(>500MB): Each plugin contains an entire runtime together with all libraries and dependencies necessary for each plugin.
+/ 1 -- Large(#sym.lt.eq~500MB): Plugins contain 
+/ 2 -- Moderate(#sym.lt~50MB), A lot of duplicated info between plugins: #td
+/ 3 -- Small(#sym.lt~5MB): #td
+/ 4 -- Minimal(#sym.lt~500KB): #td
+/ 5 -- Negligible(#sym.lt~5KB): Plugins contain the program code necessary for their functionality only.
+  The code is in a very compact form.
+  There is no replication of common information between multiple plugins such as statically-linked (standard) libraries.
 
 #td
 // #todo[Maybe look at sizes of plugin systems as well? e.g. native has no overhead at all vs. JS needs an entire runtime with jit compiler]
