@@ -15,7 +15,7 @@ In this section criteria for good plugin systems are defined.
 Each criterion will define a scale from 0 to 5, along with requirements for each score.
 This scale will be useful later to enable an objective evaluation and comparison of technologies and projects.
 
-=== Performance
+=== Performance <req_performance>
 A computer's performance usually refers to the speed it is able to execute software at.
 For interactive computer systems one generally wants every piece of code to run as fast as possible to minimize its time on the CPU.
 // However in some scenarios one might prefer other properties such as less memory usage or dynamic typing over performance.
@@ -45,7 +45,7 @@ Instead performance is judged through educated guesses based on benchmarks and c
 / 5 -- Optimal: Transferring execution and invoking a plugin is virtually instantaneous. There is no measurable overhead.
   All plugin code executes as fast as if it were implemented natively within the host system.
 
-The scoring outline presented here is intentionally not very specific, without any hard lines between all scores.
+The scoring outline presented here is intentionally not very specific, without any hard lines between the different scores.
 It is meant to give only a rough guideline for evaluation, which then needs to be done very carefully on a case-by-case basis.
 For example, one could evaluate plugin systems based on whether plugins are compiled/interpreted or how large and thus slow plugins might be to load.
 
@@ -68,52 +68,63 @@ Due to the high complexity, the plugin system's size will not be taken into acco
 The following scores will be used to evaluate a plugin's size.
 They are chosen specifically for plugin systems for text editors.
 
-/ 0 -- Very large(>500MB): Each plugin contains an entire runtime together with all libraries and dependencies necessary for each plugin.
-/ 1 -- Large(#sym.lt.eq~500MB): Plugins contain 
-/ 2 -- Moderate(#sym.lt~50MB), A lot of duplicated info between plugins: #td
-/ 3 -- Small(#sym.lt~5MB): #td
-/ 4 -- Minimal(#sym.lt~500KB): #td
-/ 5 -- Negligible(#sym.lt~5KB): Plugins contain the program code necessary for their functionality only.
-  The code is in a very compact form.
-  There is no replication of common information between multiple plugins such as statically-linked (standard) libraries.
+/ 5 -- Minimal(#sym.lt~5KB): Plugin sizes are as minimal as they can possibly be.
+  Plugins contain the minimal amount of program code necessary to achieve their desired functionality.
+  The plugin code format is also made to be very space-efficient, which could be implemented for example through compression and hacks on the byte/bit levels.
+/ 4 -- Negligible(#sym.lt~500KB): Plugin sizes are so small that they are negligible in practice.
+  There is no replication of similar information between multiple plugins such as statically-linked libraries.
+/ 3,2 -- Moderate(#sym.lt~50MB): Plugins are not very small, however their size is still quite manageable in the context of text editors.
+  Examples could be plugin system technologies, that require a large fully-self contained runtime to be shipped with every plugin.
+  Plugins might also have to contain all libraries and standard libraries that they depend on.
+/ 1 -- Large(#sym.lt.eq~500MB): Plugins are unusually large specifically in the context of text editors.
+  They are not as easy to manage and during runtime they might also have a non-negligible impact on the memory footprint of their host application.
+/ 0 -- Very large(#sym.gt 500MB): Plugins are very large.
+  This may be due to the fact that their internal program logic requires very costly operations such as the virtualization of an entire environment, that must be completely self-contained in the plugin code.
 
-#td
-// #todo[Maybe look at sizes of plugin systems as well? e.g. native has no overhead at all vs. JS needs an entire runtime with jit compiler]
-// - Guess based on existing benchmarks (no time to write custom benchmarks)
-// - memory footprint might impact performance
+// Memory footprint might also impact performance:
+// Note that the criterions plugin size and performance (see @req_performance) for plugin system technologies are differentiated here.
+// However in practice a technology, where plugin sizes are generally larger, might also be slower due to the fact that a larger amount of data has to be transferred.
 
 === Plugin isolation
 Often times plugins contain foreign code.
 This is especially true for text editors, where plugins are often downloaded from a central registry, also known as plugin/extension marketplaces.
-This means that plugins downloaded from such sources should be treated as foreign code.
+This means that plugins downloaded from such sources are usually not validated and thus should be treated as foreign code.
 Even though there might be checks in place for malicious contents, foreign code should not be trusted to not access its host environment unless otherwise allowed.
 
-- isolation is property how isolated plugin is from its host execution environment
-- the interface between plugin and host plays a big role: only if it can be abused in unexpected ways, isolation is violated
+For this work we define the property of plugin isolation to describe how isolated a plugin's environment is from its host environment.
+While there has to be some kind of interface between both environments to make plugins accessible and usable, this interface must not be considered when evaluating plugin isolation.
+Instead we define plugin isolation completely separated from the interface, meaning if an interface is unsafe by nature, plugin isolation is not automatically violated.
 
-
-Isolation is a property of plugins, that describes how isolated a plugin is from its outside execution environment.
 // Additional notes:
 // One could even go a step further and consider plugins as untrusted code and adopt a zero trust strategy.
 // A plugin system could employ a zero-trust strategy, where plugins are executed fully sandboxed and given permissions to certain interfaces only through the user.
 // Then the plugin system could also monitor and analyze plugins and their behavior and warn or disable them when suspicious behavior is detected.
 
-/ 0 -- No isolation, required elevated privileges: #td \
-  _Worst case: Elevated privilege access to current system._
-/ 1 -- No isolation: #todo[Limited privilege access to current system, inherits host privileges] \
-  _Worst case: Full access to the current user's system and peripherals._
-/ 2 -- In isolation with host application: #td \ // game engine plugin
-  _Worst case: Full access to host application._
-/ 3 -- Partially sandboxed: #todo[An attempt is made to restrict the plugin's access to the host system] \
-  _Worst case: Full access to host application._
-/ 4 -- Fully sandboxed, dynamic interface: #td \
-  _Worst case: Access to parts of the host application not meant to be exposed due to a bug in the interface._ // TODO: bypass, exploit?
+/ 0 -- No isolation, required elevated privileges: Plugins are not only not isolated from the host application, they also require certain elevated privileges, which the host application usually does not require by itself.
+  \ _Worst case: Elevated privilege access to current system._
+/ 1 -- No isolation: Plugins are not isolated from the host application.
+  They inherit the host application's privileges without any attempt of the host plugin system to restrict these permissions.
+  \ _Worst case: Plugins gain the same privileges as the host system, usually this means access to the current user's system and peripherals._
+/ 2, 3 -- Restricted isolation: Plugins are not isolated from the host application by design.
+  Normally the plugin would inherit the host application's privileges, however the host application makes an attempt to restrict plugins from accessing certain critical functionalities.
+  Some examples for restrictions on Linux systems could be allowing only a specific subset of syscalls through `seccomp(2)`#footnote(link("https://www.man7.org/linux/man-pages/man2/seccomp.2.html")) or using `namespaces(7)`#footnote(link("https://www.man7.org/linux/man-pages/man7/namespaces.7.html")) to isolate and limit resources.
+  However both of these examples do not use a sandboxing strategy for isolation.
+
+  Because these restrictions can come in a various shapes and forms each based on different technologies, during evaluation either 2 or 3 can be chosen as a score.
+  \ _Worst case: Plugins have similar privileges to that of the host application, except for those specifically disallowed. However this restriction might be able to be circumvented._ 
+/ 4 -- Fully sandboxed, dynamic interface:
+  Plugins generally run completely isolated.
+  However their interface is not statically defined, which can lead to vulnerabilities of the interface during runtime due to higher complexity and risk of bugs.
+  Imagine a scenario where a host application exposes only a single interface for passing serialized messages back and forth with a plugin.
+  Then the host application has to serialize and deserialize those messages during runtime.
+  For complex systems, where advanced concepts such as additional shared memory between the host and plugins are used, this interface can become susceptible to logic bugs due to the dynamic interface.
+  \ _Worst case: Access to parts of the host application not meant to be exposed due to a bug in the interface._ // TODO: call this bypass, exploit?
 / 5 -- Fully sandboxed, static interface: The plugin runs fully sandboxed.
       It has no way of interacting with the host system, except for statically checked interfaces.
       Here statically checked interfaces refers to interfaces, that can be proven safe during compilation (or alternatively development) of the plugin system.
       One way to achieve this might be an interface definition in a common interface definition language.
-      This restriction was chosen because it disallows plugin systems giving full access to parts of a host application without a proper interface definition. \
-  _Worst case: Indeterminable, a major bug in the sandboxing mechanism is required._
+      This restriction was chosen because it disallows plugin systems giving full access to parts of a host application without a proper interface definition.
+  \ _Worst case: Indeterminable, a major bug in the sandboxing mechanism is required._
 
 === Plugin portability <crit-plugin-portability>
 
@@ -124,8 +135,8 @@ In the context of plugin systems for text editors, portability can be interprete
 1. Every individual plugin is seen as a software component. This plugin is portable, if it can be loaded into two instances of the same text editor running on different platforms.
 2. The entire plugin system itself is seen as a modular software component of a text editor. It is portable if it can be integrated into different text editors and run across different platforms.
 
-This work considers only the first scenario, in which portability refers to each individual plugin.
-// TODO Why was the first scenario chosen?
+This work considers only the first scenario, in which portability refers to each individual plugin, because this scenario is less extensive and the portability of individual plugins is easier to measure.
+The following scores are used to measure plugin portability:
 
 / 0 -- Not portable: The plugin is not portable between different platforms.
   It is theoretically and practically impossible to run the plugin on different platforms.
@@ -140,23 +151,53 @@ This work considers only the first scenario, in which portability refers to each
   Advanced technologies such as fat binaries, which are binaries that encapsulate compiled machine code for multiple different architectures, might be necessary. 
 
 Note that the most extreme scores 0 and 5 are very unlikely for any imaginable plugin system.
-0 requires a plugin not to be portable at all, while 5 requires that a plugin is portable to different platforms and architectures which is very hard to implement on a technical level.
+0 requires a plugin not to be portable at all, while 5 requires that a plugin is portable to different platforms and architectures which is near impossible to implement on a technical level.
 
-=== Extensibility for new features/interfaces (relative)
-- Can the API be changed easily?
+// === Adaptability of the interface
 
-- Language interoperability for plugin development  (which/how many languages are supported)
-  - Advantages:
-    - More accessibility for developers without knowledge of a singular specific language.
-  - Scores: a domain-specific language (custom language), multiple programming languages (JS, Python), a compilation target (JVM), no restrictions (machine code)
-  - Some languages can be embedded reasonably well into others (e.g. JS in C)
+// Maintained software is never completely static.
+// Software receives updates for new features, fixes for bugs or refactorings for already existing features.
+// When software integrates a plugin system, the plugin system must provide the host software with extensible and easy to use interfaces to not harm the development process of given host software.
 
-#todo[define a scale for rating each criterion] \
-#todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
+// This criterion is used to rate how adaptable a plugin technology is regarding its interface between the host- and plugin environment.
+// It describes whether there is much work needed to extend interfaces with new features or change existing features.
+
+=== Plugin language interoperability
+
+Text editors and their plugin systems are highly individual software.
+Some users have personal preferences e.g. keybindings, macros or color schemes, while others may require tools such as language servers for semantic highlighting and navigation, or tools to compile and flash a piece of software onto an embedded device.
+
+A lot of times plugin systems are used to overcome this challenge of high configurability.
+Major text editors and IDEs such as Neovim, VSCode, Emacs, IntelliJ or Eclipse provide plugin systems, some even in-built plugins.
+The advantage of implementing features as plugins is the reduced code complexity and size of the host application.
+Also providing a plugin systems with a publicly documented interface allows every user and developer to implement their own plugins for their own needs.
+
+This property describes how interoperable plugins written in different languages are.
+In other words, the larger the set of languages is, in which a plugin can be written for a given plugin system technology, the better its plugin language interoperability is.
+The more languages are available, the less effort it requires for users to develop their own plugins without the need of learning a new (possibly domain-specific) programming language.
+
+One could argue, that supporting a variety of different languages can result in higher interface complexity and less adaptability to new changes.
+Even though the complexity and adaptability of interfaces is another important property, which deserves its own rating, it will not be covered in this work.
+
+/ 0 -- Domain-specific custom language: Only a domain-specific language can be used to write plugins in.
+  This language is specifically designed for given plugin system technology, which is why it is the least interoperable and might be the most unfamiliar and hardest for developers to learn and use.
+/ 1 -- One language: A single general purpose programming language is supported to write plugins in.
+  There might be some developers who are already familiar with the language.
+/ 2 -- Multiple languages: A set of multiple languages is supported to write plugins in.
+  The plugin system is able to abstract over multiple different plugin languages, so that the host application has only a single interface to communicate with plugins regardless of their specific language used.
+/ 3 -- Compilation target targeted by some languages: The plugin system supports a compilation target for plugins, that is targeted by multiple compilers for multiple programming languages.
+  For example the Java bytecode is a compilation target for the Java, Kotlin and Scala compilers.
+/ 4 -- Compilation target targeted by a variety of languages: The plugin system supports a compilation target for plugins, that is targeted by a variety of different languages.
+  This score differs from the previous score, that this score's compilation target is targeted by a considerably higher number of languages with more differences between them.
+  Differences between languages could include dynamic vs. static typing, weak vs. strong typing, interpretation vs. just-in-time compilation vs. ahead-of-time compilation.
+/ 5 -- Universal compilation target: A compilation target, a lot of software, if not all, gets compiled to.
+  For example all source code is eventually compiled to native ISA instructions specific to some hardware and platform.
+  Thus it is also theoretically possible to package source code such as Python or JavaScript source code and combine it with their specific runtimes inside a native plugin.
 
 == Technology comparison of existing projects
 #todo[What is this section about?] \
-#todo[Why is a market analysis important for the work of this paper?]
+#todo[Why is a technology comparison important for the work of this paper?]
+#todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
 
 === Overview of chosen projects
 #todo[How and why are these projects chosen?]
@@ -171,7 +212,7 @@ Note that the most extreme scores 0 and 5 are very unlikely for any imaginable p
   // - Bietet unterschiedliche SDKs: WASM, JS, SimConnect SDK (?), SimVars (?)
 - Zellij (terminal multiplexer, has a Wasm plugin system)
   - Wasm, but official interface only for Rust plugins?
-- DLL-based plugins (e.g. FL studio)
+- DLL/SO-based plugins (e.g. VST3 in real-time audio processing & DAWs)
   - Native code
 // - Extism (generic Wasm plugin system library usable in many different languages)
   // ==== Extism
@@ -215,5 +256,9 @@ Similar commonly known terminal multiplexers are Tmux, xterm or the Windows Term
 
 === Summary <technology-comparison-matrix>
 #todo[Present findings in a table]
-#todo[What could have been done better?]
+#todo[
+  What could have been done better?
+
+  - Complexity and adaptability of the interface
+]
 #todo[Which other technologies and criteria might also be interesting? Which ones were left out?]
