@@ -50,19 +50,20 @@ It is meant to give only a rough guideline for evaluation, which then needs to b
 For example, one could evaluate plugin systems based on whether plugins are compiled/interpreted or how large and thus slow plugins might be to load.
 
 === Plugin size
-Plugin size refers to the average size of a plugin for a specific plugin system technology.
-This property does not refer to the size of one specific plugin,
-but rather it is used to compare different plugin system technologies and how compact and small plugins are generally.
+The plugin size property refers to the average size of a plugin for a specific plugin system technology.
+This property does not refer to the size of one specific plugin, but rather it is used to compare different plugin system technologies and how compact and small plugins for them are generally.
 The average plugin size may vary from technology to technology due to factors such as static vs. dynamic linking of libraries or the size of the specific language's standard library.
 
 The importance of plugin size depends on the specific use case and user requirements.
 For text editors specifically a smaller plugin size might result in faster startup times and less time spent downloading or updating the plugin.
-Terminal-based text editors specifically try to maintain a small memory footprint, which can be affected by large plugins #todo[Speculation as of now, needs source].
+// TODO: Maybe mention, that memory footprint might be more relevant for terminal-based text editors, as they have a smaller memory footprint by nature anyway
+However reducing the overall impact a program has on the system's resource usage is generally preferred.
 
-Also note that this section only refers to the plugin size and not the size of an entire plugin system.
+Also note that this section only refers to the plugin size and not the size of the entire plugin system.
 While the plugin system's size is also very important for the memory impact of the host application, it is harder to measure.
 This is due to the fact that plugin systems are usually very tightly coupled with the host application.
-To check a plugin system's size, one would have to disable the plugin system of chosen host application, without breaking the host application itself.
+To measure a plugin system's size, one would have to disable the plugin system of some host application, without breaking the host application itself.
+Only then would it be possible to compare system resource usages between the host application with and without a plugin system.
 Due to the high complexity, the plugin system's size will not be taken into account in this work.
 
 The following scores will be used to evaluate a plugin's size.
@@ -194,12 +195,60 @@ Even though the complexity and adaptability of interfaces is another important p
   For example all source code is eventually compiled to native ISA instructions specific to some hardware and platform.
   Thus it is also theoretically possible to package source code such as Python or JavaScript source code and combine it with their specific runtimes inside a native plugin.
 
-== Technology comparison of existing projects
-#todo[What is this section about?] \
-#todo[Why is a technology comparison important for the work of this paper?]
-#todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
+== Technology comparison of existing plugin system technologies
+This section chooses appropriate plugin system technologies and software projects implementing a plugin system.
+Then the previously defined criteria will be evaluated for chosen technologies and projects.
 
-=== Overview of chosen projects
+// #todo[What is this section about?] \
+// #todo[Why is a technology comparison important for the work of this paper?]
+// #todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
+
+=== Overview of chosen technologies
+An important step during a technology comparison is the correct selection of technologies.
+When choosing technologies, one has to be careful to not introduce any bias towards certain technologies.
+This work mainly focuses on plugin systems for text editors, so text editor plugin systems will be the majority of technologies.
+However it could also be interesting to compare text editor plugin system technologies to plugin system technologies for other applications.
+
+To make an appropriate decision for text editor projects, the popularity of different text editors will be as a metric for selection.
+As a source for the most popular text editors and integrated development environments (IDEs), the StackOverflow Developer Survey 2024 will be used@stackoverflow-survey.
+The platform StackOverflow is known as a forum for developers helping each other by asking questions and exchanging information regarding various technical topics such as programming languages, certain APIs, technologies, etc.
+Annually it organizes a survey open to all developers regardless of their background to gather statistics about used programming languages, salaries of developers, used development tools, etc.
+In 2024 a total amount of \~65.000 developers took part in this survey, which is why it can be considered fairly representative.
+The four most popular text editors and integrated development environments (IDEs) according to the survey are the following.
+They are described and also considered for evaluation in this work:
+/ 1. Visual Studio Code: Visual Studio Code (abbreviated as VS Code) is a text editor designed for "coding".
+  It provides built-in basic features such as a terminal, version control or themes #footnote(link("https://code.visualstudio.com/")).
+  However it does not provide built-in integration for specific programming languages or technologies.
+  In VS Code a lot of features are instead packaged as plugins (here: extensions) written in JavaScript which can be installed from a central marketplace.
+  VS Code itself is also written in JavaScript.
+  It is chosen for evaluation in this work, because it has successfully implemented a plugin system able to integrate a broad spectrum of plugins ranging from simple plugins for coloring brackets to highly complex plugins such as programming language integrations or plugins enabling interactive jupyter notebooks.
+/ 2. Visual Studio (not evaluated here): Visual Studio is an IDE, that is describes itself as "the most comprehensive IDE for .NET and C++ developers on Windows"#footnote("https://visualstudio.microsoft.com/").
+  It is not to be confused with Visual Studio Code, as Visual Studio provides more built-in features for developing, debugging, testing and collaboration between developers#footnote("https://visualstudio.microsoft.com/vs/features/").
+  It also allows users to install plugins (here: extensions) written in C\# from a central marketplace.
+  However due to personal unfamiliarity with this IDE and the C\# programming language together with the .NET ecosystem, this IDE will not be evaluated in this work.
+/ 3. IntellIJ IDEA(-family): Intellij IDEA is an editor Jetbrains made by Jetbrains for development of JVM-based languages such as Java, Kotlin#footnote(link("https://www.jetbrains.com/idea/")).
+  It's free "Community Edition" is open-sourced, however Jetbrains has also developed proprietary alternative IDEs that build upon the basic IntelliJ Framework for other specific technologies such as CLion for C/C++ or WebStorm for web development.
+  There are also third-party IDEs built upon the IntelliJ Community Edition such as Android Studio specifically for development of Android apps.
+  - Similarity to Eclipse
+/ 4. Notepad++: #td
+
+
+
+- representative selection of real applications important
+  - a couple technologies for text editors
+    - popularity based on StackOverflow Developer Survey 2024 https://survey.stackoverflow.co/2024/technology
+    - Vscode(JS)
+    - IntellJ(Java) (based on the same technology as Eclipse, which is less popular)
+    - Notepad++: Native plugins
+  - Other areas
+    - VST3 for real time audio processing used in music production for example
+  - a Wasm plugin system
+    //  - Zed
+     - ZelliJ
+
+Some plugin systems using Wasm even exist.
+will also be evaluated as a baseline  for later comparison.
+
 #todo[How and why are these projects chosen?]
 - VSCode (versatile text editor)
   - JavaScript based

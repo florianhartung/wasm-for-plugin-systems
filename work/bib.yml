@@ -85,6 +85,13 @@ potential-of-wasm-for-embedded:
 
   # url: https://arxiv.org/html/2405.09213v1
 
+stackoverflow-survey:
+  type: web
+  title: StackOverflow Developer Survey 2024
+  url:
+    value: https://survey.stackoverflow.co/2024/
+    date: 2025-04-08
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications
