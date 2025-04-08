@@ -185,12 +185,12 @@ Even though the complexity and adaptability of interfaces is another important p
   There might be some developers who are already familiar with the language.
 / 2 -- Multiple languages: A set of multiple languages is supported to write plugins in.
   The plugin system is able to abstract over multiple different plugin languages, so that the host application has only a single interface to communicate with plugins regardless of their specific language used.
-/ 3 -- Compilation target targeted by some languages: The plugin system supports a compilation target for plugins, that is targeted by multiple compilers for multiple programming languages.
+/ 3 -- Build target for some languages: The plugin system supports a compilation target for plugins, that is targeted by multiple compilers for multiple programming languages.
   For example the Java bytecode is a compilation target for the Java, Kotlin and Scala compilers.
-/ 4 -- Compilation target targeted by a variety of languages: The plugin system supports a compilation target for plugins, that is targeted by a variety of different languages.
+/ 4 -- Build target for a variety of languages: The plugin system supports a compilation target for plugins, that is targeted by a variety of different languages.
   This score differs from the previous score, that this score's compilation target is targeted by a considerably higher number of languages with more differences between them.
   Differences between languages could include dynamic vs. static typing, weak vs. strong typing, interpretation vs. just-in-time compilation vs. ahead-of-time compilation.
-/ 5 -- Universal compilation target: A compilation target, a lot of software, if not all, gets compiled to.
+/ 5 -- Universal build target: The plugin system supports a compilation target to which most software can be compiled directly, or which can be embedded indirectly by a compiled runtime.
   For example all source code is eventually compiled to native ISA instructions specific to some hardware and platform.
   Thus it is also theoretically possible to package source code such as Python or JavaScript source code and combine it with their specific runtimes inside a native plugin.
 
