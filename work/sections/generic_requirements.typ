@@ -1,6 +1,6 @@
 #import "../wip.typ": todo, td
 
-= Criteria for plugin systems
+= Criteria for good plugin systems
 // TODO Normally a technology comparison defined weights for each score
 To evaluate whether Wasm is a viable technology for versatile plugin systems, one must first understand what criteria make a plugin system good and versatile.
 This section will perform a technology comparison between several technologies and existing software projects.
@@ -195,7 +195,7 @@ Even though the complexity and adaptability of interfaces is another important p
   For example all source code is eventually compiled to native ISA instructions specific to some hardware and platform.
   Thus it is also theoretically possible to package source code such as Python or JavaScript source code and combine it with their specific runtimes inside a native plugin.
 
-== Technology comparison of existing plugin system technologies
+== A technology comparison between existing plugin systems
 This section chooses appropriate plugin system technologies and software projects implementing a plugin system.
 Then the previously defined criteria will be evaluated for chosen technologies and projects.
 
@@ -203,7 +203,7 @@ Then the previously defined criteria will be evaluated for chosen technologies a
 // #todo[Why is a technology comparison important for the work of this paper?]
 // #todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
 
-=== Overview of chosen technologies
+=== Choice of technologies & projects
 An important step during a technology comparison is the correct selection of technologies.
 When choosing technologies, one has to be careful to not introduce any bias towards certain technologies.
 This work mainly focuses on plugin systems for text editors, so text editor plugin systems will be the majority of technologies.
@@ -238,46 +238,43 @@ They are described and also considered for evaluation in this work:
   IntelliJ provides a plugin system where plugins can be written in Java or Kotlin, that can be used from all IDEs based on the IntelliJ framework.
   Thus the IntelliJ IDEA is not listed as a single IDE here, but rather a family of various IDEs all based on the same framework using the same plugin system technology.
 
-/ 4. Notepad++: Notepad++ is an open-source text editor focused around minimalism and efficiency#footnote(link("https://notepad-plus-plus.org/")).
-  The editor itself is written in C++ with support for the Windows operating system exclusively.
+/ 4. Notepad++: Notepad++ is an open-source text editor focused around minimalism and efficient software#footnote(link("https://notepad-plus-plus.org/")).
+  The editor itself is written in C++ with exclusive support for the Windows operating system.
   It provides a plugin system for loading plugins in the form of dynamically linked libraries (DLLs)#footnote(link("https://npp-user-manual.org/docs/plugins/")).
 
-Besides these text editors and IDEs, this work also evaluates plugin system technologies for one other application types.
-A lot of projects were considered, however due to their similarity to already chosen technologies or due to missing documentation they were disregarded:
+Besides these text editors and IDEs, this work also evaluates plugin system technologies for other application types.
+Multiple projects and technologies were considered, however due to their similarity to already chosen technologies, missing documentation and time-constraints for this work most of them were disregarded:
 
-/ VST3 for music production: During music production in a digital audio workstation, producers use plugins to simulate a variety of different audio effects or even entire instruments.
-  One notable standard used for for these kinds of plugins is the VST3 standard@vst3. #td
-  It specifies the interface between the digital audio workstation as the host application and a plugin which applies some effects or produces an audio signal.
-  VST3 also specifies #td
-  - What technology does it use? #td
+/ VST3 for music production: During music production in a digital audio workstation, producers use plugins to simulate a variety of different audio effects, entire instruments or traditional analog devices such as compressors.
+  One notable standard used for for these kinds of plugins is the open and free Virtual Studio Technology (VST) 3 standard developed by Steinberg@vst3.
+  It specifies a standard for technology on how to implement a plugin system technology between a digital audio workstation (DAW) as the host application and a plugin which applies some effects or produces an audio signal.
+  For example a DAW could sends an audio stream to some plugin, then the plugin could apply an effect such as a simple equalizer on the audio signal and return the signal back to the DAW.
 
-/ Microsoft Flight Simulator (not evaluated here): #td
-  - Microsoft flight simulator (has a Wasm plugin system) [lacks documentation, is not free/open-source]
+  On the technical level VST3 plugins are DLLs on Windows, Mach-O Bundles on Mac and packages on Linux. The term package on Linux can have different meanings depending on the Linux distribution and package manager used.
+
+  The company behind the VST3 standard also provides a software development kit (SDK) for the C++ programming language and an API for the C programming language.
+/ Microsoft Flight Simulator (not evaluated here): Microsoft Flight Simulator is a #td
+  - not evaluated because: no source code, no testing because it is paid software, lacks documentation
+  - has a Wasm plugin system
   - Bietet unterschiedliche SDKs: WASM, JS, SimConnect SDK (?), SimVars (?)
+  - https://docs.flightsimulator.com/html/Programming_Tools/WASM/WebAssembly.htm
+/ Eclipse(not evaluated here): Eclipse is an IDE used during software development for a variety of programming languages.
+  It features a plugin system where plugins are written in Java and a central marketplace for installing plugins.
+  However Eclipse is not chosen for evaluation, because its plugin system is too similar to IntelliJ's.
+  Also IntelliJ is more popular@stackoverflow-survey and thus required to support a greater variety of plugins.
 
-/ #td (not evaluated here): #td
-
-==== VSCode
+=== Evaluations of technologies & projects
+==== Visual Studio Code
 #td
 
-==== IntelliJ-based IDEs
+==== IntelliJ-family
 #td
 
-
-==== Zellij
-Zellij is a terminal workspace (similar to a terminal multiplexer).
-It is used to manage and organize many different terminal instances inside one terminal emulator process.
-Similar commonly known terminal multiplexers are Tmux, xterm or the Windows Terminal.
-
-- plugin system to allow users to add new features
-- plugin system is not very mature https://zellij.dev/documentation/plugin-system-status
-- Wasm for plugins, however only Rust is supported
-- Permission system
+==== Notepad++
 #td
 
-// - WASM mit WASI Unterstützung 
-// - API unabhängig von der Sprache mit Protobuf (Message-basiertes System, https://protobuf.dev/)
-// - Permission System gruppiert Events & Commands zusammen
+==== VST3
+#td
 
 === Summary <technology-comparison-matrix>
 #todo[Present findings in a table]

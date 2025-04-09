@@ -62,6 +62,19 @@ A plugin written in JavaScript itself will be able to easily parse the JSON stri
 / Zellij: terminal multiplexer, has a Wasm plugin system.
   - Wasm, but official interface only for Rust plugins?
 
+  Zellij is a terminal workspace (similar to a terminal multiplexer).
+  It is used to manage and organize many different terminal instances inside one terminal emulator process.
+  Similar commonly known terminal multiplexers are Tmux, xterm or the Windows Terminal.
+
+  - plugin system to allow users to add new features
+  - plugin system is not very mature https://zellij.dev/documentation/plugin-system-status
+  - Wasm for plugins, however only Rust is supported
+  - Permission system
+
+// - WASM mit WASI Unterstützung 
+// - API unabhängig von der Sprache mit Protobuf (Message-basiertes System, https://protobuf.dev/)
+// - Permission System gruppiert Events & Commands zusammen
+
 / Extism: generic Wasm plugin system library usable in many different languages
   - Extism is a cross-language framework for embedding WebAssembly code into a project.
   - It is originally written in Rust and provides bindings (Host SDKs) and shims (Plugin Development Kits: PDKs) for many different languages.
