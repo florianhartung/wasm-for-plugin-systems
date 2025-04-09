@@ -1,6 +1,6 @@
 #import "../wip.typ": todo, td
 
-= WebAssembly for plugin systems (20 pages)
+= WebAssembly for plugin systems
 #todo[Present basic idea of running Wasm code for each plugin inside a Wasm runtime]
 
 == Overview of basic plugin system architecture
@@ -9,48 +9,67 @@
 
 
 == Evaluation of interface-specific requirements
-It is not possible to evaluate all requirements for WebAssembly.
-WebAssembly as a technology is often too unrestrictive and thus the decision of whether a requirement is fulfilled often comes down to the host- and plugin-language and whether a common interface definition between them exists.
+It is not possible to evaluate Wasm as a technology, because it only provides fundamental technology for executing WebAssembly program code.
+In practice WebAssembly is often combined with other technologies that build upon Wasm's basic constructs and allow for more complex systems such as type systems or interface definitions.
+
+WebAssembly as a technology is often not restrictive enough and thus the decision of whether a requirement is fulfilled often comes down to the host- and plugin-language and whether a common interface definition between them exists.
 
 To illustrate this point, consider a scenario in which a host system is written in JavaScript.
 When this host system wants to call a Wasm function it serializes the arguments, which might consist of complex JavaScript types, to JSON strings.
 Then it passes these JSON strings to the Wasm plugin.
 A plugin written in JavaScript itself will be able to easily parse the JSON string given to it, however a plugin written in C first has to get a system in place to parse and convert JavaScript types to equivalent C types.
 
-#todo[Wasm interfacing is still an unsolved problem. There are many different solutions, of which some will be evalued separatly here]
+#todo[Wasm interfacing is still an unsolved problem. There are many different solutions, of which some will be evaluated separately here]
 
 
-#[
-  #set heading(outlined: false)
 
-  === WebAssembly without a standardized interface
-  #td
+=== Without a standardized interface
+#td
 
-  // WASM + Custom interface definition + Custom memory layout for complex types (e.g. string = null-terminated pointer vs. string = pointer + length)
-  // Microsoft flight simulator does this I think? It also only supports C++ as a plugin language
+// abstractions over very trivial wasm type system have to be made
+// WASM + Custom interface definition + Custom memory layout for complex types (e.g. string = null-terminated pointer vs. string = pointer + length)
+// Microsoft flight simulator does this I think? It also only supports C++ as a plugin language
 
-  === WebAssembly + WebAssembly System Interface
-  #td
+=== WebAssembly Component Model
+#td
 
-  // WASM + WASI allows some std libraries to work (rust std, C++ stl)
+// WASM + WAT for common interface definition + automatic binding generation
+//   Zellij does this without binding generation
 
-  === WebAssembly + WebAssembly Component Model
-  #td
+=== WebAssembly Component Model + WebAssembly System Interface (WASI)
+#td
+// WASM + WASI allows some std libraries to work (rust std, C++ stl)
 
-  // WASM + WAT for common interface definition + automatic binding generation
-  //   Zellij does this without binding generation
+// WASM + WASI + WAT: there are predefined WAT files for WASI interfaces
 
-  === WebAssembly + WebAssembly System Interface + WebAssembly Component Model
-  #td
 
-  // WASM + WASI + WAT: there are predefined WAT files for WASI interfaces
+=== Custom serialization format (JSON, XML, Protobuf)
+#td
 
-  === WebAssembly + custom serialization format (JSON, XML, Protobuf)
-  #td
+// WASM + serialization like Protobuf: Every communication goes through one exported Wasm function and one imported host function
 
-  // WASM + serialization like Protobuf: Every communication goes through one exported Wasm function and one imported host function
+== Plugin systems already using WebAssembly today
+// Present some projects that have implemented Wasm plugin systems and also present their development processes and choices made
 
-]
+/ Zed: text editor with Wasm plugin system, no windows support
+  - Wasm, but official interface only for Rust plugins?
+  - WASM mit kompletter WIT Schnittstellendefinition (Generisches Typ/Funktions-basiertes System)pro Version
+  - Fokus auf Isolation von WASM Code
+  - shim library nur für Rust vorhanden: zed_extension_api
+  #link("https://zed.dev/docs/extensions/developing-extensions")
+  #link("https://github.com/zed-industries/zed/blob/94faf9dd56c494d369513e885fe1e08a95256bd3/crates/extension_api/wit/since_v0.2.0/http-client.wit")
+
+/ Zellij: terminal multiplexer, has a Wasm plugin system.
+  - Wasm, but official interface only for Rust plugins?
+
+/ Extism: generic Wasm plugin system library usable in many different languages
+  - Extism is a cross-language framework for embedding WebAssembly code into a project.
+  - It is originally written in Rust and provides bindings (Host SDKs) and shims (Plugin Development Kits: PDKs) for many different languages.
+  - Docs: #link("https://extism.org/docs/overview")
+  - Github: #link("https://github.com/extism/extism")
+
+/ go-plugin: #td
+
 
 == Summarized evaluation for WebAssembly
-#todo[Show all WebAssembly configuration in a table with all requirements as columns]
+#todo[Show all WebAssembly configuration in a matrix with all criteria as columns]

@@ -1,6 +1,6 @@
 #import "../wip.typ": todo, td
 
-= Criteria for plugin systems (20 pages)
+= Criteria for plugin systems
 // TODO Normally a technology comparison defined weights for each score
 To evaluate whether Wasm is a viable technology for versatile plugin systems, one must first understand what criteria make a plugin system good and versatile.
 This section will perform a technology comparison between several technologies and existing software projects.
@@ -222,64 +222,40 @@ They are described and also considered for evaluation in this work:
   In VS Code a lot of features are instead packaged as plugins (here: extensions) written in JavaScript which can be installed from a central marketplace.
   VS Code itself is also written in JavaScript.
   It is chosen for evaluation in this work, because it has successfully implemented a plugin system able to integrate a broad spectrum of plugins ranging from simple plugins for coloring brackets to highly complex plugins such as programming language integrations or plugins enabling interactive jupyter notebooks.
+
 / 2. Visual Studio (not evaluated here): Visual Studio is an IDE, that is describes itself as "the most comprehensive IDE for .NET and C++ developers on Windows"#footnote("https://visualstudio.microsoft.com/").
   It is not to be confused with Visual Studio Code, as Visual Studio provides more built-in features for developing, debugging, testing and collaboration between developers#footnote("https://visualstudio.microsoft.com/vs/features/").
   It also allows users to install plugins (here: extensions) written in C\# from a central marketplace.
   However due to personal unfamiliarity with this IDE and the C\# programming language together with the .NET ecosystem, this IDE will not be evaluated in this work.
-/ 3. IntellIJ IDEA(-family): Intellij IDEA is an editor Jetbrains made by Jetbrains for development of JVM-based languages such as Java, Kotlin#footnote(link("https://www.jetbrains.com/idea/")).
-  It's free "Community Edition" is open-sourced, however Jetbrains has also developed proprietary alternative IDEs that build upon the basic IntelliJ Framework for other specific technologies such as CLion for C/C++ or WebStorm for web development.
-  There are also third-party IDEs built upon the IntelliJ Community Edition such as Android Studio specifically for development of Android apps.
-  - Similarity to Eclipse
-/ 4. Notepad++: #td
 
+/ 3. IntelliJ-family: Intellij IDEA is an editor made by Jetbrains for development of JVM-based languages such as Java or Kotlin#footnote(link("https://www.jetbrains.com/idea/")).
+  According to the StackOverflow developer survey, it is ranked as the third-most popular IDE.
 
+  IntelliJ's so called "Community Edition" is freely available and open-source, however Jetbrains also develops proprietary alternatives for other use cases.
+  In fact most of these alternatives such as CLion for C/C++ development or WebStorm for web development are also based on the IntelliJ framework. 
+  There are also third-party IDEs built upon the IntelliJ IDEA such as Android Studio for development of Android apps.
 
-- representative selection of real applications important
-  - a couple technologies for text editors
-    - popularity based on StackOverflow Developer Survey 2024 https://survey.stackoverflow.co/2024/technology
-    - Vscode(JS)
-    - IntellJ(Java) (based on the same technology as Eclipse, which is less popular)
-    - Notepad++: Native plugins
-  - Other areas
-    - VST3 for real time audio processing used in music production for example
-  - a Wasm plugin system
-    //  - Zed
-     - ZelliJ
+  IntelliJ provides a plugin system where plugins can be written in Java or Kotlin, that can be used from all IDEs based on the IntelliJ framework.
+  Thus the IntelliJ IDEA is not listed as a single IDE here, but rather a family of various IDEs all based on the same framework using the same plugin system technology.
 
-Some plugin systems using Wasm even exist.
-will also be evaluated as a baseline  for later comparison.
+/ 4. Notepad++: Notepad++ is an open-source text editor focused around minimalism and efficiency#footnote(link("https://notepad-plus-plus.org/")).
+  The editor itself is written in C++ with support for the Windows operating system exclusively.
+  It provides a plugin system for loading plugins in the form of dynamically linked libraries (DLLs)#footnote(link("https://npp-user-manual.org/docs/plugins/")).
 
-#todo[How and why are these projects chosen?]
-- VSCode (versatile text editor)
-  - JavaScript based
-- IntelliJ-family (IDE)
-  - Java based
-- Zed (text editor with Wasm plugin system, no windows support)
-  - Wasm, but official interface only for Rust plugins?
-// - Eclipse (IDE) [very similar to IntelliJ-based editors, less popular than IntellIJ nowadays]
-// - Microsoft flight simulator (has a Wasm plugin system) [lacks documentation, is not free/open-source]
-  // - Bietet unterschiedliche SDKs: WASM, JS, SimConnect SDK (?), SimVars (?)
-- Zellij (terminal multiplexer, has a Wasm plugin system)
-  - Wasm, but official interface only for Rust plugins?
-- DLL/SO-based plugins (e.g. VST3 in real-time audio processing & DAWs)
-  - Native code
-// - Extism (generic Wasm plugin system library usable in many different languages)
-  // ==== Extism
-  // Extism is a cross-language framework for embedding WebAssembly code into a project.
-  // It is originally written in Rust and provides bindings (Host SDKs) and shims (Plugin Development Kits: PDKs) for many different languages.
-  // #td
+Besides these text editors and IDEs, this work also evaluates plugin system technologies for one other application types.
+A lot of projects were considered, however due to their similarity to already chosen technologies or due to missing documentation they were disregarded:
 
-// Docs: https://extism.org/docs/overview
-// Github: https://github.com/extism/extism
+/ VST3 for music production: During music production in a digital audio workstation, producers use plugins to simulate a variety of different audio effects or even entire instruments.
+  One notable standard used for for these kinds of plugins is the VST3 standard@vst3. #td
+  It specifies the interface between the digital audio workstation as the host application and a plugin which applies some effects or produces an audio signal.
+  VST3 also specifies #td
+  - What technology does it use? #td
 
-==== Zed
-#td
+/ Microsoft Flight Simulator (not evaluated here): #td
+  - Microsoft flight simulator (has a Wasm plugin system) [lacks documentation, is not free/open-source]
+  - Bietet unterschiedliche SDKs: WASM, JS, SimConnect SDK (?), SimVars (?)
 
-// - WASM mit kompletter WIT Schnittstellendefinition (Generisches Typ/Funktions-basiertes System)pro Version
-// - Fokus auf Isolation von WASM Code
-// - shim library nur für Rust vorhanden: zed_extension_api
-// https://zed.dev/docs/extensions/developing-extensions
-// https://github.com/zed-industries/zed/blob/94faf9dd56c494d369513e885fe1e08a95256bd3/crates/extension_api/wit/since_v0.2.0/http-client.wit
+/ #td (not evaluated here): #td
 
 ==== VSCode
 #td

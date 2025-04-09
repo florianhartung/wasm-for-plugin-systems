@@ -1,6 +1,6 @@
 #import "../wip.typ": *
 
-= Introduction (4 pages)
+= Introduction
 // Wasm in the web
 // On the web Wasm is used for a lot of different reasons, such as running native applications in a web context
 // #footnote[The application development framework Qt allows C/C++ applications to be compiled to Wasm: #link("https://doc.qt.io/qt-6/wasm.html")]

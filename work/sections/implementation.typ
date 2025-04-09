@@ -8,7 +8,7 @@
 // - However this work is not about any technology in particular, and instead it will focus more on WebAssembly, which may be used from pretty much any language where a runtime exists.
 // - Why does Helix use Rust?
 
-= Proof of concept: Implementing a WebAssembly plugin system for a text editor (10 pages)
+= Proof of concept: Implementing a WebAssembly plugin system for a text editor
 #todo[Provide context of helix text editor]
 
 == Requirements

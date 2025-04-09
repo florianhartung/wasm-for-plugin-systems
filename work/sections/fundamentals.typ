@@ -1,6 +1,6 @@
 #import "../wip.typ": todo, td
 
-= Fundamentals (15 pages)
+= Fundamentals
 This section introduces theoretical and technical fundamentals used in this work.
 First it covers the definition of an instruction set architecture.
 Then it gives an overview over WebAssembly, its features, challenges, limitations and extensions.

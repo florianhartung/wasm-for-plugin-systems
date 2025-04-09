@@ -92,6 +92,13 @@ stackoverflow-survey:
     value: https://survey.stackoverflow.co/2024/
     date: 2025-04-08
 
+vst3:
+  type: web
+  title: VST 3 Developer Portal
+  url:
+    value: https://steinbergmedia.github.io/vst3_dev_portal
+    date: 2025-04-09
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications
