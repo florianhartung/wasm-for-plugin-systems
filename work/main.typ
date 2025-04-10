@@ -1,10 +1,11 @@
 #import "dhbw_template/lib.typ": dhbw_template
+#import "util.typ": setup as setup_utils
 
 #let abstract_en = lorem(200)
 
 #let abstract_de = lorem(200)
 
-#show:  dhbw_template.with(
+#show: dhbw_template.with(
   title: [Exploring WebAssembly for versatile plugin systems through the example of a text editor],
   author: "Hartung, Florian",
   course: "TINF22IT1",
@@ -16,6 +17,8 @@
   abstract: abstract_en,
   abstract_de: abstract_de,
 )
+
+#show: setup_utils
 
 #include("sections/introduction.typ")
 #include("sections/fundamentals.typ")

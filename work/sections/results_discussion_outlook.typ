@@ -1,4 +1,5 @@
 = Results & Discussion (2 pages)
+- some of wasms strenghts were not represented during the technology comparison. namely native-like safe interfacing
 
 = Outlook
 // Vorwärts oder Rückwärtsgerichtet

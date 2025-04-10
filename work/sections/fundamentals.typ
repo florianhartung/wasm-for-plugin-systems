@@ -1,4 +1,5 @@
 #import "../wip.typ": todo, td
+#import "../util.typ": flex-caption
 
 = Fundamentals
 This section introduces theoretical and technical fundamentals used in this work.
@@ -47,7 +48,7 @@ We call this virtualized environment the *host environment* (used by the specifi
         [Microarchitecture level],
         [Digital logic level],
     ),
-    caption: [#todo[This figure still needs some improvements]. A multilevel computer system running Wasm code. Based on Figure 1-2 in @tanenbaum-structured],
+    caption: flex-caption([#todo[This figure still needs some improvements]. A multilevel computer system running Wasm code. Based on Figure 1-2 in @tanenbaum-structured], [A multilevel computer system running WebAssembly code]),
     kind: image,
 ) <multi-level-wasm>
 
@@ -83,11 +84,11 @@ However most compilers are still being actively worked on and improved over time
 === Execution model and lifecycle
 #figure(
     image("../images/wasm_execution.svg"),
-    caption: [
+    caption: flex-caption([
         Flowchart for the creation and execution of a Wasm module from a higher-level language
         #todo[This figure is still too compilated]
         // Show 2 variants?: Wasm Runtime as CLI or library
-    ]
+    ], [Flowchart of the lifecycle of a WebAssembly module])
 ) <fig:wasm-execution-model>
 
 @fig:wasm-execution-model shows the different stages a Wasm module goes through in its lifecycle.
@@ -184,7 +185,7 @@ Wasm is designed to be able to be portable for a lot of different hardwares and 
 
 #todo[
     - minimal set of opcodes (172), that exist on all architectures(#todo[insert screenshot of opcode table] (+ proposals for more additional instructions like SIMD, atomics, etc.)
-    #figure(todo[opcode table], caption: [All WebAssembly opcodes. Opcodes for proposals are encoded by specific marker bytes, which indicate that the following opcodes are to be interpreted as different instructions.])
+    #figure(todo[opcode table], caption: flex-caption([All WebAssembly opcodes. Opcodes for proposals are encoded by specific marker bytes, which indicate that the following opcodes are to be interpreted as different instructions.], [An overview over all WebAssembly opcodes]))
 
     Independence of hardware:
     - Desktop architectures

@@ -1,4 +1,5 @@
 #import "../wip.typ": todo, td
+#import "../util.typ": flex-caption
 
 = Criteria for good plugin systems
 // TODO Normally a technology comparison defined weights for each score
@@ -253,11 +254,14 @@ Multiple projects and technologies were considered, however due to their similar
   On the technical level VST3 plugins are DLLs on Windows, Mach-O Bundles on Mac and packages on Linux. The term package on Linux can have different meanings depending on the Linux distribution and package manager used.
 
   The company behind the VST3 standard also provides a software development kit (SDK) for the C++ programming language and an API for the C programming language.
-/ Microsoft Flight Simulator (not evaluated here): Microsoft Flight Simulator is a #td
-  - not evaluated because: no source code, no testing because it is paid software, lacks documentation
-  - has a Wasm plugin system
-  - Bietet unterschiedliche SDKs: WASM, JS, SimConnect SDK (?), SimVars (?)
-  - https://docs.flightsimulator.com/html/Programming_Tools/WASM/WebAssembly.htm
+/ Microsoft Flight Simulator (not evaluated here): Microsoft Flight Simulator is a simulator for aircraft with focus on ultra-realism#footnote(link("https://www.flightsimulator.com/")).
+  It allows for a wide variety of aircraft, airports and systems such as advanced flight information panels.
+  This is achieved by providing multiple software development kits (SDKs) for plugins (so called add-ons).
+  These SDKs support plugin languages such as C, C++, .NET languages, JavaScript or WebAssembly#footnote(link("https://docs.flightsimulator.com/html/Programming_Tools/Programming_APIs.htm")).
+  
+  However this software project will not be evaluated in this work.
+  It's source code is not publicly available, which makes analysis of its architecture harder.
+  Also a paid license is required to make an appropriate evaluation possible.
 / Eclipse(not evaluated here): Eclipse is an IDE used during software development for a variety of programming languages.
   It features a plugin system where plugins are written in Java and a central marketplace for installing plugins.
   However Eclipse is not chosen for evaluation, because its plugin system is too similar to IntelliJ's.
@@ -265,18 +269,169 @@ Multiple projects and technologies were considered, however due to their similar
 
 === Evaluations of technologies & projects
 ==== Visual Studio Code
-#td
+/ Performance: In terms of performance Visual Studio Code performs reasonably well.
+  It builds on web technologies, specifically Electron which utilizes the Chromium browser engine together with Node.js.
+  VS Code is written in JavaScript, which still imposes some limitations compared to native applications such as pauses due to garbage collection or the single-threaded nature of Node.js modules#footnote(link("https://www.electronjs.org/docs/latest/tutorial/multithreading#native-nodejs-modules")).
+  While JavaScript engines such as the V8 engine try to mitigate most issues, the performance of VS Code still remains slower and more memory-hungry than native alternative IDE and text editor applications written in C, C++, Rust, etc.
+
+  Even though the overhead imposed could be considered small and VS Code and it's plugin system is quite fast for today's standards, its performance is still rated with a score of 3.
+  This score is chosen, because VS Code performs below average but still acceptable in comparison to typical native applications.
+/ Plugin size: 3-5
+  - Most minimal plugins only contain JavaScript code, however extensions bundled for use of the text editor as a webapp include all dependencies
+  - #todo[check sizes of common extensions]
+/ Plugin isolation: 4
+  - Sandboxed in theory
+  - no real permission system
+  - Interface is very dynamic
+/ Plugin portability: 4
+  - Plugins are very portable.
+  - JavaScript was designed with portability across various OS and platforms for all kinds of browser engines.
+  - However it still needs a JS engine/runtime
+/ Plugin language interoperability: 1
+  - only JS or typescript as its superset is supported
+  - although languages can be compiled to JS through technologies like asm.js, which might be deprecated in favour of Wasm?
 
 ==== IntelliJ-family
-#td
+/ Performance: 
+  IntellIj IDEs also perform reasonably well.
+  Both the IDE, as well as its plugin system and plugins are written in languages targeting the Java Virtual Machine (JVM).
+  That is, languages such as Java, Kotlin or Scala, which are optimized and compiled to Java bytecode by their respective compilers.
+  This Java bytecode can then be executed by the JVM.
+  During execution the JVM can apply additional optimizations and generate native machine code for execution for example through optimizing Just-in-time (JIT) compilation, only then when it is needed.
+
+  Even though JVMs are highly complex systems with loads of mechanisms for optimization, they still introduce some overhead.
+  Also they are responsible for holding the state of programs during runtime and for garbage collecting no longer used object instances.
+
+  Thus the performance of plugin systems and plugins based on the JVM, will not be able to outperform native non garbage-collected approaches.
+  This plugin system technology, as it is used in IntelliJ-based IDEs is rated with an average performance score of 3.
+
+  // - IntelliJ IDEs also perform reasonably well
+  // - Both the IDE, its plugin system and plugins are build in languages executed inside the Java Virtual Machine (JVM)
+  // - The execution lifecycle for Java or Kotlin code is as follows:
+    // The javac or kotlinc compiler compiled source code to Java bytecode.
+    // Then this Java bytecode can be loaded into a JVM and executed there.
+    // During execution a JVM is allowed to perform optimizations such as using Just-in-time compilation for compiling the Java bytecode to native machine code only when it is needed.
+  // - Even though JVMs can be highly complex systems, which are able to apply loads of optimizations, they still introduce some overhead due to other factors such as garbage collection.
+  // - Thus the performance of Plugin systems and plugins based on the JVM, will not outperform native non-garbage-collected approaches, where source code is compiled to native machine code ahead of time.
+  // - The plugin system as it is used in the IntelliJ-family is thus rated as average with a score of 3.
+/ Plugin size: 2-3
+  - Java links dependencies, except for the standard library statically
+  - #todo[check sizes of common plugins]
+/ Plugin isolation: 2
+  - All plugins run in the same JVM only with different classloaders. This makes isolation impossible
+/ Plugin portability: 4
+  - Java was designed with portability across devices of all kinds in mind.
+/ Plugin language interoperability: 3
+  - Plugins are executed by a JVM.
+  - SDKs are available for Java & Kotlin, however all other JVM-based languages could also be used theoretically
 
 ==== Notepad++
-#td
+/ Performance: Notepad++ itself is written in C++ and compiled to native machine code for the Windows operating system exclusively.
+  It tries to maximize efficiency and minimize the impact on the system it is running on.
+  Its plugin system is based on compiled dynamically linked libraries (DLLs).
+  A plugin developer compiles their plugin, which can be written in any arbitrary language to a DLL, which is essentially a library containing machine code along with symbols defining imports and exports of that library.
+  Notepad's plugin system can then load theses libraries at runtime via the LoadLibrary Win32-Api call and execute arbitrary functions exported from the plugin.
+  
+  This is the fastest way for how some host application can embed plugins.
+  It relies only on the operating system for loading already compiled machine code at runtime.
+  There is no additional overhead except the time needed for loading the DLL itself into memory.
+
+  Thus Notepad++'s plugin system is evaluated at a score of 5 for its optimal performance.
+/ Plugin size: 3-4
+  - #todo[check sizes]
+/ Plugin isolation: 1
+  - Plugins are loaded as dynamic libraries at runtime without any isolation.
+/ Plugin portability: 1
+  - Notepad++ itself does not support multiple platforms.
+  - Thus there is also no need for plugins to be portable across different platforms
+/ Plugin language interoperability: 5
+  - native code is a common build target for all languages
 
 ==== VST3
-#td
+/ Performance: The VST3 standard for plugins creating and processing audio relies on native compiled machine code just like Notepad++.
+  However it's file format also accommodates for the fact that plugins might be run on more than one platform.
+  Thus the VST3 format allows for embedding of DLLS for Windows plugins, Macho-O bundles for MacOS plugins or Packages for Linux plugins.
+
+  During runtime a host application has to check whether a VST3 plugin contains machine code compiled for the current architecture.
+  Then it is able to link the machine code at runtime through the operating system just like Notepad++ does.
+
+  While there is a small overhead of checking if the targeted platform of a plugin is correct for loading a plugin, there is no overhead during execution of plugin code.
+  Thus the VST3 technology also receives a score of 5.
+/ Plugin size: 3-4
+  - Same as Notepad++ probably
+  - However here plugins contain more data such as images for user interfaces on average? #todo[is this true?]
+/ Plugin isolation: 1
+  - No isolation
+/ Plugin portability: 1-2
+  - Compiled plugins are not portable as they are compiled for a specific architecture and platform. e.g. Windows (DLLs), MacOS (Mach-O Bundle) or Linux (package)
+  - However the source code of plugins can be reused across multiple platforms according to the VST3 documentation.
+/ Plugin language interoperability: 5
+  - native code is a common build target for all languages
 
 === Summary <technology-comparison-matrix>
+#let c(n) = {
+  let fill = gray
+  let contents = [?]
+
+  if n != none {
+    let t = n / 5 * 100% // to ratio
+    t = t * 55% // rescale to 20%..80%
+    t = 100% - t // flip
+
+    fill = gradient.linear(..color.map.turbo).sample(t)
+    contents = [#n]
+  }
+
+  table.cell(fill: fill, contents)
+}
+
+#let header-rot(contents) = table.cell(
+  stroke: none,
+  inset: 1em,
+  align(bottom,
+    rotate(-70deg,
+      origin: start,
+      reflow: true,
+      [
+        #set par(leading: 0.5em)
+        #contents
+      ]
+    ))
+  )
+
+#let scores = (
+  "Visual Studio Code": (3, 4, 4, 4, 1),
+  "IntelliJ-family": (3, 3, 2, 4, 3),
+  "Notepad++": (5, 4, 1, 1, 5),
+  "VST3": (5, 3, 1, 1, 5),
+  // "Wasm": (4, 3, 5, 4, 5),
+  // "Wasm (Component Model, WASI)": (none, none, none, none, none),
+  // "Wasm (custom serialization)": (none, none, none, none, none),
+)
+
+// WEIGHTING SCORE
+// #let weights = (5, 3, 4, 5, 3)
+// #let scores = scores.pairs().map(((k, v)) => {
+//   if v.contains(none) {
+//     (k, (..v, none))
+//   } else {
+//     let s = v.at(0) * weights.at(0) + v.at(1) * weights.at(1) + v.at(2) * weights.at(2) + v.at(3) * weights.at(3) + v.at(4) * weights.at(4)
+//     let s = s / weights.sum()
+
+//     (k, (..v, s))
+//   }
+// }).to-dict()
+
+#figure(
+  table(
+    columns: 6, // set to 7 for weighting
+    align: (right + horizon, center, center, center, center, center),
+    table.header(table.cell(stroke: none, []), header-rot[Performance], header-rot[Plugin size], header-rot[Plugin isolation], header-rot[Plugin portability], header-rot[Plugin language\ interoperability]), //header-rot[Weighted score]),
+    ..scores.pairs().map(((x, y)) => (table.cell(x), ..y.map(c))).flatten()
+  ),
+  caption: flex-caption([Technology comparison matrix for selected technologies and software projects], [Technology comparison matrix of existing technologies & projects])
+)
+
 #todo[Present findings in a table]
 #todo[
   What could have been done better?

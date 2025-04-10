@@ -91,12 +91,12 @@
   #pagebreak()
 
   // List of figures
-  // #outline(title: [List of figures #v(7mm)], target: figure.where(kind: image))
-  // #pagebreak()
+  #outline(title: [List of figures #v(7mm)], target: figure.where(kind: image))
+  #pagebreak()
 
   // List of tables
-  // #outline(title: [List of tables #v(7mm)], target: figure.where(kind: table))
-  // #pagebreak()
+  #outline(title: [List of tables #v(7mm)], target: figure.where(kind: table))
+  #pagebreak()
 
   // #outline(title: [List of code listings#v(7mm)], target: figure.where(kind: raw))
   // #pagebreak()
