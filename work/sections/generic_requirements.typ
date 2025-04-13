@@ -1,7 +1,7 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption, stacked-bar-chart
 
-= Criteria for good plugin systems
+= Technology comparison of existing plugin systems
 // TODO Normally a technology comparison defined weights for each score
 To evaluate whether Wasm is a viable technology for versatile plugin systems, one must first understand what criteria make a plugin system good and versatile.
 This section will perform a technology comparison between several technologies and existing software projects.
@@ -196,15 +196,12 @@ Even though the complexity and adaptability of interfaces is another important p
   For example all source code is eventually compiled to native ISA instructions specific to some hardware and platform.
   Thus it is also theoretically possible to package source code such as Python or JavaScript source code and combine it with their specific runtimes inside a native plugin.
 
-== A technology comparison between existing plugin systems
-This section chooses appropriate plugin system technologies and software projects implementing a plugin system.
-Then the previously defined criteria will be evaluated for chosen technologies and projects.
+// == A technology comparison between existing plugin systems
+// This section chooses appropriate plugin system technologies and software projects implementing a plugin system.
+// Then the previously defined criteria will be evaluated for chosen technologies and projects.
 
-// #todo[What is this section about?] \
-// #todo[Why is a technology comparison important for the work of this paper?]
-// #todo[explain the methodology for evaluation: e.g. analysis of code, documentation, papers?]
 
-=== Choice of technologies & projects
+== Choice of technologies & projects
 An important step during a technology comparison is the correct selection of technologies.
 When choosing technologies, one has to be careful to not introduce any bias towards certain technologies.
 This work mainly focuses on plugin systems for text editors, so text editor plugin systems will be the majority of technologies.
@@ -267,8 +264,8 @@ Multiple projects and technologies were considered, however due to their similar
   However Eclipse is not chosen for evaluation, because its plugin system is too similar to IntelliJ's.
   Also IntelliJ is more popular as an IDE @stackoverflow-survey and thus required to support a greater variety of plugins.
 
-=== Evaluations of technologies & projects
-==== Visual Studio Code
+== Evaluations of technologies & projects
+=== Visual Studio Code
 / Performance: In terms of performance Visual Studio Code performs reasonably well.
   It builds on web technologies, specifically Electron which utilizes the Chromium browser engine together with Node.js.
   VS Code is written in JavaScript, which still imposes some limitations compared to native applications such as pauses due to garbage collection or the single-threaded nature of Node.js modules#footnote(link("https://www.electronjs.org/docs/latest/tutorial/multithreading#native-nodejs-modules")).
@@ -352,7 +349,7 @@ Multiple projects and technologies were considered, however due to their similar
   While it is possible to write parts of VS Code extensions in other languages than JavaScript or TypeScript, the complexity of such plugins may increase rapidly.
   However following a strict evaluation for VS Code's plugin system, it receives a score of 1, because the plugin system always requires plugins to contain some JavaScript code, even if it is just glue code.
 
-==== IntelliJ-family
+=== IntelliJ-family
 / Performance: 
   IntellIj IDEs also perform reasonably well.
   Both the IDE, as well as its plugin system and plugins are written in languages targeting the Java Virtual Machine (JVM).
@@ -386,7 +383,7 @@ Multiple projects and technologies were considered, however due to their similar
   - Plugins are executed by a JVM.
   - SDKs are available for Java & Kotlin, however all other JVM-based languages could also be used theoretically
 
-==== Notepad++
+=== Notepad++
 / Performance: Notepad++ itself is written in C++ and compiled to native machine code for the Windows operating system exclusively.
   It tries to maximize efficiency and minimize the impact on the system it is running on.
   Its plugin system is based on compiled dynamically linked libraries (DLLs).
@@ -407,7 +404,7 @@ Multiple projects and technologies were considered, however due to their similar
 / Plugin language interoperability: 5
   - native code is a common build target for all languages
 
-==== VST3
+=== VST3
 / Performance: The VST3 standard for plugins creating and processing audio relies on native compiled machine code just like Notepad++.
   However it's file format also accommodates for the fact that plugins might be run on more than one platform.
   Thus the VST3 format allows for embedding of DLLS for Windows plugins, Mach-O bundles for MacOS plugins or Packages for Linux plugins.
@@ -428,7 +425,7 @@ Multiple projects and technologies were considered, however due to their similar
 / Plugin language interoperability: 5
   - native code is a common build target for all languages
 
-=== Summary <technology-comparison-matrix>
+== Summary <technology-comparison-matrix>
 #let c(n) = {
   let fill = gray
   let contents = [?]
