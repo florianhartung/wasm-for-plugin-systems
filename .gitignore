@@ -8,3 +8,5 @@ notes.md
 .direnv/
 
 vsix-size-analysis/**
+intellij-size-analysis
+npp-size-analysis

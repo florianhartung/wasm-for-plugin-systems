@@ -372,16 +372,36 @@ Multiple projects and technologies were considered, however due to their similar
   // - Even though JVMs can be highly complex systems, which are able to apply loads of optimizations, they still introduce some overhead due to other factors such as garbage collection.
   // - Thus the performance of Plugin systems and plugins based on the JVM, will not outperform native non-garbage-collected approaches, where source code is compiled to native machine code ahead of time.
   // - The plugin system as it is used in the IntelliJ-family is thus rated as average with a score of 3.
-/ Plugin size: 2-3
-  - Java links dependencies, except for the standard library statically
-  - #todo[check sizes of common plugins]
-/ Plugin isolation: 2
-  - All plugins run in the same JVM only with different classloaders. This makes isolation impossible
-/ Plugin portability: 4
-  - Java was designed with portability across devices of all kinds in mind.
+/ Plugin size:
+  Plugin sizes for IntelliJ plugins also vary a lot.
+  IntelliJ plugins are Java Archive (JAR) files, that can contain source code in the form of class files, resources or any arbitrary data.
+  Small plugin JARs might contain only a few source files, while larger plugins might rely on various dependencies, which are all compiled and statically linked into the plugin JAR file.
+
+  For IntelliJ plugins an extensive analysis of plugin size distributions was not possible due to the complexity of internal plugin structures.
+  However some plugins were selected as examples for their total size: The official plugin for Rust language support has a size of 54MB, the official Python language support plugin 69MB and the Prettier formatter plugin has 508KB.
+  Thus the average plugin size for the IntelliJ plugin system is evaluated at a score of 3.
+
+/ Plugin isolation:
+  Both the IntelliJ IDEs and plugins are written in JVM-based languages.
+  No documentation or information was found on the security of IntelliJ plugins.
+  Thus is it assumed, that IntelliJ plugins are loaded into the same JVM as the host IDE, inheriting the host's privileges.
+
+  Because there are no isolation mechanisms in place, the plugin isolation of plugins for IntelliJ-based IDEs are evaluated at a score of 1.
+
+/ Plugin portability:
+  Since IntelliJ plugins are written in Java or other JVM-based languages, they benefit from Java's cross-platform portability.
+  This allows plugins to run consistently across different environments.
+  Because IntelliJ itself is build on the same technology, this enables every plugin to run on every platform, as long as plugins do not introduce platform-specific behavior such as relying on native binaries.
+  Plugin portability is rated at a score of 4 for all IntelliJ-based IDEs, as Java bytecode is portable because the JVM is still required as a runtime on the target platform.
+
 / Plugin language interoperability: 3
   - Plugins are executed by a JVM.
   - SDKs are available for Java & Kotlin, however all other JVM-based languages could also be used theoretically
+
+  IntelliJ supports all plugins that can be compiled to Java bytecode, as long as they adhere to the IntelliJ Platform API, which can vary from one IntelliJ-based IDE to another.
+
+  While only Java and Kotlin are officially supported, other JVM-based languages such as Groovy or Scala could also be used, as they also compile to Java bytecode.
+  This plugin system, which supports one compilation target used by a variety of languages, is evaluated at a score of 4.
 
 === Notepad++
 / Performance: Notepad++ itself is written in C++ and compiled to native machine code for the Windows operating system exclusively.
@@ -394,8 +414,30 @@ Multiple projects and technologies were considered, however due to their similar
   It relies only on the operating system for loading already compiled machine code at runtime.
   There is no additional overhead except having to load the DLL itself into memory.
   Thus Notepad++'s plugin system is evaluated at a score of 5 for its optimal performance.
+
+#figure(
+  stacked-bar-chart(
+    (
+      "Machine code",
+      "Resources",
+      "Other",
+    ), (
+      "Lua language support": (314368, 122368, 443152),
+      "Java language support": (243712, 146432, 394000),
+      "Rust language support": (172032, 61952, 234496),
+      "Converter between HEX/ASCII": (123904, 73728, 199024),
+    ),
+    category_colors: i => (orange, color.fuchsia, blue, green, gray).map(c => c.darken(20%)).at(i)
+  ), caption: flex-caption([Plugin size distributions of selected Notepad++ plugins. They were analyzed by running `winedump` on a Linux system on the plugin DLL files. Then the `size of code` and `size of initialized data` fields were extracted to show here.], [Plugin size distributions of selected Notepad++ plugins])
+) <fig:size-distributions-notepad-plugins>
+
 / Plugin size: 3-4
-  - #todo[check sizes]
+  - Plugins are compiled to machine code.
+  - Libraries & dependencies might be linked statically, except for some exceptions such as libc
+  - @fig:size-distributions-notepad-plugins shows some arbitrarily selected plugins
+
+  - final plugin size evaluation is 4, machine code is (must be) pretty compact, because smaller binaries generally result in better performance.
+
 / Plugin isolation: 1
   - Plugins are loaded as dynamic libraries at runtime without any isolation.
 / Plugin portability: 1
