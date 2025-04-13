@@ -141,6 +141,8 @@
   // #show figure.caption: it => it + v(1.5em)
   #show figure.caption: it => it + v(2em)
 
+  #show ref: set text(blue)
+
   #[
     #show heading.where(level: 1): it => {
       is_on_new_section_page.update(true)

@@ -99,6 +99,13 @@ vst3:
     value: https://steinbergmedia.github.io/vst3_dev_portal
     date: 2025-04-09
 
+vscode-docs:
+  type: web
+  title: Visual Studio Code documentation
+  url:
+    value: https://code.visualstudio.com/docs
+    date: 2025-04-13
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications

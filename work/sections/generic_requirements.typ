@@ -1,5 +1,5 @@
 #import "../wip.typ": todo, td
-#import "../util.typ": flex-caption
+#import "../util.typ": flex-caption, stacked-bar-chart
 
 = Criteria for good plugin systems
 // TODO Normally a technology comparison defined weights for each score
@@ -265,7 +265,7 @@ Multiple projects and technologies were considered, however due to their similar
 / Eclipse(not evaluated here): Eclipse is an IDE used during software development for a variety of programming languages.
   It features a plugin system where plugins are written in Java and a central marketplace for installing plugins.
   However Eclipse is not chosen for evaluation, because its plugin system is too similar to IntelliJ's.
-  Also IntelliJ is more popular@stackoverflow-survey and thus required to support a greater variety of plugins.
+  Also IntelliJ is more popular as an IDE @stackoverflow-survey and thus required to support a greater variety of plugins.
 
 === Evaluations of technologies & projects
 ==== Visual Studio Code
@@ -276,20 +276,81 @@ Multiple projects and technologies were considered, however due to their similar
 
   Even though the overhead imposed could be considered small and VS Code and it's plugin system is quite fast for today's standards, its performance is still rated with a score of 3.
   This score is chosen, because VS Code performs below average but still acceptable in comparison to typical native applications.
-/ Plugin size: 3-5
-  - Most minimal plugins only contain JavaScript code, however extensions bundled for use of the text editor as a webapp include all dependencies
-  - #todo[check sizes of common extensions]
-/ Plugin isolation: 4
-  - Sandboxed in theory
-  - no real permission system
-  - Interface is very dynamic
-/ Plugin portability: 4
-  - Plugins are very portable.
-  - JavaScript was designed with portability across various OS and platforms for all kinds of browser engines.
-  - However it still needs a JS engine/runtime
-/ Plugin language interoperability: 1
-  - only JS or typescript as its superset is supported
-  - although languages can be compiled to JS through technologies like asm.js, which might be deprecated in favour of Wasm?
+
+#figure(
+  stacked-bar-chart(
+    (
+      "VSIX-Manifest",
+      "Package metadata",
+      "Third-party packages",
+      "Source code",
+      "Other (binaries, resources, data)"
+    ), (
+      "rust-lang.rust-analyzer": (2800, 253000 + 159000, 1000000, 451000, 43000000),
+      "ms-python.python": (3300, 74000, 3000000, 13000000, 30000000),
+      "esbenp.prettier-vscode": (3200, 14000, 7000000, 3000000, 10500000),
+      "sibiraj-s.scss-formatter": (2800, 3700, 8700000, 467000, 9400000),
+      "vscodevim.vim": (2800, 45000, 0, 3200000, 4000000),
+    ),
+    category_colors: i => (orange, color.fuchsia, blue, green, gray).map(c => c.darken(20%)).at(i)
+  ), caption: flex-caption([Plugin size distributions of selected VS Code plugins], [Plugin size distributions of selected VS Code plugins])
+) <fig:size-distributions-vscode-plugins>
+/ Plugin size: The average plugin size for VS Code plugins is highly variable.
+  Most minimal plugins typically consist of JavaScript or TypeScript code and a JSON manifest file.
+  However, more complex plugins can be significantly langer, for example plugins that bundle third-party libraries and dependencies or language servers.
+
+  Because VS Code is based on web technologies, its plugins can also be used in web environments, where its dependencies have to be bundled, which can further increase plugin sizes.
+  Though on average, the size of VS code plugins a lot due to the size of libraries and resources needed for specific use cases.
+
+  @fig:size-distributions-vscode-plugins shows plugin sizes of various arbitrarily selected VS Code plugins.
+  The largest plugin here is the rust-analyzer plugin with a size of 43MB.
+  The smallest is the Vim emulation plugin with 4MB.
+  The diagram also shows the distribution of different data types and their contribution to each plugin's total size.
+  Here one can see that some plugins contain mostly other data, such as the rust-analyzer plugin which contains the binary rust language server.
+  While other plugins make use of third-party packages such as external dependencies or libraries, such as the SCSS Formatter plugin, there are also plugins with a high share of source code such as the Vim emulation plugin.
+  However for the evaluation of the average plugin size for the VS Code plugin system, other data such as resources, images and binaries must be left out, because this data varies from one plugin to another.
+  Looking at the diagram, one can see, that the size of source code around the high KBs to the low MBs.
+  Thus this plugin system technology is evaluated at a score of 3.
+
+/ Plugin isolation: 
+  // Not mentioned on purpose: no real permission system
+
+  // VS Code based on web & JS
+  VS Code provides a moderate level of plugin isolation.
+  It is based on web technologies such as JavaScript.
+  A lot of web technologies like JavaScript are designed to enable safe code execution on a client's browser.
+  This is achieved through sandboxing, which means running an application in an isolated "sandbox", where the application cannot escape this sandbox.
+
+  // However when running a host application and plugins together in a single sandbox, there is no isolation between those two anymore.
+  VS Code runs all plugins (officially known as extensions) in separate extension host processes to isolate them from the main application@vscode-docs[sec. Extension runtime security].
+  Also plugins do not gain direct access to the main editor's state such as the DOM tree.
+  Instead only specific APIs are exposed to the extension host.
+
+  However the extension host inherits the same permissions as the original VS Code application.
+  This means that plugins running together in a process with the extension host may have full access to filesystems, peripherals or running processes.
+  Because of this inheritance of permissions and the dynamic and flexible nature of JavaScript itself, malicious plugins are not necessarily restricted from accessing the main editor state.
+
+  Thus VS Code's plugin isolation is evaluated at a score of 3.
+  Plugins run isolated from the main application, however malicious plugins may be able to circumvent this isolation through the inherited host privileges.
+
+/ Plugin portability:
+  VS Code plugins are very portable.
+  Since they are build on web technologies, that are required to be portable, plugins can run on various platforms, operating systems and architectures mostly without modifications.
+
+  That said, plugins that rely on native binaries such as language servers, which are often compiled in advance and then shipped with the plugin, may require separate build for different platforms, reducing portability.
+
+  In summary the portability of VS Code plugins is still very high, except for some edge cases, relying on native code, resulting in a plugin portability score of 4.
+
+/ Plugin language interoperability:
+  Plugin language interoperability describes how many programming languages may be used to develop plugins.
+  VS Code only allows JavaScript or TypeScript, which builds on JavaScript with a type system, as plugin languages.
+
+  - asm.js is subset of JS: acts as a compilation target for C/C++ with Emscripten
+  - Also plugins may include native code. This allows them to ship compiled programs written in C, C++, Rust or entire compiled runtimes for languages such as Python.
+  In such scenarios a plugin's JavaScript code could contains only glue code to forward function calls between the plugin core written in C, C++, Python, etc. and the VS Code host application.
+
+  While it is possible to write parts of VS Code extensions in other languages than JavaScript or TypeScript, the complexity of such plugins may increase rapidly.
+  However following a strict evaluation for VS Code's plugin system, it receives a score of 1, because the plugin system always requires plugins to contain some JavaScript code, even if it is just glue code.
 
 ==== IntelliJ-family
 / Performance: 
@@ -329,13 +390,12 @@ Multiple projects and technologies were considered, however due to their similar
 / Performance: Notepad++ itself is written in C++ and compiled to native machine code for the Windows operating system exclusively.
   It tries to maximize efficiency and minimize the impact on the system it is running on.
   Its plugin system is based on compiled dynamically linked libraries (DLLs).
-  A plugin developer compiles their plugin, which can be written in any arbitrary language to a DLL, which is essentially a library containing machine code along with symbols defining imports and exports of that library.
-  Notepad's plugin system can then load theses libraries at runtime via the LoadLibrary Win32-Api call and execute arbitrary functions exported from the plugin.
+  A plugin developer compiles their plugin, which can be written in any arbitrary language, to a DLL, which is a library containing machine code and lists of imported and exported symbols.
+  Notepad's plugin system can then load theses libraries at runtime via the `LoadLibrary` Win32-API call and execute arbitrary functions exported from the plugin.
   
-  This is the fastest way for how some host application can embed plugins.
+  This is the fastest way for how host applications can embed plugins.
   It relies only on the operating system for loading already compiled machine code at runtime.
-  There is no additional overhead except the time needed for loading the DLL itself into memory.
-
+  There is no additional overhead except having to load the DLL itself into memory.
   Thus Notepad++'s plugin system is evaluated at a score of 5 for its optimal performance.
 / Plugin size: 3-4
   - #todo[check sizes]
@@ -350,13 +410,13 @@ Multiple projects and technologies were considered, however due to their similar
 ==== VST3
 / Performance: The VST3 standard for plugins creating and processing audio relies on native compiled machine code just like Notepad++.
   However it's file format also accommodates for the fact that plugins might be run on more than one platform.
-  Thus the VST3 format allows for embedding of DLLS for Windows plugins, Macho-O bundles for MacOS plugins or Packages for Linux plugins.
+  Thus the VST3 format allows for embedding of DLLS for Windows plugins, Mach-O bundles for MacOS plugins or Packages for Linux plugins.
 
   During runtime a host application has to check whether a VST3 plugin contains machine code compiled for the current architecture.
   Then it is able to link the machine code at runtime through the operating system just like Notepad++ does.
 
   While there is a small overhead of checking if the targeted platform of a plugin is correct for loading a plugin, there is no overhead during execution of plugin code.
-  Thus the VST3 technology also receives a score of 5.
+  Thus the VST3 technology is evaluated at a score of 5.
 / Plugin size: 3-4
   - Same as Notepad++ probably
   - However here plugins contain more data such as images for user interfaces on average? #todo[is this true?]
@@ -389,7 +449,7 @@ Multiple projects and technologies were considered, however due to their similar
   stroke: none,
   inset: 1em,
   align(bottom,
-    rotate(-70deg,
+    rotate(70deg,
       origin: start,
       reflow: true,
       [
@@ -400,7 +460,7 @@ Multiple projects and technologies were considered, however due to their similar
   )
 
 #let scores = (
-  "Visual Studio Code": (3, 4, 4, 4, 1),
+  "Visual Studio Code": (3, 3, 3, 4, 1),
   "IntelliJ-family": (3, 3, 2, 4, 3),
   "Notepad++": (5, 4, 1, 1, 5),
   "VST3": (5, 3, 1, 1, 5),

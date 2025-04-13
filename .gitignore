@@ -6,3 +6,5 @@ notes.md
 !main.pdf
 
 .direnv/
+
+vsix-size-analysis/**
