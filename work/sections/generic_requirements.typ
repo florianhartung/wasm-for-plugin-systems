@@ -499,7 +499,7 @@ Multiple projects and technologies were considered, however due to their similar
   However in practice it is more common for plugin developers to develop plugins with C++ using the official VST3 software development kit.
   The universality of the native binary format earns VST3 a rating of 5 for plugin language interoperability.
 
-== Summary <technology-comparison-matrix>
+== Results & summary <technology-comparison-matrix>
 #let c(n) = {
   let fill = gray
   let contents = [?]
@@ -582,9 +582,8 @@ This allows for an optimal plugin language interoperability.
 It follows the same approach as Notepad++'s plugin system with native machine code inside its plugins.
 Thus it achieves the same scores, although in practice the VST3 format is merely a wrapper around native machine code, providing additional features not considered here.
 
-A critical examination of the earlier technology comparison is presented below, outlining possible improvements and other relevant criteria, not covered in this section.
-
-In this section, some criteria, namely the average plugin size and performance, have been analyzed only qualitatively due to time constraints.
+Now a critical discussion of the chosen criteria is presented, outlining possible improvements and other relevant criteria, not covered in this section.
+Some criteria, namely the average plugin size and performance, have been analyzed only qualitatively due to time constraints.
 However, these criteria can and should be analyzed quantitatively to provide more accurate and verifiable results.
 There are also criteria that may also be important for plugin systems in general, not covered here:
 / Complexity and flexibility of plugin system interface: Plugin systems with more flexible and dynamic interfaces without a fixed interface definition may enable faster development and testing of new features.
@@ -595,3 +594,7 @@ There are also criteria that may also be important for plugin systems in general
   The size of entire plugin systems was not considered.
   However when plugins get smaller, the size of plugin systems could increase, due to logic being outsourced from plugins to the plugin system.
   Thus to optimally evaluate sizes, one should consider both the plugin size and plugin system size and not just rely on one.
+
+To conclude, four plugin system technologies were compared and the results visualized in a technology comparison matrix.
+While the matrix shows the strengths and weaknesses of these technologies across different criteria, there is more to consider when choosing an appropriate plugin system technology.
+In the future, additional criteria should be defined for a more accurate comparison.
