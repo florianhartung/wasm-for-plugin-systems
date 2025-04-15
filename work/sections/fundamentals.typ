@@ -15,8 +15,6 @@ This allows software in the form of ISA instructions to manipulate the hardware.
 Software written in a higher level machine language (Assembly, C, Java, ...) can not be executed directly by the hardware.
 Instead higher level machine codes are compiled to ISA machine code or interpreted by a program, that is present in ISA machine code itself @tanenbaum-structured[sec.~1.1.2].
 
-#todo[move @multi-level-wasm here and explain basics of multi-level systems here separately]
-
 // TODO Move ISA figure here and only lightly explain it later.
 
 == WebAssembly
@@ -48,7 +46,7 @@ We call this virtualized environment the *host environment* (used by the specifi
         [Microarchitecture level],
         [Digital logic level],
     ),
-    caption: flex-caption([#todo[This figure still needs some improvements]. A multilevel computer system running Wasm code. Based on Figure 1-2 in @tanenbaum-structured], [A multilevel computer system running WebAssembly code]),
+    caption: flex-caption([A multilevel computer system running Wasm code. Based on @tanenbaum-structured[fig.~1-2]], [A multilevel computer system running WebAssembly code]),
     kind: image,
 ) <multi-level-wasm>
 
@@ -85,9 +83,7 @@ However most compilers are still being actively worked on and improved over time
 #figure(
     image("../images/wasm_execution.svg"),
     caption: flex-caption([
-        Flowchart for the creation and execution of a Wasm module from a higher-level language
-        #todo[This figure is still too compilated]
-        // Show 2 variants?: Wasm Runtime as CLI or library
+        Flowchart for the creation of a Wasm module from a higher-level language and execution through a host application.
     ], [Flowchart of the lifecycle of a WebAssembly module])
 ) <fig:wasm-execution-model>
 
@@ -115,11 +111,11 @@ It consists of different ordered sections, each with their own purpose: Some exa
 // Runtime environment
 The previously generated Wasm module can then be transferred to any target device or platform providing a Wasm runtime.
 // Wasm runtime
-That specific Wasm runtime is hardware-specific and not portable, unlike the Wasm module.
+Wasm runtimes are usually hardware-specific and not portable, unlike the Wasm module.
 The Wasm runtime is able to parse the received Wasm module file, instantiate a _Wasm instance_ from it and provide an Application Programming Interface (API) for interaction with the Wasm instance.
 APIs can differ from one Wasm runtime to another.
 Some runtimes exist as standalone programs that can run Wasm modules comparable to how native binaries can be executed.
-Others are in the form of libraries, that can only be used from a host application to embed a Wasm runtime into them.
+Others like the one shown in @fig:wasm-execution-model are in the form of libraries, that can only be used from a host application to embed a Wasm runtime into them.
 // Wasm runtime library interfacing
 These Wasm runtime libraries often provide common operations to the host application like calling Wasm functions, reading and writing operations for Wasm memories, linking mechanisms between Wasm modules, exposing host-defined functions for Wasm instances to call, etc.
 // TODO name all important common interfaces for Wasm runtime libraries
@@ -130,10 +126,8 @@ Detailed information on the current status of Wasm support for internet browsers
 A concrete example is Ebay using Wasm for their barcode scanner algorithm to achieve higher performance#footnote(link("https://innovation.ebayinc.com/tech/engineering/webassembly-at-ebay-a-real-world-use-case/")).
 
 // Distributed computing and serverless (example)
-For distributed computing a compiled Wasm module could be distributed among multiple different nodes regardless of their platform and architecture... #td
-// TODO also include serverless aspect, which might become very important in the future
-// TODO only requirement is wasm runtime 
-// TODO name multiple examples: wasmedge, fermyon spin
+For distributed computing and especially serverless functions a compiled Wasm module could be distributed among multiple different nodes regardless of their platform and architecture while still providing good performance.
+This is what the projects WasmEdge or Fermyon (see #link("https://wasmedge.org/") and #link("https://www.fermyon.com/")) are trying to achieve.
 
 === Design goals
 // The design goals are listed here, so they can be later referenced
@@ -147,98 +141,112 @@ Each design goal is accompanied by related information from various papers and a
 Wasm is designed to be fast both during startup and execution @spec[sec.~1.1.1].
 // It is designed so its bytecode can be quickly read and parsed by a Wasm 
 Startup time is mostly optimized through the structure of the Wasm bytecode format, which is optimized for fast parsing and compiling of Wasm code.
-A Wasm module in its binary format consists of 11 different sections
-#footnote[This section count excludes custom sections, which are optional and may only add additional information on top, such as debug information.]
-that may only show up in a fixed order.
+To further elaborate, a Wasm module in its binary format consists of 11 different sections.
+These sections must only occur in a very specific order to allow Wasm runtimes to parse and/or skip them efficiently.
 Another example is the absence of backwards jump (except for the `loop` statement), which allows the use of faster one-pass compilers.
-// TODO Why is are one-pass compilers better?
 
-During runtime Wasm can also achieve near-native performances... #td
+During runtime Wasm's execution time varies.
+The original design paper for Wasm found Wasm to be at most two times as slow as native code and around 30% of PolyBenchC's benchmarks to close to native code execution time @bringing-the-web-up-to-speed[p.~197].
+Another performance analysis by Jangda et al. measures peak slowdowns of 2.5x (Chrome) and 1.45x (Firefox) for running Wasm code in different browsers and comparing their execution times to native execution@analyzing-the-performance.
 
-// - Fast Runtime
-    // - Minimal set of opcodes
-    // - Parsable by a single-pass compiler: e.g. no backwards-jumps allowed (except loops), branches are referenced relatively by nesting depth per function (not absolutely with jumps to addresses)
-
-// - WASM bytecode can be execute in a number of different ways:
 An additional property of Wasm bytecode is that it can be either compiled, interpreted or just-in-time compiled by a runtime.
-This allows users to customize Wasm runtimes for their specific needs and use cases.
-For example one could choose compilation to achieve faster execution at the cost of slow startup times due to compilation.
-On the other end users might prefer interpretation where execution speeds are less of a priority and fast startup times or relocatable runtime instances (see @other_features) are needed.
+This provides users of Wasm with flexibility for performance optimizations.
+Some use cases require the fast startup time, determinism and relocatability (see @other_features) only an interpreter can provide.
+Others require high performance at the cost of flexibility of a compiler or just-in-time compiler.
 
 ==== Safe <design_safe>
-#todo[
-    - safe by default
-    - sandboxed
-        - Memory access is safe: Wasm is stack based & provides a linear memory, which can only be accessed through indices with bounds checks on every access.
-        - Can only interact with host environment through functions that are explicitly exposed by the host
-    - Because of its simplicity: easier to implement a minimal working runtime than it is for higher level languages like C, C++, Java, Python, ...
-        - This again reduces risk of (safety-critical) bugs
-    - Properties like portability and safety are especially important in the context of the web, where untrusted software from a foreign host is executed on a client's device.
-    - This makes WASM, a sandboxed and fast execution environment, interesting for safety-critical fields like avionics (#todo[ref?], automotive (#todo[ref] https://oxidos.io/), #todo[what else?]
-    - Note: Applications inside Wasm can still corrupt their own memory.
-]
+Wasm's execution is safe and sandboxed by default.
+All operations operate on a stack, which contains values, labels as references for branch instructions and activations, which are similar to function call frames.
+The Wasm stack differs from a stack used in most native architectures in two ways:
+Wasm code can only access the top-most value of the stack, and the stack is type-checked by the Wasm runtime during a validation phase@spec.
+
+Wasm modules also have their own linear memory.
+This linear memory is completely isolated from the stack and can only be accessed using special instructions and bounds-checked indices instead of pointers.
+While host applications can always read from and write to Wasm linear memory, Wasm instances cannot access host memory in the opposite direction.
+Instead, Wasm instances can only interact with the host through functions explicitly exposed by the host@spec.
+
+While the Wasm execution format is sandboxed, it is still important that the implementing Wasm runtime does not introduce any sandbox escapes due to bugs, etc.
+In their article "Provably-Safe Multilingual Software Sandboxing using WebAssembly" Bosamiya et al. have acknowledge Wasm as a safe sandboxed execution format and implemented a provably safe and verifiable Wasm runtime@provably-safe-multilingual-software-sandboxing.
+This shows that implementation of a fully sandboxed and safe runtime is possible not only in theory but also in practice.
+
+Because Wasm is able to provide safety for untrusted code execution, it is currently gaining interest in certain safety-critical non-web contexts, such as avionics@wasm-in-avionics or automotive industries (see https://oxidos.io/).
+
+// - Because of its simplicity: easier to implement a minimal working runtime than it is for higher level languages like C, C++, Java, Python, ...
+//     - This again reduces risk of (safety-critical) bugs
+// - Properties like portability and safety are especially important in the context of the web, where untrusted software from a foreign host is executed on a client's device.
+// - Note: Applications inside Wasm can still corrupt their own memory.
 
 
 ==== Portable <design_portable>
 // This includes goals: hardware-independent, platform-independent
-Wasm is designed to be able to be portable for a lot of different hardwares and platforms.
+Originally Wasm was designed for fast and safe code execution on a client's web browser@bringing-the-web-up-to-speed.
+This means that a variety of web browsers, all running on different platforms and architectures from desktop computers, mobile devices and even embedded devices, have to be able to run Wasm code.
 
-#todo[
-    - minimal set of opcodes (172), that exist on all architectures(#todo[insert screenshot of opcode table] (+ proposals for more additional instructions like SIMD, atomics, etc.)
-    #figure(todo[opcode table], caption: flex-caption([All WebAssembly opcodes. Opcodes for proposals are encoded by specific marker bytes, which indicate that the following opcodes are to be interpreted as different instructions.], [An overview over all WebAssembly opcodes]))
+Thus Wasm was designed to be able to be portable for various target platforms and architectures@spec.
+It does this by defining only the most basic types and instructions necessary to act as a compilation target.
+The basic types and instructions chosen exist on most platforms and architectures today.
+For example Wasm defines \~172 different instructions and \~8 types@spec[sec.~4.2.1].
+In comparison, the x64 architecture defines ca. 1500 - 6000 instructions@provably-safe-multilingual-software-sandboxing.
 
-    Independence of hardware:
-    - Desktop architectures
-    - Mobile device architectures
-    - Embedded system architectures
+// - minimal set of opcodes (172), that exist on all architectures(#todo[insert screenshot of opcode table] (+ proposals for more additional instructions like SIMD, atomics, etc.)
+// #figure(todo[opcode table], caption: flex-caption([All WebAssembly opcodes. Opcodes for proposals are encoded by specific marker bytes, which indicate that the following opcodes are to be interpreted as different instructions.], [An overview over all WebAssembly opcodes]))
 
-    Independence of platform:
-    - Browsers
-    - Other environments which only require some kind of a Wasm runtime
-]
+// Independence of hardware:
+// - Desktop architectures
+// - Mobile device architectures
+// - Embedded system architectures
+
+// Independence of platform:
+// - Browsers
+// - Other environments which only require some kind of a Wasm runtime
 
 ==== Independence of language <design_independence_language>
-#todo[
-    - Not designed for a specific language, programming model or object model@spec[sec.~1.1.1]
-    - Should act as a compilation target for all kinds of higher-level machine languages
-    - Some Examples for languages that can be used at the time of writing are: #td
-]
+Wasm is designed to be a compilation target for higher level languages.
+In particular it is not designed for a specific language, programming model or object model@spec[sec.~1.1.1].
+Currently Wasm can already be used as a compilation target by various languages such as C, C++, Rust, Haskell or Ada.
 
 ==== Compact <design_compact>
-#todo[
-    - Wasm bytecode representation format should be compact.
-    - Smaller binary files are easier and faster to transmit especially in web contexts @spec.
-    - Also smaller files can be loaded into memory faster at runtime, which might lead to a slightly faster execution overall, but this is more of a speculation.
-]
+The representation of the Wasm bytecode format is designed to be compact.
+Especially on the web file size is very important to minimize loading times and achieve better user experiences.
+Also smaller files are faster to load into memory, which might lead to a slight increase in performance.
 
-==== Modular <design_modular>
-#todo[
-    - Programs consist of smaller modules, which allows modules to be "transmitted, cached and consumed separably"
-    - Modules can also be combined/linked together at runtime
-]
+Research shows that the compactness of Wasm bytecode in non-web contexts is close to native code with around 246% the size of natively compiled x86_64 machine code for the PolyBenchC benchmarks@an-evaluation-of-wasm-in-non-web-environments.
+While Wasm should optimally come as close to native code compactness as possible, this is close to impossible as native code is able to provide a larger variety of instructions exposing hardware-specific behavior.
+
+As a concrete examples for how Wasm bytecode is compacted, variable integers are explained in the following:
+Often times, the top-most bytes of integers are 0.
+To reduce the size of integers, their bit information is not stored as a fixed amount of bytes (e.g. 4 bytes for a 32-bit integer) anymore.
+Instead only 7 bits per byte are used to store the integer's bits, while the 8th bit is reserved for a flag that indicates whether the next byte also belongs to the integer currently being encoded.
+This allows to store 32-bit unsigned integers in the interval $[0; 127]$ inside one byte, $[128; 16383]$ inside two bytes, etc., while the maximum possible integer value of $2^32-1$ now requires 5 bytes for storage.
+This design is very similar to how Unicode encodes multi-byte characters.
 
 
 ==== Other features <other_features>
-This section lists some other noteworthy features of Wasm.
-These are not directly related to this work, however they provide a better overview over Wasm's potential use cases and applications.
+This section lists some other noteworthy features and design goals of Wasm.
+These are not directly related to this work, but instead provide a better overview over Wasm's potential use cases and applications.
 
-- *Well-defined*: #todo[Wasm is designed in such a way that it is "easy to reason about informally and formally" @spec[sec.~1.1.1].]
-- *Open*: #td
-- *Efficient*: #todo[Wasm bytecode is efficient to read and parse, regardless of whether AOT or Just-in-time (JIT) compilation or interpretation is used at runtime @spec.]
-- *Parallelizable*: #todo[
-        Working with Wasm bytecode should be easily parallelizable.
-        This applies to all steps: decoding, validation, compilation.
-        This property allows for a faster startup time.
-    ]
-- *Streamable*: #todo[
-        This goal is especially important for the web.
-        It should be possible to parse Wasm code while it is still being streamed/received.
-        On the web data can be transferred in separate blocks called chunks.
-        Wasm bytecode allows a Wasm runtime to decode, validate and compile a chunk before the full bytecode has arrived.
-        This reduces startup time for Wasm applications especially on the web.
-    ]
-- *Determinism*: #todo[Indeterminism has only 3 sources: host functions, float NaNs, growing memory/tables]
-- *Backwards-compatibility*: #td
+- *Determinism*: The majority of Wasm code is deterministic and undefined behavior is prevented through validation before execution of Wasm code happens.
+    There are only three possible sources of indeterminism:
+    - Functions exposed by the host application and imported into a Wasm instance can cause side-effects and introduce indeterminism@spec[sec.~4.4.10].
+    - NaN float values and operations on them are not defined deterministically, because there exists a variety of different NaN values@spec[sec.~2.2.3].
+    - Wasm instances can grow their memory or tables through the `memory.grow` and `table.grow` instructions.
+        Wasm runtimes are able to make these instructions fail, either due to missing resources, because of resource limitations or any other reason without determinism@spec[sec.~4.4.6, sec.~4.4.7].
+- *Parallelizable*: Wasm bytecode is designed for operations on it to be easy to parallelize@spec[sec.~1.1.1].
+    This applies to decoding, validation and compilation of Wasm bytecode and it may allow for faster startup times of Wasm instances.
+- *Streamable*: With Wasm being made for the web, the streamable property is quite unique from other ISAs.
+    This property means that Wasm bytecode is able to be read and consumed by a Wasm runtime, before the entire data has been seen@spec[sec.~1.1.1].
+    On the web this means, that the Wasm runtime inside a client's browser can start parsing and validating a Wasm module while it is being received over the internet.
+    This reduces startup time for Wasm instances especially on the web, but it may also be relevant for non-web contexts, e.g. where large Wasm modules are being read from slow hard disk drives.
+- *Modular*: Wasm applications consist of smaller modules, so called Wasm modules.
+    They are self-contained, which allows them to be "transmitted, cached and consumed separably"@spec[sec.~1.1.1].
+    During runtime most Wasm runtimes also allow multiple Wasm modules to be linked together, as long as all imports required by those Wasm modules are fulfilled.
+- *Well-defined*: Wasm code is designed to be easy to understand and "reason about informally and formally"@spec[sec.~1.1.1] without loopholes or undefined behavior.
+- *Relocatability*: Wasm modules by themselves are clearly defined at runtime consisting of their bytecode, a linear memory, reference tables, etc.
+    Thus it is possible to halt execution of Wasm instances, serialize the entire runtime state and relocate it to another computer system for continuation of execution in theory.
+    This could enable new methods for debugging, where traditionally a runtime state and logs are dumped for later analysis by a developer.
+    Now an entire snapshot of the runtime state could be created, that can be rerun and analyzed at a later time.
+// - *Efficient*: #todo[Wasm bytecode is efficient to read and parse, regardless of whether AOT or Just-in-time (JIT) compilation or interpretation is used at runtime @spec.]
+// - *Backwards-compatibility*: #td
     // TODO: consider this property for non-web contexts
     // In non-web contexts this property might be used by Wasm runtimes to read and parse a Wasm file sequentially
     // Wasm is also designed with backwards compatibility in mind.
@@ -252,7 +260,6 @@ These are not directly related to this work, however they provide a better overv
     //     - Placeholders opcodes
     //     - Only one memory per module allowed, yet a memory index of 0 has to be included for some opcodes.
     // - New features go though 5 stages in their proposal process, before they are added to the specification. This allows for testing and for runtimes to implement proposals before they are standardized
-- *Migratability/Relocatability*: #todo[Running Wasm instances can be serialized and migrated to another computer system. However for this to be easy the Wasm runtime should only execute Wasm code through interpretation.]
 
 
 // Missing
@@ -263,7 +270,14 @@ These are not directly related to this work, however they provide a better overv
 // Challenges with Wasm in non-web contexts
 This section deals with common challenges and limitations of Wasm in non-web contexts.
 
-// WASM type system is too simple for complex interfaces between WASM-host or WASM-WASM interfaces. It does not even have strings or pointer types.
+// Type system too simple
+// Results in ambiguities regarding common types used by programming languages: strings, options, results, futures, tagged union (enums)
+// Show example code for how languages might encode a string. C uses a pointer to null-terminated memory, Rust uses Unicode strings by default and stores the size in bytes
+// While WASM tries to provide a very minimal execution environment and interoperable compilation target, this also has its downsides
+// Solution: Present the two approaches: serialization of arguments or common interface definition. Common interface definition could be done for Wasm types, however this is error-prone and glue code has to be written by hand for every language that wants to use the interface. Solution might be the  Component Model (see @component-model)
+
+WASM type system is too simple for complex interfaces between WASM-host or WASM-WASM interfaces. It does not have strings or pointer types.
+
 // #todo[List all types here and show how a complex C type could be represented as a WASM type]
 // Here it must also be clear that it is completely language and compiler dependent how high level types are represented in the compiled WASM bytecode with its simple types.
 // Here it becomes clear again that WASM only provides a very minimal execution environment and leaves all the responsibility and optimizations to compilers, very similar to traditional assembly/machine code.
@@ -281,7 +295,16 @@ This section deals with common challenges and limitations of Wasm in non-web con
 //         Examples: Two WASM modules implement features, for example an efficient library for performing calculations in Rust and a Python module that uses that library and stores the results in a provided filesystem.
 
 
+=== WebAssembly Component Model <component-model>
+// References: Design documents for component model (no spec yet)
 
+#td
+
+// - complex types: list, enum (tagged union), option, result, resource (host types opaque to Wasm instances)
+// - language-agnostic interfaces
+// - WebAssembly Interface Type (WIT) specification
+// - generate bindings for various languages from a WIT definition
+// Show current progress
 
 === WebAssembly System Interface (WASI) <wasi>
 // References: WASI Spec
@@ -289,18 +312,9 @@ This section deals with common challenges and limitations of Wasm in non-web con
 // The WebAssembly System Interface (WASI) is a common interface definition for common functionalities that may be provided by a host.
 // These can be simple such as random number generation or more complex like filesystem access or networking.
 // Show current progress
+// Based on WIT
 
 #td
-
-=== WebAssembly Component Model <wasm_component_model>
-// References: Design documents for component model (no spec yet)
-
-#td
-
-// - language-agnostic interfaces
-// - WebAssembly Interface Type (WIT) specification
-// - bindings can be generated for a lot of languages from a WIT definition
-// Show current progress
 
 == Plugin systems
 

@@ -106,6 +106,36 @@ vscode-docs:
     value: https://code.visualstudio.com/docs
     date: 2025-04-13
 
+provably-safe-multilingual-software-sandboxing:
+  type: article
+  title: Provably-Safe Multilingual Software Sandboxing using WebAssembly
+  author: ["Bosamiya, Jay", "Lim, Wen Shih", "Parno, Bryan"]
+  publisher: USENIX Association
+  date: 2022-08
+  url:
+    value: https://www.usenix.org/conference/usenixsecurity22/presentation/bosamiya
+    date: 2025-04-15
+  serial-number:
+    isbn: 978-1-939133-31-1
+  parent:
+    type: proceedings
+    title: 31st USENIX Security Symposium (USENIX Security 22)
+
+analyzing-the-performance:
+  type: article
+  title: bla
+
+an-evaluation-of-wasm-in-non-web-environments:
+  type: article
+  title: An Evaluation of WebAssembly in Non-Web Environments
+  author: ["Spies, Benedikt", "Mock, Markus"]
+  date: 2021
+  serial-number:
+    doi: 10.1109/CLEI53233.2021.9640153
+  parent:
+    type: proceedings
+    title: 2021 XLVII Latin American Computing Conference (CLEI)
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications
