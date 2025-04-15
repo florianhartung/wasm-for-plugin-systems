@@ -214,7 +214,7 @@ Annually it organizes a survey open to all developers regardless of their backgr
 In 2024 a total amount of \~65.000 developers took part in this survey, which is why it can be considered fairly representative.
 The four most popular text editors and integrated development environments (IDEs) according to the survey are the following.
 They are described and also considered for evaluation in this work:
-/ 1. Visual Studio Code: Visual Studio Code (abbreviated as VS Code) is a text editor designed for "coding".
+/ 1. Visual Studio Code: Visual Studio Code (abbreviated as VS Code) is a text editor designed for software development.
   It provides built-in basic features such as a terminal, version control or themes #footnote(link("https://code.visualstudio.com/")).
   However it does not provide built-in integration for specific programming languages or technologies.
   In VS Code a lot of features are instead packaged as plugins (here: extensions) written in JavaScript which can be installed from a central marketplace.
@@ -394,17 +394,15 @@ Multiple projects and technologies were considered, however due to their similar
   Because IntelliJ itself is build on the same technology, this enables every plugin to run on every platform, as long as plugins do not introduce platform-specific behavior such as relying on native binaries.
   Plugin portability is rated at a score of 4 for all IntelliJ-based IDEs, as Java bytecode is portable because the JVM is still required as a runtime on the target platform.
 
-/ Plugin language interoperability: 3
-  - Plugins are executed by a JVM.
-  - SDKs are available for Java & Kotlin, however all other JVM-based languages could also be used theoretically
-
+/ Plugin language interoperability:
   IntelliJ supports all plugins that can be compiled to Java bytecode, as long as they adhere to the IntelliJ Platform API, which can vary from one IntelliJ-based IDE to another.
 
   While only Java and Kotlin are officially supported, other JVM-based languages such as Groovy or Scala could also be used, as they also compile to Java bytecode.
   This plugin system, which supports one compilation target used by a variety of languages, is evaluated at a score of 4.
 
 === Notepad++
-/ Performance: Notepad++ itself is written in C++ and compiled to native machine code for the Windows operating system exclusively.
+/ Performance:
+  Notepad++ is written in C++ and compiled to native machine code for the Windows operating system exclusively.
   It tries to maximize efficiency and minimize the impact on the system it is running on.
   Its plugin system is based on compiled dynamically linked libraries (DLLs).
   A plugin developer compiles their plugin, which can be written in any arbitrary language, to a DLL, which is a library containing machine code and lists of imported and exported symbols.
@@ -431,41 +429,75 @@ Multiple projects and technologies were considered, however due to their similar
   ), caption: flex-caption([Plugin size distributions of selected Notepad++ plugins. They were analyzed by running `winedump` on a Linux system on the plugin DLL files. Then the `size of code` and `size of initialized data` fields were extracted to show here.], [Plugin size distributions of selected Notepad++ plugins])
 ) <fig:size-distributions-notepad-plugins>
 
-/ Plugin size: 3-4
-  - Plugins are compiled to machine code.
-  - Libraries & dependencies might be linked statically, except for some exceptions such as libc
-  - @fig:size-distributions-notepad-plugins shows some arbitrarily selected plugins
+/ Plugin size:
+  Notepad++ uses DLLs as its plugin format, meaning plugins are compiled directly to machine code.
+  These binaries may include statically linked libraries and dependencies, though some exceptions for example for `libc` might exist.
+  @fig:size-distributions-notepad-plugins shows selected plugins and their total sizes and size distributions.
+  The size distribution into machine code, resources and other data was extracted from the respective DLLs through use of `winedump` on a Linux system.
+  The bar chart shows, that most data inside each plugin comes from machine code and not from any other resources or binaries.
+  Given this analysis and plugin sizes being under 500KB for all plugins, a rating of 4 is assigned to this plugin system technology.
+  This high rating is due to the compactness of machine code, which generally is generally minimized by compilers for better runtime performance already.
+  In practice smaller binaries require less data transfer rates between the memory and the CPU and thus result in higher cache hit rates and better performance.
 
-  - final plugin size evaluation is 4, machine code is (must be) pretty compact, because smaller binaries generally result in better performance.
+/ Plugin isolation:
+  However Notepad++'s plugin isolation is rated poorly at a score of 1.
+  Since Notepad++ loads plugins as dynamic libraries at runtime, these libraries inherit all privileges from the host editor.
+  There is also no sandboxing in place, so plugins essentially run on the exact same level as the host editor.
+  This is a severe risk, because the user has to trust both the plugin developer and also has to verify the integrity of a downloaded plugin.
 
-/ Plugin isolation: 1
-  - Plugins are loaded as dynamic libraries at runtime without any isolation.
-/ Plugin portability: 1
-  - Notepad++ itself does not support multiple platforms.
-  - Thus there is also no need for plugins to be portable across different platforms
-/ Plugin language interoperability: 5
-  - native code is a common build target for all languages
+/ Plugin portability:
+  Plugin portability for Notepad++ plugins is rated at a score of 1.
+  Notepad++ itself supports only Windows 8.1 - 11 as an operating system for multiple architectures #footnote(link("https://github.com/notepad-plus-plus/notepad-plus-plus/blob/master/SUPPORTED_SYSTEM.md")).
+  Plugins have to be compiled and shipped for every supported architecture separately.
+  Thus plugins are compatible in theory, because one could run plugins compiled for another architecture inside a virtual machine packaged as a plugin itself.
+  However this is not feasible in practice due to performance losses and the complexity involved.
+
+/ Plugin language interoperability:
+  With native machine code as plugins, #box[Notepad++] allows for great plugin language interoperability.
+  In practice it common to write plugins in languages that compile directly to machine code, such as C, #box[C++] or C\#.
+  #box[Notepad++] provides official header files for the API to #box[Notepad++] for plugin development in #box[C++].
+  There are also community-driven API definitions and templates for plugin development in Ada, C\#, D, Delphi or Ada available#footnote(link("https://npp-user-manual.org/docs/plugins/")).
+
+  One can also argue, that every piece of software running today is eventually compiled to or interpreted as machine code.
+  Thus it may be possible to embed higher-level technologies such as a Python runtime along with plugin logic written in Python inside a plugin.
+
+  Because native machine code is a universal build target for all languages and technologies and the resulting versatility, this plugin system is rated at a score of 5 in terms of plugin language interoperability.
 
 === VST3
-/ Performance: The VST3 standard for plugins creating and processing audio relies on native compiled machine code just like Notepad++.
+/ Performance:
+  The VST3 standard for plugins that create or process audio relies on native machine code just like Notepad++.
   However it's file format also accommodates for the fact that plugins might be run on more than one platform.
-  Thus the VST3 format allows for embedding of DLLS for Windows plugins, Mach-O bundles for MacOS plugins or Packages for Linux plugins.
+  Internally a VST3 file embeds either a DLL for Windows plugins, a Mach-O bundle for MacOS plugins or generic packages for Linux plugins.
 
   During runtime a host application has to check whether a VST3 plugin contains machine code compiled for the current architecture.
   Then it is able to link the machine code at runtime through the operating system just like Notepad++ does.
 
   While there is a small overhead of checking if the targeted platform of a plugin is correct for loading a plugin, there is no overhead during execution of plugin code.
   Thus the VST3 technology is evaluated at a score of 5.
-/ Plugin size: 3-4
-  - Same as Notepad++ probably
-  - However here plugins contain more data such as images for user interfaces on average? #todo[is this true?]
-/ Plugin isolation: 1
-  - No isolation
-/ Plugin portability: 1-2
-  - Compiled plugins are not portable as they are compiled for a specific architecture and platform. e.g. Windows (DLLs), MacOS (Mach-O Bundle) or Linux (package)
-  - However the source code of plugins can be reused across multiple platforms according to the VST3 documentation.
-/ Plugin language interoperability: 5
-  - native code is a common build target for all languages
+
+/ Plugin size:
+  Because VST3 plugins are distributed as platform-specific binaries, their size can also remain relatively small comparable to #box[Notepad++'s] plugins.
+  On the other hand, VST3 plugins often contain more resources such as images for providing the user with a graphical user interface.
+
+  Depending on the specific use case, one could rate VST3 plugin sizes at a score of 3 or 4.
+  However to enable objective comparison and VST3's strong similarity to Notepad++, plugin size is rated at a score of 4.
+
+/ Plugin isolation:
+  VST3 plugins are loaded as dynamic libraries just into the host's memory space inheriting privileges comparable to #box[Notepad++'s] plugin system.
+  There is no isolation between the host application and VST3 plugins, which can be used by malicious plugins posing a significant risk to the end-user.
+  Thus plugin isolation is rated at a score of 1.
+
+/ Plugin portability:
+  VST3 plugins itself are not portable.
+  They are compiled for every architecture and operating system and then distributed separately.
+  Even though the VST3 documentation states that the source code of plugins can be reused across multiple platforms, the plugin portability stays unaffected as this benefits just the plugin developer.
+  The portability of VST3 plugins is therefore rated at a score of 1.
+
+/ Plugin language interoperability:
+  VST3's plugin language interoperability is also similar to that of the #box[Notepad++] plugin system technology.
+  It's plugins are also based on native machine code, and thus it is possible in theory to compile or embed most technology into a plugin.
+  However in practice it is more common for plugin developers to develop plugins with C++ using the official VST3 software development kit.
+  The universality of the native binary format earns VST3 a rating of 5 for plugin language interoperability.
 
 == Summary <technology-comparison-matrix>
 #let c(n) = {
@@ -500,9 +532,9 @@ Multiple projects and technologies were considered, however due to their similar
 
 #let scores = (
   "Visual Studio Code": (3, 3, 3, 4, 1),
-  "IntelliJ-family": (3, 3, 2, 4, 3),
+  "IntelliJ-family": (3, 3, 1, 4, 3),
   "Notepad++": (5, 4, 1, 1, 5),
-  "VST3": (5, 3, 1, 1, 5),
+  "VST3": (5, 4, 1, 1, 5),
   // "Wasm": (4, 3, 5, 4, 5),
   // "Wasm (Component Model, WASI)": (none, none, none, none, none),
   // "Wasm (custom serialization)": (none, none, none, none, none),
@@ -529,12 +561,37 @@ Multiple projects and technologies were considered, however due to their similar
     ..scores.pairs().map(((x, y)) => (table.cell(x), ..y.map(c))).flatten()
   ),
   caption: flex-caption([Technology comparison matrix for selected technologies and software projects], [Technology comparison matrix of existing technologies & projects])
-)
+) <technology-comparison-matrix-existing>
 
-#todo[Present findings in a table]
-#todo[
-  What could have been done better?
+Three different plugin systems and one standard for a plugin system technology have been evaluated with the previously defined criteria.
+The results can be seen in a technology comparison matrix in @technology-comparison-matrix-existing.
+Here every technology row is evaluated across all five criteria, namely performance, plugin size, plugin isolation, plugin portability and plugin language interoperability.
+Each criterion is rated on a scale from 0 (very poor) to 5 (excellent), however the smallest score that can be found here is 1.
 
-  - Complexity and adaptability of the interface
-]
-#todo[Which other technologies and criteria might also be interesting? Which ones were left out?]
+// Key observations
+*Visual Studio Code*'s plugin system performs with average scores of 3 across performance, plugin size and plugin isolation.
+It provides good plugin portability from its usage of web technology, but is not able to provide a lot of plugin language interoperability due to the limitation to JavaScript/TypeScript.
+The plugin system used in all *IntelliJ-based IDEs* achieves similar scores for performance and plugin size, however it does not provide any plugin isolation.
+It is able to achieve the same plugin portability as VS Code and a higher score for plugin language interoperability because it allows any JVM-based languages for plugins.
+*Nodepad++* is another text editor with efficiency in mind.
+This shows, because it achieves the highest score for performance with plugin sizes that are negligible in practice.
+However it provides terrible plugin isolation and plugin portability due to plugins consisting of natively compiled machine code.
+On the other hand, native machine code also acts as a universal compilation target, allowing pretty much every other technology to be compiled into a plugin.
+This allows for an optimal plugin language interoperability.
+*VST3* is a standard for a plugin system technology.
+It follows the same approach as Notepad++'s plugin system with native machine code inside its plugins.
+Thus it achieves the same scores, although in practice the VST3 format is merely a wrapper around native machine code, providing additional features not considered here.
+
+A critical examination of the earlier technology comparison is presented below, outlining possible improvements and other relevant criteria, not covered in this section.
+
+In this section, some criteria, namely the average plugin size and performance, have been analyzed only qualitatively due to time constraints.
+However, these criteria can and should be analyzed quantitatively to provide more accurate and verifiable results.
+There are also criteria that may also be important for plugin systems in general, not covered here:
+/ Complexity and flexibility of plugin system interface: Plugin systems with more flexible and dynamic interfaces without a fixed interface definition may enable faster development and testing of new features.
+/ Developer experience: Developer experience could be used as a measure for how easy it is for developers to develop plugins.
+/ Debuggability: Some technologies might be easier do debug and inspect during runtime.
+  This allows plugin developers to spend less time searching for bugs, which then results in a faster plugin development.
+/ Plugin system size: This section analyzed the average size of plugins.
+  The size of entire plugin systems was not considered.
+  However when plugins get smaller, the size of plugin systems could increase, due to logic being outsourced from plugins to the plugin system.
+  Thus to optimally evaluate sizes, one should consider both the plugin size and plugin system size and not just rely on one.

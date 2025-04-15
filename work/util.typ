@@ -15,13 +15,13 @@
 /// Quick and dirty binary size printing
 #let format-binary-size(n) = {
   if n < 1000 {
-    [#n B]
+    [#calc.round(n) B]
   } else if n < 1000000 {
-    [#(n / 1000) KB]
+    [#calc.round(n / 1000) KB]
   } else if n < 100000000 {
-    [#(n / 1000000) MB]
+    [#calc.round(n / 1000000) MB]
   } else {
-    [#(n / 1000000000) GB]
+    [#calc.round(n / 1000000000) GB]
   }
 }
 
