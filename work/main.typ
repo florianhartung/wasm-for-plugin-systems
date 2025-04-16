@@ -12,7 +12,7 @@
 
   WebAssembly (Wasm) is a relatively new technology first released in March 2017.
   It was originally designed as a fast, safe and portable compilation target for higher level languages to enable fast code execution on the web.
-  However, it is designed with no assumptions about its execution environment and its properties make it an interesting technology for non-web contexts such as avionics or automotive as well.
+  However, it is designed with no assumptions about its execution environment and its properties make it an interesting technology for non-web contexts such as avionics, distributed computing, embedded devices or automotive as well.
   
   // Problem statement, goal
   This work explores Wasm as a technology for implementing a safe and fast plugin system with portable plugins compiled from higher level languages, such as C, C++, Rust, Python or JavaScript.

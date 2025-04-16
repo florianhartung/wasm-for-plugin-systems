@@ -267,7 +267,7 @@ These are not directly related to this work, but instead provide a better overvi
 // WASM is formally specified with no "loopholes"
 
 
-=== Challenges & Limitations
+=== Challenges & Limitations <wasm-challenges>
 #subpar.grid(
     figure(
         ```
@@ -358,28 +358,92 @@ It also relies on the WebAssembly Component Model for language-agnostic interfac
 === WebAssembly Component Model <component-model>
 // References: Design documents for component model (no spec yet)
 
-#td
+// Problem
+#todo[Common language- and compiler agnostic interface is required, see @wasm-challenges]
 
-// - complex types: list, enum (tagged union), option, result, resource (host types opaque to Wasm instances)
-// - language-agnostic interfaces
-// - WebAssembly Interface Type (WIT) specification
-// - generate bindings for various languages from a WIT definition
-// Show current progress
+// Key concepts
+#todo[
+What is the WebAssembly Component Model?
+- Modularity: Modular Wasm modules with interface definitions for the interface they require(import) and provide (export).
+- Interoperability: Architecture for "interoperable Wasm libraries, applications and environments"@component-model-docs.
+]
+
+#figure(
+    ```wit
+    interface adder {
+        add: func(a: i32, b: i32) -> i32;
+    }
+
+    world main-application {
+        import adder;
+
+        // Entry function, so that this component can be invoked as an application.
+        // Normally Wasm modules are libraries
+        export command;
+    }
+
+    world adder-library {
+        export adder;
+    }
+    ```,
+    caption: [
+        A WIT definition specifying two worlds for two Wasm components to implement.
+        The first world `main-application` exports an entry point function, while importing the `adder` interface that consists of a single `add` function.
+        The second world `adder-library` exports only the `adder` interface.
+        // TODO make this figure correct
+    ],
+)
+
+#todo[
+    Explain WIT
+    - WIT for language-agnostic interface definitions
+    - Types such as records, variants, enums, resources (opaque to Wasm), lists,
+    - Contains interfaces, components use interfaces to define worlds.
+    - A world is the complete set of interfaces a module imports and exports along with complex types used
+]
+
+#todo[
+    Explain language interoperability
+    - Language support is important for components and host applications.
+    - for components: wit-bindgen generates glue code to convert between common types of a programming language and the types and functions as defined by the WIT interface
+    - for hosts: the wasmtime runtime can automatically generate types and interfaces from a WIT interface, to simplify calling components
+]
+
+// Use cases
+#todo[
+    Explain use cases
+    - Modular precompiled dependencies across multiple languages
+        - Modular and self-contained components also allow centralized registries for their distribution comparable to how NPM packages can be installed @component-model-docs[sec.~9.4].
+    - Example with multiple components:
+        - high-performance C++ core for a math library exposes interface adhering to a WIT definition
+        - python code embedded in Wasm can import this interface via it's own WIT definition and provide a main entry point for the application
+        - both components can (but do not have to) be combined into a new component exporting just the entry point by using `wac` for example.
+        - the new component can be invoked in any Wasm runtime implementing the component model, e.g. the Wasmtime cli with `wasmtime run <wasm file>`
+
+        - Advantages are:
+            - Resulting application is portable, even though its math core is written in C++ and Python is used for the high-level program logic.
+            - Resulting component does not have any runtime dependencies such as a Python interpreter.
+            - This application can run on bare-metal systems without any additional work
+]
+
+// Canonical ABI
+// - Encodes complex types through simple Wasm types
 
 === WebAssembly System Interface (WASI) <wasi>
 // References: WASI Spec
 
-// The WebAssembly System Interface (WASI) is a common interface definition for common functionalities that may be provided by a host.
-// These can be simple such as random number generation or more complex like filesystem access or networking.
-// Show current progress
-// Based on WIT
+// Problem
+#todo[OS provide and standard libraries depend on various different interfaces for file systems, networking, rng, etc. See @wasm-challenges]
 
-#td
+// Key concepts
+#todo[
+    - WebAssembly Component Model is able to express interfaces independently of language, compiler, etc.
+    - Specify System Interfaces in WIT language
+    - Standard libraries have a fixed specification for how to make System calls when compiled to Wasm. Currently some just do nothing.
+]
 
 == Plugin systems
 
-#td
-
-// - What are plugin systems?
-// - Why are plugin systems important?
-// - Where are plugin systems used?
+#todo[What are plugin systems]
+#todo[Why are plugin systems important]
+#todo[Where are plugin systems used]

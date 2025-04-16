@@ -136,6 +136,22 @@ an-evaluation-of-wasm-in-non-web-environments:
     type: proceedings
     title: 2021 XLVII Latin American Computing Conference (CLEI)
 
+component-model-docs:
+  type: web
+  title: The WebAssembly Component Model
+  author: Bytecode Alliance
+  url:
+    value: https://component-model.bytecodealliance.org/
+    date: 2025-04-16
+
+component-model-github:
+  type: web
+  title: component-model
+  author: Bytecode Alliance
+  url:
+    value: https://github.com/WebAssembly/component-model
+    date: 2025-04-16
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications
