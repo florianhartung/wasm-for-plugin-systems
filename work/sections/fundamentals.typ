@@ -201,7 +201,7 @@ In comparison, the x64 architecture defines ca. 1500 - 6000 instructions@provabl
 // - Browsers
 // - Other environments which only require some kind of a Wasm runtime
 
-==== Independence of language <design_independence_language>
+==== Independence of language <independence-language>
 Wasm is designed to be a compilation target for higher level languages.
 In particular it is not designed for a specific language, programming model or object model@spec[sec.~1.1.1].
 Currently Wasm can already be used as a compilation target by various languages such as C, C++, Rust, Haskell or Ada.
@@ -268,89 +268,92 @@ These are not directly related to this work, but instead provide a better overvi
 
 
 === Challenges & Limitations
+#subpar.grid(
+    figure(
+        ```
+        char* get_c_string() {
+            ...
+        }
+
+        fn get_rust_string() -> String {
+            ...
+        }
+        ```,
+        caption: [Functions signatures in the C and Rust programming languages.]
+    ), <fig:comparison-string-c-rust-src>,
+    figure(
+        ```wat
+        // C
+        (type (result i32))
+
+        // Rust
+        (type (result i32) (result i32))
+        ```,
+        caption: [WebAssembly functions in its text format for the C and Rust programs]
+    ), <fig:comparison-string-c-rust-wat>,
+    columns: (1fr, 1fr),
+    caption: [Function signatures in the C and Rust programming languages and their compiled type signatures in the WebAssembly text format after compilation. Both functions take no arguments and return a string.],
+    label: <fig:comparison-string-c-rust>,
+)
 // Challenges with Wasm in non-web contexts
-This section deals with common challenges and limitations of Wasm in non-web contexts.
+This section deals with common challenges and limitations of Wasm especially important in non-web contexts.
 
-#todo[type system too simple with only 8 types: i32, i64, f32, f64, v128, ref.null, ref funcaddr, ref.extern externaddr]
-#todo[simple type system results in ambiguities regarding common types used by programming such as strings, futures, tagged unions (enums with values associated per variant), options, results]
-#todo[
-    Example: convention in C is to use ASCII string pointer with null-termination.
-    Rust uses Unicode string pointer without a terminator and instead stores the length of the string together with the pointer.
-    Mapping both to Wasm would result in interfaces: `(pointer: i32)` and `(pointer: i32 len: i32)` with different contents at the pointer location.
-]
-#todo[
-    Wasm tries to find and provide minimal execution environment and interoperable compilation target.
-    While it leaves a lot of freedom for type layouts and representations to the compiler for optimizations, this also has downsides.
-]
-#todo[
-    Two solutions arise:
-    - Use a common serialization format such as JSON or a library such as protobuf, optimally with generators for serialization & deserialization bindings for all languages used.
-        This has overhead though
-    - Specify concrete representation for all types used in interfaces as constructs building on Wasm's simple type system.
-        This however also requires glue code/ bindings for all languages to be written by hand which is error-prone and hard to maintain.
-        E.g. conversion of C ASCII null-terminated string pointer to pointer and string length.
 
-        One projects that follows this approach is the WebAssembly Component Model.
-        It provides a common representation, interface definition language (WIT), and generators for bindings for various languages.
-]
+Wasm provides only a very basic type system with 8 types: 32-bit and 64-bit integers and floats, a 128-bit vector type and three types of references to functions, host objects and the null reference.
+Its type system does not contain any methods to combine multiple data types into a new one, such as structs or classes which are common in most programming languages.
+This is intentional, so that Wasm can be a universal compilation target independent of the higher-level language used (see @independence-language), because not all languages share the same data constructs.
+However this basic type system also has its downsides.
+Because Wasm delegates the responsibility of managing data layouts and representations to compilers, interfaces are now depending on the specific compiler used to create the Wasm module.
+Consider as an example the different strings representations in C and Rust.
+Traditionally strings in C exist as pointers to null-terminated byte sequences of ASCII characters.
+In Rust strings use the Unicode format by default.
+Rust strings still store a pointer to byte sequence, however characters are encoded, allowing for multi-byte characters for example.
+Also Rust strings do not use null-terminators, and instead store the length of the string alongside the pointer in a `String` struct.
 
-// #subpar.grid(
-//     figure(
-//         ```c
-//         (module
-//             (func alsdkf
-//             )
-//         )
-//         ```,
-//         caption: [Bla]
-//     ),
-//     figure(
-//         ```rs
-//         fn foo()
-//         ```,
-//         caption: [Foo]
-//     ),
-//     columns: (1fr, 1fr),
-//     caption: [Comparison bla],
-//     label: <fig:comparison-string-c-rust>,
-// )
+Now if one were to compile a C program exposing a function returning a string and a Rust program exposing a function that also returns a string, these would compile to different Wasm function types.
 
-#todo[
-    Another related problem are common interfaces used by almost all programming languages such as FS, networking or RNG.
-    Most standard libraries rely on these functions to provide abstractions, e.g. over reading data from a file regardless of the current OS.
 
-    An interface for these common APIs must be defined, that is language-agnostic, independent of compilers and compatible across all host platforms, on which the Wasm runtime will eventually execute the Wasm code.
-    This is solved by the WebAssembly System Interface (WASI) in @wasi, which also relies on the WebAssembly Component Model for its interface definition.
-]
+@fig:comparison-string-c-rust-src shows two function signatures in the C and Rust programming languages for functions returning a string.
+When these functions are compiled to WebAssembly, they result in two different function signatures shown in @fig:comparison-string-c-rust-wat.
+The compiled C function returns a pointer in the form of an integer to a null-terminated string.
+The compiled Rust function returns two integers, one as the pointer to the bytes of a Unicode string and the other as the length of the string in bytes.
 
-#todo[
-    Another problem is the transferral of large binary data objects.
-    Wasm function only accept Wasm's basic types.
-    Hosts are able to write into arbitrary linear memory, however the Wasm module's allocator does not know this, which can result in data loss if data get's allocated again and overwritten.
+This issue exists for the various types commonly found in programming languages, for example consider the data layout of enums, tagged unions, futures, options or results.
+There are multiple solutions, for how Wasm interfaces can be standardized across programming languages:
++ A common serialization format such as JSON, XML or a binary format such as CBOR can be used.
+    Before the host invokes a Wasm function, it has to serialize all arguments into a large byte array.
+    Then this byte array passed indirectly as an argument, by writing it into the Wasm instance's linear memory and passing an index to the data to the function.
+    Internally the function first has to deserialize the data into its original form, before it can execute its program logic.
+    At the end of the function, the same procedure is repeated to pass return values back to the host.
+    For this approach a library such as Protobuf (see https://protobuf.dev/) could also be used. It provides serialization and deserialization logic for a variety of programming languages.
+    However this approach might introduce both a performance and memory overhead, due to the heavy serialization and deserialization necessary.
 
-    Current approach also used by Component Model: Modules expose allocator functions such as `malloc` and `free`, which the host can call, write data into the allocated buffer, and then pass the index to that linear memory location to the Wasm instance as an argument.
++ Another approach is to specify a custom Wasm interface for every type and function.
+    This is more labour-intensive, as it requires developers to write glue code for every language and function by hand.
 
-    A better solution in the future could be the Multiple Memory proposal.
-    It allows Wasm modules to use multiple different linear memories.
-    Then a Wasm module could import a linear memory owned and managed by the host, which could be used for passing arguments.
-    This no longer requires interactions between the host and Wasm module prior to the actual function invocations.
-]
-// How can a host provide large binary data objects to a Wasm module? It cannot write to the modules memory, so it would have to call the module's allocator first and then copy data into the allocated memory chunk.
+    One project that builds upon this approach is the WebAssembly Component Model presented in @component-model.
+    It provides a new language for specifying interfaces and can generate glue code for supported programming languages such as Rust, C, C++, Python, JavaScript, etc.
+    Even though it may look similar to the first solution of using standardized serialization, this approach is specifically tailored to Wasm.
+    Thus is can achieve better performance and efficiency.
 
-// Interface for common non-web APIs: filesystem, networking, random number generation.
-// 
+Another related challenge are common features of the operating system used by almost all programming languages such as file systems, networking or RNG.
+Most standard libraries rely on these functions to provide abstractions, e.g. over reading data from a file.
+An interface for these common APIs must be defined, that is language-agnostic, independent of compilers and compatible across all host platforms, on which the Wasm runtime will eventually execute the Wasm code.
+A solution generally accepted by compilers and standard libraries is the WebAssembly System Interface (WASI) presented in @wasi.
+It also relies on the WebAssembly Component Model for language-agnostic interface definitions.
 
-#td
-// - Interfaces
-//     - WASM #sym.arrow.l.r Environment:
-//         By default a WASM module cannot access its environment.
-//         It may export functions and import functions, provided by the host system through the WASM runtime.
-//         How to design a common interface that works for all WASM modules (regardless of their origin/compiler/language) and all hosts and runtimes?
-//         Examples: Accessing a filesystem, Sending and receiving requests over a network.
-//     - WASM #sym.arrow.l.r WASM:
-//         How can two WASM modules, which may have been compiled by different compilers from different languages (Any combination of C, Rust, C++, JS, Python, ...), communicate even though they have completely different memory layouts or one might even use GC? All languages allow for complex types made up of WASMs rather minimal type system
-//         Examples: Two WASM modules implement features, for example an efficient library for performing calculations in Rust and a Python module that uses that library and stores the results in a provided filesystem.
+// #todo[
+//     Another problem is the transferral of large binary data objects.
+//     Wasm function only accept Wasm's basic types.
+//     Hosts are able to write into arbitrary linear memory, however the Wasm module's allocator does not know this, which can result in data loss if data get's allocated again and overwritten.
 
+//     Current approach also used by Component Model: Modules expose allocator functions such as `malloc` and `free`, which the host can call, write data into the allocated buffer, and then pass the index to that linear memory location to the Wasm instance as an argument.
+
+//     A better solution in the future could be the Multiple Memory proposal.
+//     It allows Wasm modules to use multiple different linear memories.
+//     Then a Wasm module could import a linear memory owned and managed by the host, which could be used for passing arguments.
+//     This no longer requires interactions between the host and Wasm module prior to the actual function invocations.
+// ]
 
 === WebAssembly Component Model <component-model>
 // References: Design documents for component model (no spec yet)
