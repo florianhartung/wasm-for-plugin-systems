@@ -5,7 +5,12 @@
 
 == Overview of basic plugin system architecture
 
-== Evaluation of requirements
+== Evaluation of criteria
+/ Performance: #td
+/ Plugin size: #td
+/ Plugin isolation: #td
+/ Plugin portability: #td
+/ Plugin language interoperability: #td
 
 
 == Evaluation of interface-specific requirements
