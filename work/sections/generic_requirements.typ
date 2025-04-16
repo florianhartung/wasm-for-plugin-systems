@@ -109,7 +109,7 @@ Instead we define plugin isolation completely separated from the interface, mean
   \ _Worst case: Plugins gain the same privileges as the host system, usually this means access to the current user's system and peripherals._
 / 2, 3 -- Restricted isolation: Plugins are not isolated from the host application by design.
   Normally the plugin would inherit the host application's privileges, however the host application makes an attempt to restrict plugins from accessing certain critical functionalities.
-  Some examples for restrictions on Linux systems could be allowing only a specific subset of syscalls through `seccomp(2)`#footnote(link("https://www.man7.org/linux/man-pages/man2/seccomp.2.html")) or using `namespaces(7)`#footnote(link("https://www.man7.org/linux/man-pages/man7/namespaces.7.html")) to isolate and limit resources.
+  Some examples for restrictions on Linux systems could be allowing only a specific subset of syscalls through `seccomp(2)`@manpages or using `namespaces(7)`@manpages to isolate and limit resources.
   However both of these examples do not use a sandboxing strategy for isolation.
 
   Because these restrictions can come in a various shapes and forms each based on different technologies, during evaluation either 2 or 3 can be chosen as a score.
@@ -221,8 +221,8 @@ They are described and also considered for evaluation in this work:
   VS Code itself is also written in JavaScript.
   It is chosen for evaluation in this work, because it has successfully implemented a plugin system able to integrate a broad spectrum of plugins ranging from simple plugins for coloring brackets to highly complex plugins such as programming language integrations or plugins enabling interactive jupyter notebooks.
 
-/ 2. Visual Studio (not evaluated here): Visual Studio is an IDE, that is describes itself as "the most comprehensive IDE for .NET and C++ developers on Windows"#footnote("https://visualstudio.microsoft.com/").
-  It is not to be confused with Visual Studio Code, as Visual Studio provides more built-in features for developing, debugging, testing and collaboration between developers#footnote("https://visualstudio.microsoft.com/vs/features/").
+/ 2. Visual Studio (not evaluated here): Visual Studio is an IDE, that is describes itself as "the most comprehensive IDE for .NET and C++ developers on Windows"#footnote(link("https://visualstudio.microsoft.com/")).
+  It is not to be confused with Visual Studio Code, as Visual Studio provides more built-in features for developing, debugging, testing and collaboration between developers#footnote(link("https://visualstudio.microsoft.com/vs/features/")).
   It also allows users to install plugins (here: extensions) written in C\# from a central marketplace.
   However due to personal unfamiliarity with this IDE and the C\# programming language together with the .NET ecosystem, this IDE will not be evaluated in this work.
 
@@ -238,7 +238,7 @@ They are described and also considered for evaluation in this work:
 
 / 4. Notepad++: Notepad++ is an open-source text editor focused around minimalism and efficient software#footnote(link("https://notepad-plus-plus.org/")).
   The editor itself is written in C++ with exclusive support for the Windows operating system.
-  It provides a plugin system for loading plugins in the form of dynamically linked libraries (DLLs)#footnote(link("https://npp-user-manual.org/docs/plugins/")).
+  It provides a plugin system for loading plugins in the form of dynamically linked libraries (DLLs)@notepad-manual.
 
 Besides these text editors and IDEs, this work also evaluates plugin system technologies for other application types.
 Multiple projects and technologies were considered, however due to their similarity to already chosen technologies, missing documentation and time-constraints for this work most of them were disregarded:
@@ -254,7 +254,7 @@ Multiple projects and technologies were considered, however due to their similar
 / Microsoft Flight Simulator (not evaluated here): Microsoft Flight Simulator is a simulator for aircraft with focus on ultra-realism#footnote(link("https://www.flightsimulator.com/")).
   It allows for a wide variety of aircraft, airports and systems such as advanced flight information panels.
   This is achieved by providing multiple software development kits (SDKs) for plugins (so called add-ons).
-  These SDKs support plugin languages such as C, C++, .NET languages, JavaScript or WebAssembly#footnote(link("https://docs.flightsimulator.com/html/Programming_Tools/Programming_APIs.htm")).
+  These SDKs support plugin languages such as C, C++, .NET languages, JavaScript or WebAssembly@msfs-docs[sec.~Programming APIs].
   
   However this software project will not be evaluated in this work.
   It's source code is not publicly available, which makes analysis of its architecture harder.
@@ -268,7 +268,7 @@ Multiple projects and technologies were considered, however due to their similar
 === Visual Studio Code
 / Performance: In terms of performance Visual Studio Code performs reasonably well.
   It builds on web technologies, specifically Electron which utilizes the Chromium browser engine together with Node.js.
-  VS Code is written in JavaScript, which still imposes some limitations compared to native applications such as pauses due to garbage collection or the single-threaded nature of Node.js modules#footnote(link("https://www.electronjs.org/docs/latest/tutorial/multithreading#native-nodejs-modules")).
+  VS Code is written in JavaScript, which still imposes some limitations compared to native applications such as pauses due to garbage collection or the single-threaded nature of Node.js modules@electron-docs[sec. Examples.Multithreading].
   While JavaScript engines such as the V8 engine try to mitigate most issues, the performance of VS Code still remains slower and more memory-hungry than native alternative IDE and text editor applications written in C, C++, Rust, etc.
 
   Even though the overhead imposed could be considered small and VS Code and it's plugin system is quite fast for today's standards, its performance is still rated with a score of 3.
@@ -456,7 +456,7 @@ Multiple projects and technologies were considered, however due to their similar
   With native machine code as plugins, #box[Notepad++] allows for great plugin language interoperability.
   In practice it common to write plugins in languages that compile directly to machine code, such as C, #box[C++] or C\#.
   #box[Notepad++] provides official header files for the API to #box[Notepad++] for plugin development in #box[C++].
-  There are also community-driven API definitions and templates for plugin development in Ada, C\#, D, Delphi or Ada available#footnote(link("https://npp-user-manual.org/docs/plugins/")).
+  There are also community-driven API definitions and templates for plugin development in Ada, C\#, D, Delphi or Ada available@notepad-manual.
 
   One can also argue, that every piece of software running today is eventually compiled to or interpreted as machine code.
   Thus it may be possible to embed higher-level technologies such as a Python runtime along with plugin logic written in Python inside a plugin.
@@ -573,7 +573,7 @@ Each criterion is rated on a scale from 0 (very poor) to 5 (excellent), however 
 It provides good plugin portability from its usage of web technology, but is not able to provide a lot of plugin language interoperability due to the limitation to JavaScript/TypeScript.
 The plugin system used in all *IntelliJ-based IDEs* achieves similar scores for performance and plugin size, however it does not provide any plugin isolation.
 It is able to achieve the same plugin portability as VS Code and a higher score for plugin language interoperability because it allows any JVM-based languages for plugins.
-*Nodepad++* is another text editor with efficiency in mind.
+*Notepad++* is another text editor with efficiency in mind.
 This shows, because it achieves the highest score for performance with plugin sizes that are negligible in practice.
 However it provides terrible plugin isolation and plugin portability due to plugins consisting of natively compiled machine code.
 On the other hand, native machine code also acts as a universal compilation target, allowing pretty much every other technology to be compiled into a plugin.

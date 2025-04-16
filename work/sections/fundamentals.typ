@@ -73,7 +73,7 @@ For example it provides only a handful of types: Signed/unsigned integers, float
 // Wasm is a compilation target
 WebAssembly also does not provide any way to specify memory layouts as it can be done in higher-level languages with structs, classes, records, etc.
 Instead it provides most basic features and instructions, which exist on almost all modern computer architectures like integer and floating point arithmetic, memory operations or simple control flow constructs.
-This is by design, as WebAssembly is more of a compilation target for higher level languages#footnote[#link("https://webassembly.org/")].
+This is by design, as WebAssembly is more of a compilation target for higher level languages@spec.
 Those higher level languages can then build upon Wasm's basic types and instructions and implement their own abstractions like memory layouts or control flow constructs on top.
 This is analogous to the non-virtual ISA machine code in a conventional computer, which also acts as a compilation target for most low-level languages such as Assembly, C, or Rust.
 Nowadays there are compilers for most popular languages already.
@@ -443,6 +443,11 @@ What is the WebAssembly Component Model?
 ]
 
 == Plugin systems
+
+#figure(
+    todo[Figure showing host system, host application, plugin system, plugins & plugin interface],
+    caption: [A plugin system inside a host application allowing plugins to extend the host application with new features.],
+)
 
 #todo[What are plugin systems]
 #todo[Why are plugin systems important]

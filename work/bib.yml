@@ -152,6 +152,36 @@ component-model-github:
     value: https://github.com/WebAssembly/component-model
     date: 2025-04-16
 
+manpages:
+  type: web
+  title: Linux man pages online
+  url:
+    value: https://www.man7.org/linux/man-pages
+    date: 2025-04-16
+
+notepad-manual:
+  type: web
+  title: Notepad++ User Manual
+  url:
+    value: "https://npp-user-manual.org"
+    date: 2025-04-16
+
+msfs-docs:
+  type: web
+  title: Microsoft Flight Simulator - SDK documentation
+  publisher: Microsoft
+  url:
+    value: https://docs.flightsimulator.com
+    date: 2025-04-16
+
+electron-docs:
+  type: web
+  title: Electron Docs
+  url:
+    value: https://www.electronjs.org/docs/latest
+    date: 2025-04-16
+
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications
