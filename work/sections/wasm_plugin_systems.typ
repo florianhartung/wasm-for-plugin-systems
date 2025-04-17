@@ -6,11 +6,28 @@
 == Overview of basic plugin system architecture
 
 == Evaluation of criteria
-/ Performance: #td
-/ Plugin size: #td
-/ Plugin isolation: #td
-/ Plugin portability: #td
-/ Plugin language interoperability: #td
+/ Performance: 4
+  - see @design_fast
+  - very small overhead except for startup.
+  - Research shows performance to be comparable to native code execution
+/ Plugin size: 3
+  - see @design_compact
+  - can become quite large for some technologies like python
+  - others are really small when optimized correctly (binaryyen + -Oz)
+/ Plugin isolation: 5
+  - see @design_safe
+  - perfect isolation by default
+  - no shared state such as pointers between Wasm and host possible
+/ Plugin portability: 4
+  - see @design_portable
+/ Plugin language interoperability: 5
+  - see @independence-language
+  - comparable to native compilation targets such as x86_64 or ARM, with support still improving continuously
+  - Also allows higher-level non-compiled languages to be embedded in Wasm.
+    - Compile the Runtime to Wasm and ship the higher-level program source code
+    - E.g. Compile a small Python/JS runtime to Wasm
+    - Only issue is inefficient garbage collection, but this might be solved by the GC proposal.
+      The hope is that Wasm runtimes can manage garbage-collected objects more efficiently through additional optimizations than runtimes inside Wasm.
 
 
 == Evaluation of interface-specific requirements

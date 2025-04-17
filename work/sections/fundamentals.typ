@@ -336,7 +336,7 @@ There are multiple solutions, for how Wasm interfaces can be standardized across
     Even though it may look similar to the first solution of using standardized serialization, this approach is specifically tailored to Wasm.
     Thus is can achieve better performance and efficiency.
 
-Another related challenge are common features of the operating system used by almost all programming languages such as file systems, networking or RNG.
+Another related challenge are common features of the operating system used by almost all programming languages such as file systems, networking or random number generation.
 Most standard libraries rely on these functions to provide abstractions, e.g. over reading data from a file.
 An interface for these common APIs must be defined, that is language-agnostic, independent of compilers and compatible across all host platforms, on which the Wasm runtime will eventually execute the Wasm code.
 A solution generally accepted by compilers and standard libraries is the WebAssembly System Interface (WASI) presented in @wasi.
@@ -358,97 +358,125 @@ It also relies on the WebAssembly Component Model for language-agnostic interfac
 === WebAssembly Component Model <component-model>
 // References: Design documents for component model (no spec yet)
 
+#[
+    #show raw.where(lang: "wit"): r => {
+        let kw = rgb("#4b69c6")
+        let types = rgb("d73a49")
+
+        show "package": set text(kw)
+        show "record": set text(kw)
+        show "func": set text(kw)
+        show "export": set text(kw)
+        show "interface": set text(kw)
+        show "world": set text(kw)
+
+        show "u32": set text(types)
+        show "s32": set text(types)
+        show "string": set text(types)
+        show "list": set text(types)
+
+
+        r
+    }
+
+    #figure(
+        ```wit
+        package example:example;
+
+        world example-library {
+          export add: func(a: s32, b: s32) -> s32;
+          export trim: func(input: string) -> string;
+          export calculate-sum: func(numbers: list<u32>) -> u32;
+
+          export person-greeter;
+        }
+
+        interface person-greeter {
+          record person {
+            name: string,
+              age: u32,
+              hobbies: list<string>,
+          }
+
+          greet: func(person: person) -> string;
+        }
+        ```,
+        caption: flex-caption([
+            A WIT definition specifying one world `example-library`, that is used to specify the interface of a Wasm component.
+            The world defines that the Wasm component must export four functions:
+            Three simple functions `add`, `trim` and `calculate-sum` here chosen as examples to display available types and one function `greet`, which is exported through the interface `person-greeter`.
+            The interface combines both a new type `Person` and the `greet` function using it.
+        ], [An exemplary WIT definition]),
+    ) <wit-definition-example>
+]
+
 // Problem
-#todo[Common language- and compiler agnostic interface is required, see @wasm-challenges]
+One of the main problems with Wasm is accomplishing a common interface between a Wasm module and the host or between multiple Wasm modules, each with their own specific memory layouts and data representations (see @wasm-challenges).
 
-// Key concepts
-#todo[
-What is the WebAssembly Component Model?
-- Modularity: Modular Wasm modules with interface definitions for the interface they require(import) and provide (export).
-- Interoperability: Architecture for "interoperable Wasm libraries, applications and environments"@component-model-docs.
-]
 
-#figure(
-    ```wit
-    interface adder {
-        add: func(a: i32, b: i32) -> i32;
-    }
+// Goal: Modularity
+The WebAssembly Component Model solves this issue by defining wrappers around Wasm modules, so called _WebAssembly components_@component-model-docs[sec.~2].
+// Goal: Interoperability
+On the high-level each Wasm component contains at most one Wasm module and a definition of the module's interface in a new language-agnostic interface language@component-model-github.
+This allows Wasm components to be as modular as regular Wasm modules, but also allows for more interoperability between Wasm components and the host or between multiple Wasm components@component-model-docs[sec.~2].
+// WIT for interfaces
+The common language used to define a Wasm component's interface is called the Wasm Interface Type (WIT) language.
+Unlike Wasm, it provides various types such as enums, records, option, bit flags, etc. and it allows interface definitions to define new complex types@component-model-docs[sec.~6].
 
-    world main-application {
-        import adder;
+// WIT example
+@wit-definition-example shows an example for a interface definition in the WIT language.
+There the world `example-library`, which can be thought of as the interface or world, in which a Wasm component lives in, is defined.
+It requires a component to export four functions:
+Three functions for how to add together two signed integers, one function to trim an input string and a function for calculating the sum of a list of unsigned numbers.
+The fourth function is not exported directly, but instead through an interface, which is able to group together type definitions and functions.
+Here the interface `person-greeter`, which defines the `person` type and a `greet` function is exported by the main world.
 
-        // Entry function, so that this component can be invoked as an application.
-        // Normally Wasm modules are libraries
-        export command;
-    }
+// Transition from WIT to canonical ABI
+The WIT language is designed to be used to specify interfaces for all popular languages such as C, C++, Rust, Python, etc.
+it defines high-level types, interfaces and worlds, which can be converted from and to low-level Wasm types.
+// Canonical ABI
+The definition for how a specific type of the WIT language is laid out as basic Wasm types is specified by the Canonical ABI also defined as part of the Wasm component model@component-model-docs[sec.~13].
 
-    world adder-library {
-        export adder;
-    }
-    ```,
-    caption: [
-        A WIT definition specifying two worlds for two Wasm components to implement.
-        The first world `main-application` exports an entry point function, while importing the `adder` interface that consists of a single `add` function.
-        The second world `adder-library` exports only the `adder` interface.
-        // TODO make this figure correct
-    ],
-)
-
-#todo[
-    Explain WIT
-    - WIT for language-agnostic interface definitions
-    - Types such as records, variants, enums, resources (opaque to Wasm), lists,
-    - Contains interfaces, components use interfaces to define worlds.
-    - A world is the complete set of interfaces a module imports and exports along with complex types used
-]
-
-#todo[
-    Explain language interoperability
-    - Language support is important for components and host applications.
-    - for components: wit-bindgen generates glue code to convert between common types of a programming language and the types and functions as defined by the WIT interface
-    - for hosts: the wasmtime runtime can automatically generate types and interfaces from a WIT interface, to simplify calling components
-]
+While the specification of such a canonical ABI is enough for seamless interoperability between Wasm modules created with different technologies, in practice a developer would still have to write glue code for converting between high level types such as enums to low-level canonical ABI types, where an enum would be represented as an integer.
+In order to reduce bugs and simplify this process of having to write glue code, also called bindings, by hand, projects such as wit-bindgen were developed alongside the Wasm component model.
+They can be used to generate bindings for a specific WIT interface definition to automate the translation between high-level WIT types and low-level Wasm types@component-model-docs[sec.~8].
+At the time of writing, wit-bindgen can be used to generate bindings for C, Rust, C\#, MoonBit, TeaVM-based Java modules and TinyGo-based modules.
+Generators for other programming languages such as Python and JavaScript also exist: componentize-py and componentize-js.
+On the other side, host applications may want to embed Wasm components into their application, where bindings can also be automatically generated (e.g. for the official Wasm runtime Wasmtime).
 
 // Use cases
-#todo[
-    Explain use cases
-    - Modular precompiled dependencies across multiple languages
-        - Modular and self-contained components also allow centralized registries for their distribution comparable to how NPM packages can be installed @component-model-docs[sec.~9.4].
-    - Example with multiple components:
-        - high-performance C++ core for a math library exposes interface adhering to a WIT definition
-        - python code embedded in Wasm can import this interface via it's own WIT definition and provide a main entry point for the application
-        - both components can (but do not have to) be combined into a new component exporting just the entry point by using `wac` for example.
-        - the new component can be invoked in any Wasm runtime implementing the component model, e.g. the Wasmtime cli with `wasmtime run <wasm file>`
+In addition to being able to define language-agnostic interfaces, the Wasm component model provides another feature.
+It allows multiple Wasm components to be merged into a single new component.
+In practice this means, that Wasm modules, possibly created with different technologies and languages, each with their own WIT definitions can now be combined into a new component for easier distribution.
+An example might be a Wasm component that is made up of two smaller components: A component compiled from C code containing highly efficient algorithm implementations and a component containing a Python command-line interface application that depends on the algorithms of the first component.
 
-        - Advantages are:
-            - Resulting application is portable, even though its math core is written in C++ and Python is used for the high-level program logic.
-            - Resulting component does not have any runtime dependencies such as a Python interpreter.
-            - This application can run on bare-metal systems without any additional work
-]
-
-// Canonical ABI
-// - Encodes complex types through simple Wasm types
+Precompiled library components such as the one providing implementations for common algorithms in this example, can also be distributed through a dedicated global registry@component-model-docs[sec.~9.4].
 
 === WebAssembly System Interface (WASI) <wasi>
 // References: WASI Spec
 
 // Problem
-#todo[OS provide and standard libraries depend on various different interfaces for file systems, networking, rng, etc. See @wasm-challenges]
+The WebAssembly System Interface (WASI) is an interface definition between a Wasm module and the host system developed by a subgroup of the WebAssembly Community Group@wasi-github.
+Typically programs communicate directly to the operating system for access to the file system, networking, random number generation, etc.
+However because Wasm modules are completely isolated from the host system by default, Wasm code has no standardized interface to the Wasm runtime for accessing these parts of the host system.
+Because Wasm was originally designed for the web, where programs do not have access to these features of the underlying operating system, there was no need for it until non-web applications emerged.
 
-// Key concepts
-#todo[
-    - WebAssembly Component Model is able to express interfaces independently of language, compiler, etc.
-    - Specify System Interfaces in WIT language
-    - Standard libraries have a fixed specification for how to make System calls when compiled to Wasm. Currently some just do nothing.
-]
+WASI solves this problem by defining a common interface similar but not the same as the POSIX standard.
+It defines its interface based on the Wasm component model in form of separate WIT definitions for every feature set.
+This then allows programming languages and their standard libraries and compilers to adapt and use these interfaces to support features such as file systems and networking when compiling to Wasm.
+Note that Wasm runtimes also need to support the WASI specification by exposing the respective functions to Wasm components/modules.
 
 == Plugin systems
 
 #figure(
-    todo[Figure showing host system, host application, plugin system, plugins & plugin interface],
-    caption: [A plugin system inside a host application allowing plugins to extend the host application with new features.],
+    image("../images/plugin_system.drawio.png", width: 70%),
+    caption: [
+        A plugin system inside a host application providing the host application methods to access individual plugins.
+        The plugin interface lies between each plugin and the plugin system / host application.
+    ],
 )
 
 #todo[What are plugin systems]
 #todo[Why are plugin systems important]
 #todo[Where are plugin systems used]
+// This could allow a host application to let plugins extend it with new features.

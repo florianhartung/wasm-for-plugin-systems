@@ -98,8 +98,8 @@
   #outline(title: [List of tables #v(7mm)], target: figure.where(kind: table))
   #pagebreak()
 
-  // #outline(title: [List of code listings#v(7mm)], target: figure.where(kind: raw))
-  // #pagebreak()
+  #outline(title: [List of code listings#v(7mm)], target: figure.where(kind: raw))
+  #pagebreak()
 
   #let is_on_new_section_page = state("is_on_new_section_page", false)
   #let get_current_heading = context {

@@ -152,6 +152,13 @@ component-model-github:
     value: https://github.com/WebAssembly/component-model
     date: 2025-04-16
 
+wasi-github:
+  type: web
+  title: WASI
+  url:
+    value: https://github.com/WebAssembly/WASI
+    date: 2025-04-17
+
 manpages:
   type: web
   title: Linux man pages online
