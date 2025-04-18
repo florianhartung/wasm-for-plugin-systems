@@ -474,9 +474,26 @@ Note that Wasm runtimes also need to support the WASI specification by exposing 
         A plugin system inside a host application providing the host application methods to access individual plugins.
         The plugin interface lies between each plugin and the plugin system / host application.
     ],
-)
+) <plugin-systems>
 
-#todo[What are plugin systems]
-#todo[Why are plugin systems important]
-#todo[Where are plugin systems used]
-// This could allow a host application to let plugins extend it with new features.
+In software engineering architectures and patterns define structures used to solve common problems.
+For example an application can be implemented as a monolithic application or as a layered application that benefits from abstractions.
+One of these software engineering patterns is the plugin system pattern.
+It defines plugins as software components, that can implement new isolated features for extension of some host application without modification of the host application itself.
+On the side of the host application, a plugin system is implemented as a software component for management of and communication to individual plugins.
+
+@plugin-systems shows a diagram of all relevant software components for an application with an integrated plugin system.
+The host application itself runs on the host system and implements a core application.
+It also contains the plugin system, which is may be hand-written or provided by a library.
+This plugin system is used by the host application to embed plugins and interact with them.
+The plugin interface is defined as the common interface, that plugins expect from and provide to the plugin system.
+
+The plugin system architecture is commonly viewed as a software engineering pattern for extending an existing host application with new features.
+However some research exists, suggesting plugin systems as a general software architecture pattern to build entire applications around@pluggable-systems-as-architectural-pattern.
+This shows that plugin systems are not defined as a single pattern, e.g. compared to patterns such as the factory pattern, but are rather highly variable systems architectures.
+For example, some plugin systems might allow plugins to depend on each other, while others keep them strictly isolated.
+
+Because of the high variability of plugin systems, the pros and cons also vary.
+However the main advantages of plugin systems seem to be allowing the extension of host applications with new functionality and being able to enable/disable plugins, depending on whether they are currently required to save system resources.
+The major drawback of plugin systems is the additional complexity introduces, especially when plugin systems are implemented inside host applications, which where not designed with plugin systems in mind from the start.
+Incorrect implementations could result in tight coupling between the core host application and the plugin system or unexpected behavior of the host application due to interference with modifications by plugins.

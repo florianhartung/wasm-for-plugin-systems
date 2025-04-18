@@ -29,7 +29,6 @@
     - Only issue is inefficient garbage collection, but this might be solved by the GC proposal.
       The hope is that Wasm runtimes can manage garbage-collected objects more efficiently through additional optimizations than runtimes inside Wasm.
 
-
 == Evaluation of interface-specific requirements
 #todo[
   It is not possible to evaluate Wasm as a technology, because it only provides fundamental technology for executing WebAssembly program code.

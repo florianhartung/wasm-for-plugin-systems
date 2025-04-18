@@ -188,6 +188,21 @@ electron-docs:
     value: https://www.electronjs.org/docs/latest
     date: 2025-04-16
 
+pluggable-systems-as-architectural-pattern:
+  type: article
+  title: 'Pluggable Systems as Architectural Pattern: An Ecosystemability Performance'
+  author: ["Syeed, M.M. Mahbubul", "Lokhman, Alexander", "Mikkonen, Tommi", "Hammaouda, Imed"]
+  publisher: Association for Computing Machinery
+  date: 2015
+  url:
+    value: https://dl.acm.org/doi/10.1145/2797433.2797477
+    date: 2025-04-18
+  serial-number:
+    isbn: 9781450333931
+    doi: 10.1145/2797433.2797477
+  parent:
+    type: proceedings
+    title: Proceedings of the 2015 European Conference on Software Architecture Workshops
 
 # understanding-the-performance-of-wasm:
 #   type: web
