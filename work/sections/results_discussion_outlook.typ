@@ -1,5 +1,7 @@
-= Results & Discussion (2 pages)
-- some of wasms strenghts were not represented during the technology comparison. namely native-like safe interfacing
+= Results & discussion (2 pages)
+- some Wasm strengths and weaknesses not represented/covered
+  - advantage: native-live safe interfacing
+  - disadvantage: ecosystem not quite ready and still evolving for some technologies and lesser used languages
 
 = Outlook
 // Vorwärts oder Rückwärtsgerichtet

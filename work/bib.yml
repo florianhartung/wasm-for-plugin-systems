@@ -204,6 +204,28 @@ pluggable-systems-as-architectural-pattern:
     type: proceedings
     title: Proceedings of the 2015 European Conference on Software Architecture Workshops
 
+zed-docs:
+  type: web
+  title: Zed documentation
+  publisher: Zed Industries
+  url:
+    value: https://zed.dev/docs/
+    date: 2025-04-19
+
+zellij-docs:
+  type: web
+  title: ZelliJ User Guide
+  url:
+    value: https://zellij.dev/documentation/
+    date: 2025-04-19
+
+extism-docs:
+  type: web
+  title: Extism documentation
+  url:
+    value: https://extism.org/docs/overview
+    date: 2025-04-19
+
 # understanding-the-performance-of-wasm:
 #   type: web
 #   title: Understanding the Performance of WebAssembly Applications

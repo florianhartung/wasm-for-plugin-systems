@@ -47,7 +47,7 @@ We call this virtualized environment the *host environment* (used by the specifi
         [Microarchitecture level],
         [Digital logic level],
     ),
-    caption: flex-caption([A multilevel computer system running Wasm code. Based on @tanenbaum-structured[fig.~1-2]], [A multilevel computer system running WebAssembly code]),
+    caption: flex-caption([A multilevel computer system running Wasm code. Based on @tanenbaum-structured[fig.~1-2].], [A multilevel computer system running WebAssembly code]),
     kind: image,
 ) <multi-level-wasm>
 
@@ -181,7 +181,8 @@ Because Wasm is able to provide safety for untrusted code execution, it is curre
 ==== Portable <design_portable>
 // This includes goals: hardware-independent, platform-independent
 Originally Wasm was designed for fast and safe code execution on a client's web browser@bringing-the-web-up-to-speed.
-This means that a variety of web browsers, all running on different platforms and architectures from desktop computers, mobile devices and even embedded devices, have to be able to run Wasm code.
+This means that a variety of web browsers, all running on different platforms and architectures.
+Various devices such as desktop computers, mobile devices and even embedded devices have to be able to run Wasm code.
 
 Thus Wasm was designed to be able to be portable for various target platforms and architectures@spec.
 It does this by defining only the most basic types and instructions necessary to act as a compilation target.
@@ -289,10 +290,14 @@ These are not directly related to this work, but instead provide a better overvi
         // Rust
         (type (result i32) (result i32))
         ```,
-        caption: [WebAssembly functions in its text format for the C and Rust programs]
+        caption: [WebAssembly functions in its text format for the C and Rust programs.]
     ), <fig:comparison-string-c-rust-wat>,
     columns: (1fr, 1fr),
-    caption: [Function signatures in the C and Rust programming languages and their compiled type signatures in the WebAssembly text format after compilation. Both functions take no arguments and return a string.],
+    caption: flex-caption(
+        [Function signatures in the C and Rust programming languages and their compiled type signatures in the WebAssembly text format after compilation. Both functions take no arguments and return a string.],
+        [C and Rust functions and their WebAssembly equivalents]
+    ),
+    kind: raw,
     label: <fig:comparison-string-c-rust>,
 )
 // Challenges with Wasm in non-web contexts
@@ -466,15 +471,18 @@ It defines its interface based on the Wasm component model in form of separate W
 This then allows programming languages and their standard libraries and compilers to adapt and use these interfaces to support features such as file systems and networking when compiling to Wasm.
 Note that Wasm runtimes also need to support the WASI specification by exposing the respective functions to Wasm components/modules.
 
-== Plugin systems
+== Plugin systems <plugin-systems>
 
 #figure(
     image("../images/plugin_system.drawio.png", width: 70%),
-    caption: [
-        A plugin system inside a host application providing the host application methods to access individual plugins.
-        The plugin interface lies between each plugin and the plugin system / host application.
-    ],
-) <plugin-systems>
+    caption: flex-caption(
+        [
+            A plugin system inside of a host application providing the host application methods to access individual plugins.
+            The plugin interface lies between each plugin and the plugin system / host application.
+        ],
+        [A plugin system inside of a host application]
+    ),
+) <plugin-systems-arch>
 
 In software engineering architectures and patterns define structures used to solve common problems.
 For example an application can be implemented as a monolithic application or as a layered application that benefits from abstractions.
@@ -482,7 +490,7 @@ One of these software engineering patterns is the plugin system pattern.
 It defines plugins as software components, that can implement new isolated features for extension of some host application without modification of the host application itself.
 On the side of the host application, a plugin system is implemented as a software component for management of and communication to individual plugins.
 
-@plugin-systems shows a diagram of all relevant software components for an application with an integrated plugin system.
+@plugin-systems-arch shows a diagram of all relevant software components for an application with an integrated plugin system.
 The host application itself runs on the host system and implements a core application.
 It also contains the plugin system, which is may be hand-written or provided by a library.
 This plugin system is used by the host application to embed plugins and interact with them.

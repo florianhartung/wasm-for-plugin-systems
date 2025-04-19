@@ -146,7 +146,8 @@
   #[
     #show heading.where(level: 1): it => {
       is_on_new_section_page.update(true)
-      pagebreak(weak: true)
+      // pagebreak(weak: false)
+      colbreak(weak: true)
       it
       is_on_new_section_page.update(false)
     }

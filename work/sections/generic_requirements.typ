@@ -10,7 +10,7 @@ Then, appropriate technologies and software projects are selected to represent a
 Next, the technologies and projects are evaluated against the previously defined criteria.
 Finally, a technology comparison matrix is used to summarize and visualize the results.
 
-== Definition of criteria
+== Definition of criteria <definition-criteria>
 In this section criteria for good plugin systems are defined.
 // TODO Mention, that choice of criteria should be specifically suited for text editor plugin systems?
 Each criterion will define a scale from 0 to 5, along with requirements for each score.
@@ -290,7 +290,7 @@ Multiple projects and technologies were considered, however due to their similar
       "vscodevim.vim": (2800, 45000, 0, 3200000, 4000000),
     ),
     category_colors: i => (orange, color.fuchsia, blue, green, gray).map(c => c.darken(20%)).at(i)
-  ), caption: flex-caption([Plugin size distributions of selected VS Code plugins], [Plugin size distributions of selected VS Code plugins])
+  ), caption: flex-caption([Plugin size distributions of selected VS Code plugins.], [Plugin size distributions of selected Visual Studio Code plugins])
 ) <fig:size-distributions-vscode-plugins>
 / Plugin size: The average plugin size for VS Code plugins is highly variable.
   Most minimal plugins typically consist of JavaScript or TypeScript code and a JSON manifest file.
@@ -499,7 +499,7 @@ Multiple projects and technologies were considered, however due to their similar
   However in practice it is more common for plugin developers to develop plugins with C++ using the official VST3 software development kit.
   The universality of the native binary format earns VST3 a rating of 5 for plugin language interoperability.
 
-== Results & summary <technology-comparison-matrix>
+== Results of the technology comparison <technology-comparison-matrix>
 #let c(n) = {
   let fill = gray
   let contents = [?]
@@ -560,7 +560,7 @@ Multiple projects and technologies were considered, however due to their similar
     table.header(table.cell(stroke: none, []), header-rot[Performance], header-rot[Plugin size], header-rot[Plugin isolation], header-rot[Plugin portability], header-rot[Plugin language\ interoperability]), //header-rot[Weighted score]),
     ..scores.pairs().map(((x, y)) => (table.cell(x), ..y.map(c))).flatten()
   ),
-  caption: flex-caption([Technology comparison matrix for selected technologies and software projects], [Technology comparison matrix of existing technologies & projects])
+  caption: flex-caption([Technology comparison matrix for selected technologies and software projects.], [Technology comparison matrix of existing technologies & projects])
 ) <technology-comparison-matrix-existing>
 
 Three different plugin systems and one standard for a plugin system technology have been evaluated with the previously defined criteria.
