@@ -166,7 +166,7 @@ Wasm however achieves a perfect score of 5 for plugin isolation with its executi
 Overall Wasm performs very well compared to existing plugin system technologies.
 This leads to the question, if Wasm is viable for plugin systems in practice.
 
-== Related projects using WebAssembly plugin systems
+== Related projects using WebAssembly plugin systems <related-wasm-projects>
 This section presents noteworthy software projects, which have implemented a Wasm plugin system.
 While Wasm itself acts as the fundamental technology to execute individual plugins similar to virtual machines,
 in practice other choices regarding challenges such as interfacing must be made.
@@ -199,7 +199,7 @@ For plugins it provides so-called Plugin Development Kits (PDKs), which provide 
 It uses a custom serialization format to pass data between hosts and Wasm plugins.
 However users can build on top of this format by using other serialization libraries such as Protobuf or JSON@extism-docs.
 
-== Summary of results
+== Results
 Overall, WebAssembly performs at least as good as the four analyzed technologies in 3 of the 5 criteria.
 It can achieve *perfect plugin isolation* through its sandboxing without complex dynamic interfaces at runtime, while some other plugin system technologies have no mechanism for isolation in place at all (IntelliJ-family, Notepad++, VST3) or provide just partial isolation (VS Code).
 Wasm provides *very good plugin portability* comparable to the JavaScript-based plugin system of VS Code or the JVM-based plugin system of the IntelliJ-based IDEs.
@@ -219,6 +219,5 @@ The scoring for Wasm's plugin size is similar to its performance scoring.
 Wasm achieves average plugin sizes, slightly larger than native machine code, again varying only by single-digit factors.
 
 Also some existing Wasm plugin system projects were presented briefly.
-All projects use Wasm as their fundamental technology for code execution, however their technology choices for optimizations and interface are highly variable
-
+All projects use Wasm as their fundamental technology for code execution, however their technology choices for optimizations and interface are highly variable.
 While some plugin systems take advantage of the evolving ecosystem around the Wasm Component Model and WASI specification, others rely on third-party serialization libraries such as Protobuf or even specify a completely custom Wasm plugin interface for users to build on top of.

@@ -225,7 +225,7 @@ This will be done by doing a rough reevaluation of the criteria defined in @defi
 / Plugin language interoperability:
     Plugins were written with the Rust and Python programming languages to show that both directly compiled languages and interpreted languages can be used as Wasm plugins.
 
-=== Results
+=== Conclusion
 All in all, the implemented Wasm plugin system is able to fulfill all requirements and also performs reasonably well for the criteria defined in @definition-criteria.
 However a more in-depth analysis of the plugin system regarding most of the criteria might be useful in the future.
 Overall, Wasm looks to perform quite well as a plugin system technology.

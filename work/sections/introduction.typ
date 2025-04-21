@@ -1,12 +1,13 @@
 #import "../wip.typ": *
 
 = Introduction
-#todo[Introduce Wasm as modern web technology, used by popular frameworks (Qt) and companies (Ebay)]
-// Wasm in the web
-// On the web Wasm is used for a lot of different reasons, such as running native applications in a web context
-// #footnote[The application development framework Qt allows C/C++ applications to be compiled to Wasm: #link("https://doc.qt.io/qt-6/wasm.html")]
-// or running code that requires high performance
-// #footnote[Ebay uses Wasm to allow sellers to scan barcodes through their webapp, for which Javascript would have been too unresponsive: #link("https://innovation.ebayinc.com/tech/engineering/webassembly-at-ebay-a-real-world-use-case/")].
+Web applications are becoming more and more popular and complex requiring the use of compute-intensive algorithms for applications such as 3D visualizations or interactive games@bringing-the-web-up-to-speed.
+Thus the need for faster code execution that cannot be provided by JavaScript grows.
+Traditionally JavaScript is the only language allowing client side code execution, however it was never designed for these kinds of high-performance tasks.
+
+WebAssembly (Wasm) is a modern web technology developed through collaboration of the four major web browsers providing performance, safety and portability.
+It is used by popular frameworks such as Qt for building web interfaces powered by C++ code @qt-docs or companies such as Ebay to optimize a slow barcode scanner algorithms@ebay-blog.
+
 
 #todo[Explain why Wasm is attractive for non-web contexts]
 // However Wasm can also be used in non-web contexts.

@@ -123,7 +123,14 @@ provably-safe-multilingual-software-sandboxing:
 
 analyzing-the-performance:
   type: article
-  title: bla
+  title: 'Mind the Gap: Analyzing the Performance of WebAssembly vs. Native Code'
+  author: ["Jangda, Abhinav", "Powers, Bobby", "Guha, Arjun", "Berger, Emery"]
+  date: 2019-01
+  serial-number:
+    doi: arXiv.1901.09056
+  url:
+    value: https://arxiv.org/abs/1901.09056
+    date: 2025-04-21
 
 an-evaluation-of-wasm-in-non-web-environments:
   type: article
@@ -225,6 +232,22 @@ extism-docs:
   url:
     value: https://extism.org/docs/overview
     date: 2025-04-19
+
+qt-docs:
+  type: web
+  title: Qt Group Documentation
+  url:
+    value: https://doc.qt.io/
+    date: 2025-04-21
+
+ebay-blog:
+  type: web
+  title: 'WebAssembly at eBay: A Real-World Use Case'
+  date: 2019-05
+  author: ["Padmanabhan, Senthil", "Jha, Pranav"]
+  url:
+    value: https://innovation.ebayinc.com/tech/engineering/webassembly-at-ebay-a-real-world-use-case/
+    date: 2025-04-21
 
 # understanding-the-performance-of-wasm:
 #   type: web
