@@ -19,6 +19,10 @@ While Wasm itself is stable, its ecosystems consisting of proposals for new feat
 These technologies and projects are still rapidly evolving, leading to instabilities and frequent breaking changes between versions.
 Even though challenges for the Wasm ecosystem exist, multiple software projects, e.g. those presented in @related-wasm-projects, have already proven that Wasm is indeed ready for use in production-grade plugin systems.
 
+To answer the research question which asks whether Wasm is the best technology for building good and versatile text editor plugin systems:
+Wasm is certainly among the best technologies for good and versatile text editor plugin systems in theory.
+Even though Wasm and its ecosystem are rapidly evolving, which may present as a challenge for some projects, some projects exist that have already adopted Wasm for their plugin systems.
+
 = Outlook
 Looking back at the technology comparison, a set of five criteria was selected to evaluate the technologies under consideration.
 However, in retrospect, it became clear that these criteria were not sufficient for a meaningful evaluation.

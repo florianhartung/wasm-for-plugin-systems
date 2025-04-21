@@ -1,7 +1,7 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption
 
-= Proof of concept: Implementing a WebAssembly plugin system for a text editor
+= Proof of concept: Developing a WebAssembly plugin system for a text editor
 The first part of this work did a technology comparison to find out if Wasm is feasible as a technology for plugin systems.
 In this second part, a basic proof of concept for a Wasm plugin system will be implemented for a text editor.
 To make this process as realistic as possible, to learn as much as possible from this implementation, a text editor that is already being used today by developers will be used.
@@ -78,7 +78,6 @@ Modification of the core editor state works by exposing functions to the Wasm co
 Event hooks on the other hand work by having each plugin export one function per event type by defining them as exports in the WIT definition.
 These functions are then called by the core editor, each time a certain point in the program is reached.
 
-== Implementation
 #figure(
     ```wit
     package helix:plugin;
@@ -90,6 +89,7 @@ These functions are then called by the core editor, each time a certain point in
             description: string,
             keywords: list<string>,
         }
+
         enum log-level {
             info,
             warn,
@@ -106,9 +106,11 @@ These functions are then called by the core editor, each time a certain point in
         import set-editor-status: func(msg: string);
         import get-text-selection: func() -> option<string>;
     }
+
     world keyevents {
         export handle-key-press: func(input: char);
     }
+
     world modify-buffers {
         import write: func() -> result<_, string>;
         import close-buffer: func() -> result<_, string>;
@@ -140,6 +142,8 @@ These functions are then called by the core editor, each time a certain point in
         WIT definition for a single example Wasm plugin
     ])
 ) <plugin-wit-definition>
+
+== Implementation
 This section provides an insight into chosen parts of the implementation of the Wasm plugin system.
 It outlines the choices made during implementation, the technologies used for implementation and the challenges faced.
 

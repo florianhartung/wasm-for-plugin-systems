@@ -55,10 +55,10 @@
 
   // Abstract
   #align(center)[
-    #box(width: 80%)[
+    #box(width: 85%)[
       #text(size: 1.2em)[#align(center)[*Abstract*]]
-      #par(justify: true, first-line-indent: 0.2em)[
-        #abstract
+      #par(justify: true, first-line-indent: 1.4em, spacing: 0.8em)[
+        #align(left, abstract)
       ]
     ]
   ]
@@ -66,10 +66,10 @@
 
   // Abstract (german)
   #align(center)[
-    #box(width: 80%)[
+    #box(width: 85%)[
       #text(size: 1.2em)[#align(center)[*Zusammenfassung*]]
-      #par(justify: true, first-line-indent: 0.2em)[
-        #abstract_de
+      #par(justify: true, first-line-indent: 1.4em, spacing: 0.8em)[
+        #align(left, abstract_de)
       ]
     ]
   ]
