@@ -64,8 +64,8 @@ They are isolated and sandboxed through software, as opposed to other means of i
   Wasm is designed with portability as a goal.
   Originally it was designed for the web, where portability is necessary to support various browsers, platforms and architectures (see @design_portable).
 
-  For that the execution of Wasm requires a small runtime, able to execute the relatively simple Wasm code.
-  Once Wasm code is compiled, it is then portable to any platform, for which any Wasm runtime exists.
+  However, the execution of Wasm requires a small runtime, able to execute the relatively simple Wasm code.
+  Once Wasm code is compiled, it is then portable to any platform, for which a compatible Wasm runtime exists.
 
   Because of the need of a small Wasm runtime and the extreme portability of Wasm plugins themselves, the plugin portability for Wasm plugins is rated at a score of 4.
 
@@ -150,10 +150,10 @@ They are isolated and sandboxed through software, as opposed to other means of i
 
 The last section @wasm-evaluation-of-criteria evaluated all five criteria for Wasm as a technology for plugin systems.
 Now that existing technologies and Wasm have been evaluated, they can be compared.
-@technology-comparison-matrix-final shows the previous technology comparison matrix @technology-comparison-matrix-existing with Wasm and its scores as a new row.
+@technology-comparison-matrix-final shows the previous technology comparison matrix (@technology-comparison-matrix-existing) with Wasm and its scores as a new row.
 It is visible, that Wasm performs great overall.
 On the one hand it lacks performance and has slightly larger plugins in comparison to Notepad++ and VST3.
-However both of these technologies use native machine code for execution, which achieves the optimal performance,because they do not require a runtime and thus no overhead is present.
+However both of these technologies use native machine code for execution, which achieves the optimal performance, because they do not require a runtime and thus no overhead is present.
 While Wasm cannot take the first place for these criteria, it is able to outperform previous technologies in plugin isolation and portability while still acting as a universal compilation target.
 In comparison to the plugin systems used by VS Code and all IntelliJ-based IDEs, Wasm provides severe advantages across all five criteria evaluated in this work.
 
@@ -167,8 +167,8 @@ Overall Wasm performs very well compared to existing plugin system technologies.
 This leads to the question, if Wasm is viable for plugin systems in practice.
 
 == Related projects using WebAssembly plugin systems <related-wasm-projects>
-This section presents noteworthy software projects, which have implemented a Wasm plugin system.
-While Wasm itself acts as the fundamental technology to execute individual plugins similar to virtual machines,
+This section presents noteworthy software projects, which have already implemented a Wasm plugin system.
+While Wasm itself acts as the foundational technology to execute individual plugins similar to virtual machines,
 in practice other choices regarding challenges such as interfacing must be made.
 These challenges and issues might be be solved differently by various plugin system implementations.
 
@@ -187,7 +187,7 @@ It allows to split up one terminal instance into multiple panes or manage termin
 Similar commonly known terminal multiplexers are Tmux, xterm or the Windows Terminal.
 ZelliJ features a Wasm plugin system, to allow accessible development of new features in various programming languages@zellij-docs.
 The plugin system is also used by the ZelliJ project itself.
-Some features such as a status bar, the about page or even the plugin manager itself are developed as plugins, which can be advantageous for developer accessibility and learning purposes.
+Some features such as a status bar, the about page or even the plugin manager itself are implemented as plugins, which can be advantageous for developer accessibility and learning purposes.
 For interfacing between the host application and Wasm plugins, ZelliJ uses Protobuf (#link("https://protobuf.dev/")).
 Protobuf specifies a language-agnostic interface definition language not particularly for Wasm systems, as described in @wasm-challenges.
 An interface definition can then be used to generate bindings for both the host application and Wasm plugins.
@@ -200,7 +200,7 @@ It uses a custom serialization format to pass data between hosts and Wasm plugin
 However users can build on top of this format by using other serialization libraries such as Protobuf or JSON@extism-docs.
 
 == Results
-Overall, WebAssembly performs at least as good as the four analyzed technologies in 3 of the 5 criteria.
+Overall, WebAssembly performs at least as good as the four analyzed technologies in three of the five criteria.
 It can achieve *perfect plugin isolation* through its sandboxing without complex dynamic interfaces at runtime, while some other plugin system technologies have no mechanism for isolation in place at all (IntelliJ-family, Notepad++, VST3) or provide just partial isolation (VS Code).
 Wasm provides *very good plugin portability* comparable to the JavaScript-based plugin system of VS Code or the JVM-based plugin system of the IntelliJ-based IDEs.
 This degree of portability is by design, as Wasm code must run in browsers on all architectures and platforms in a web context.
@@ -209,15 +209,15 @@ Also Wasm achieves a *perfect plugin language interoperability*.
 In theory it acts as a universal compilation target for various languages today, however language support is still rapidly evolving and improving over time.
 Wasm allows various languages such as Rust, C, C++, etc. to be compiled directly to Wasm bytecode or programs written in higher-level interpreted languages such as Python to be embedded by distribution of an additional runtime for those languages.
 In comparison, some other plugin system technologies evaluated in this technology comparison, namely VS Code and IntelliJ-based IDEs, limit plugins to a single language or a compilation target used only by a few languages such as JVM bytecode.
-Other plugin systems such as Notepad++ or VST3 use native machine code, which acts as a universal compilation target, just as Wasm bytecode.
+Other plugin systems such as Notepad++ or VST3 use native machine code, which acts as a universal compilation target as well.
 
 On the other hand, Wasm performs worse than other technologies for the performance and plugin size criteria.
 Its achieves a *very good, but not optimal performance* at a score of 4.
-The only two plugin system technologies are those of Notepad++ and VST3, which both use native code as their execution format.
-While only native code can achieve perfect performance scores, Wasm's peak slowdowns in comparison to native code seem to be around single-digit factors, which still outperforms other plugin systems, namely VS Code and IntelliJ-based IDEs.
+The only two plugin system technologies with optimal performance are VST3 and the Notepad++'s plugin system, which both use native code as their execution format.
+While only native code can achieve perfect performance scores, Wasm's peak slowdowns in comparison to native code seem to be around single-digit factors@design_fast, which still outperforming other plugin systems, namely VS Code and IntelliJ-based IDEs.
 The scoring for Wasm's plugin size is similar to its performance scoring.
-Wasm achieves average plugin sizes, slightly larger than native machine code, again varying only by single-digit factors.
+Wasm achieves average plugin sizes, slightly larger than native machine code, again varying only by single-digit factors@design_compact.
 
 Also some existing Wasm plugin system projects were presented briefly.
-All projects use Wasm as their fundamental technology for code execution, however their technology choices for optimizations and interface are highly variable.
+All projects use Wasm as their fundamental technology for code execution, however their technology choices for optimizations and interfaces are highly variable.
 While some plugin systems take advantage of the evolving ecosystem around the Wasm Component Model and WASI specification, others rely on third-party serialization libraries such as Protobuf or even specify a completely custom Wasm plugin interface for users to build on top of.

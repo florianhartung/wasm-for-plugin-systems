@@ -10,7 +10,7 @@
   However, Wasm's design is execution environment agnostic, making it an interesting technology for non-web contexts such as avionics, distributed computing or embedded devices.
 
   // Problem statement, goal
-  This work investigates Wasm as a technology for implementing a secure and fast plugin system with portable plugins compiled from higher level languages such as C, Rust, Python and JavaScript.
+  This work investigates Wasm as a technology for implementing secure and fast plugin systems with portable plugins compiled from higher level languages such as C, Rust, Python and JavaScript.
   The question is whether Wasm can outperform existing plugin system technologies, with a focus on text editor plugin systems.
 
   // Methods
@@ -19,12 +19,12 @@
   Finally, as a proof of concept, a Wasm-based plugin system is developed for an existing text editor project to provide a better insight into the current state of the rapidly evolving Wasm ecosystem.
 
   // Results
-  The technology comparison shows that none of the selected existing plugin system technologies stands out across five defined criteria.
-  Wasm, however, matches or exceeds all other technologies in three of the five criteria, falling short only to native machine code-based plugin systems.
-  A basic Wasm plugin system was implemented for the Helix text editor, demonstrating Wasm's real-world viability with only minor challenges.
+  The technology comparison shows that none of the selected existing plugin system technologies stands out across all five defined criteria.
+  Wasm, however, matches or exceeds all other technologies in three of the five criteria, falling short only to native machine code-based plugin systems for the other two.
+  A basic Wasm plugin system was implemented for the Helix text editor, demonstrating Wasm's real-world viability with only minor challenges faced.
 
   // Discussion
-  Improvements to the technology comparison are identified, including the need for a wider range of technologies and criteria, and also quantitative evaluation.
+  Improvements to the technology comparison are identified, including the need for a wider range of technologies and criteria, but also quantitative evaluation.
   The results suggest that Wasm is a promising foundational technology for plugin systems.
   It continues to be improved by new proposals and new emerging projects such as the WebAssembly Component Model, further strengthening its viability.
 ]
@@ -48,14 +48,14 @@
   So soll herausgefunden werden, ob das sich schnell entwickelnde Wasm und sein Ökosystem auch in der Praxis produktionreif sind.
 
   // Results
-  Der Technologievergleich zeigt, dass keines der ausgewählten bestehenden Plugin-Systeme über alle fünf Kriterien herausragt.
-  Wasm hingegen, schneidet in drei von den fünf Kriterien mindestens so gut wie andere Plugin-Systeme ab, wobei es nur von solchen übertroffen wird, welche auf kompiliertem Maschinencode basieren.
-  Des Weiteren zeit der entwickelte Wasm Plugin-System Prototyp, dass Wasm mit nur kleinen Hürden bereit für die Nutzung in echten Softwareanwendungen ist.
+  Der Technologievergleich zeigt, dass keines der ausgewählten bestehenden Plugin-Systeme für alle fünf Kriterien über andere herausragt.
+  Wasm hingegen schneidet in drei von den fünf Kriterien mindestens so gut wie andere Plugin-Systeme ab, wobei es nur von solchen übertroffen wird, welche auf kompiliertem Maschinencode basieren.
+  Des Weiteren demonstriert der entwickelte Wasm Plugin-System Prototyp, dass Wasm mit nur kleinen Hürden bereit für die Nutzung in echten Softwareanwendungen ist.
 
   // Discussion
-  Es werden Verbesserungen für den Technolgievergleich identifiziert, unter anderem der Notwendigkeit für einen größeren Umfang an Plugin-System Technologien, Kriterien und einer genaueren quantitativen Bewertung der Kriterien.
+  Es werden Verbesserungen für den Technolgievergleich identifiziert, unter anderem die Notwendigkeit für einen größeren Umfang an Plugin-System Technologien und Kriterien und einer genaueren quantitativen Bewertung der Kriterien.
   Die Ergebnisse zeigen, dass Wasm eine vielversprechende Technologie für Plugin-Systeme ist.
-  Wasm wird stetig durch neue Proposals und Projekte wie das Wasm Component Model verbessert, was seine Bedeutung weiter stärkt.
+  Wasm wird stetig durch neue Proposals und Projekte wie das Wasm Component Model verbessert, was seine zukünftige Bedeutung weiter stärkt.
 ]
 
 #show: dhbw_template.with(

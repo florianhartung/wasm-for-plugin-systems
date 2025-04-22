@@ -5,7 +5,7 @@
 = Fundamentals
 This section introduces theoretical and technical fundamentals used in this work.
 First it covers the definition of an instruction set architecture.
-Then it gives an overview over WebAssembly, its features, challenges, limitations and extensions.
+Then it gives an overview over WebAssembly, its features,  limitations and extensions.
 Finally, plugin systems are explained as a software architecture model.
 
 == Instruction set architectures
@@ -27,7 +27,7 @@ Instead higher level machine codes are compiled to ISA machine code or interpret
 
 // Wasm as virtual ISA
 WebAssembly (Wasm) is a stack-based ISA for a portable, efficient and safe code format.
-Originally it was designed by engineers from the four major vendors to enable high-performance code execution on the web @bringing-the-web-up-to-speed.
+Originally it was designed by engineers from the four major web browser vendors to enable high-performance code execution on the web @bringing-the-web-up-to-speed.
 However it is also becoming increasingly interesting for researchers and developers in non-web contexts.
 Some examples are avionics for Wasm's safe and deterministic execution @wasm-in-avionics, distributed computing for its portability and migratability @wasm-for-edge-computing or embedded  systems for its portability and safety @potential-of-wasm-for-embedded.
 
@@ -63,7 +63,7 @@ Then there are problem-oriented languages such as C, #box[C++] or Rust, which ar
 
 One program written in a problem-oriented language is the Wasm runtime, which itself is a layer here.
 Its task it to interpret or compile higher-level Wasm code to lower-level problem-oriented or even the assembly language level.
-However for this work all layers starting with the Wasm runtime level until the digital logic level can be seen as a single hardware specific layer called the _Wasm runtime environment_.
+However for this work all layers starting with the Wasm runtime level until the digital logic level can be seen as a single hardware-specific layer called the _Wasm runtime environment_.
 
 // Wasm is very simple
 WebAssembly code can be written by hand, just as one could write traditional ISA instructions (think of writing x86 machine code) by hand.
@@ -76,9 +76,9 @@ Instead it provides most basic features and instructions, which exist on almost 
 This is by design, as WebAssembly is more of a compilation target for higher level languages@spec.
 Those higher level languages can then build upon Wasm's basic types and instructions and implement their own abstractions like memory layouts or control flow constructs on top.
 This is analogous to the non-virtual ISA machine code in a conventional computer, which also acts as a compilation target for most low-level languages such as Assembly, C, or Rust.
-Nowadays there are compilers for most popular languages already.
+Nowadays there are compilers supporting Wasm as a compilation target for most popular languages already.
 Some of which are `clang` for C/C++, `rustc` for Rust or the official Zig and Haskell compilers.
-However most compilers are still being actively worked on and improved over time to support the latest Wasm proposals.
+However most compilers are still being actively worked on and improved over time to support the latest Wasm features and proposals.
 
 === Execution model and lifecycle
 #figure(
@@ -99,14 +99,14 @@ This step requires a compiler that support Wasm as a compilation target.
 // LLVM makes things easy
 Many modern compilers such as `clang` or `rustc` use the LLVM#footnote[According to its official website the acronym _LLVM_ was once short for _Low Level Virtual Machine_, however now it has "grown to be an umbrella project" referred to simply as the LLVM project. #link("https://llvm.org/")] project for optimization and code generation.
 These compilers compile source code to LLVM's intermediate representation (LLVM IR) and pass this to LLVM.
-LLVM can then perform optimizations and compile this IR to any compilation target, which can be selected by choosing a LLVM backend.
+LLVM can then perform optimizations and compile this IR to any compilation target, which can be selected by choosing an LLVM backend.
 One such LLVM backend targets Wasm.
-This way the Wasm-specific compiler logic can be implemented once within LLVM, and any compiler using LLVM can then target Wasm with minimal additional effort.
+This way the Wasm-specific compiler logic can be implemented once within LLVM, and any compiler using LLVM such as `rustc` or `clang` can then target Wasm with minimal additional effort.
 
 // *.wasm file
 The compiled Wasm module exists in the form of a `.wasm` file.
 It is fully self-contained and unlike binaries it cannot depend on any dynamic libraries at runtime.
-It consists of different ordered sections, each with their own purpose: Some example sections contain function signatures, data segments, import- and export definition or actual Wasm instructions for each function.
+It consists of different ordered sections, each with their own purpose: Some example sections contain function signatures, data segments, import- and export definitions or the actual Wasm instructions for each function.
 // TODO more details about sections?
 
 // Runtime environment
@@ -147,7 +147,7 @@ These sections must only occur in a very specific order to allow Wasm runtimes t
 Another example is the absence of backwards jump (except for the `loop` statement), which allows the use of faster one-pass compilers.
 
 During runtime Wasm's execution time varies.
-The original design paper for Wasm found Wasm to be at most two times as slow as native code and around 30% of PolyBenchC's benchmarks to close to native code execution time @bringing-the-web-up-to-speed[p.~197].
+The original design paper for Wasm found Wasm to be at most two times as slow as native code with around 30% of the benchmarked PolyBenchC's benchmark results close to native code in terms of execution time@bringing-the-web-up-to-speed[p.~197].
 Another performance analysis by Jangda et al. measures peak slowdowns of 2.5x (Chrome) and 1.45x (Firefox) for running Wasm code in different browsers and comparing their execution times to native execution@analyzing-the-performance.
 
 An additional property of Wasm bytecode is that it can be either compiled, interpreted or just-in-time compiled by a runtime.
@@ -162,12 +162,12 @@ The Wasm stack differs from a stack used in most native architectures in two way
 Wasm code can only access the top-most value of the stack, and the stack is type-checked by the Wasm runtime during a validation phase@spec.
 
 Wasm modules also have their own linear memory.
-This linear memory is completely isolated from the stack and can only be accessed using special instructions and bounds-checked indices instead of pointers.
+This linear memory is completely isolated from the stack and can only be accessed using special instructions and bound-checked indices instead of pointers.
 While host applications can always read from and write to Wasm linear memory, Wasm instances cannot access host memory in the opposite direction.
 Instead, Wasm instances can only interact with the host through functions explicitly exposed by the host@spec.
 
 While the Wasm execution format is sandboxed, it is still important that the implementing Wasm runtime does not introduce any sandbox escapes due to bugs, etc.
-In their article "Provably-Safe Multilingual Software Sandboxing using WebAssembly" Bosamiya et al. have acknowledge Wasm as a safe sandboxed execution format and implemented a provably safe and verifiable Wasm runtime@provably-safe-multilingual-software-sandboxing.
+In their article "Provably-Safe Multilingual Software Sandboxing using WebAssembly" Bosamiya et al. have acknowledged Wasm as a safe sandboxed execution format and implemented a provably safe and verifiable Wasm runtime@provably-safe-multilingual-software-sandboxing.
 This shows that implementation of a fully sandboxed and safe runtime is possible not only in theory but also in practice.
 
 Because Wasm is able to provide safety for untrusted code execution, it is currently gaining interest in certain safety-critical non-web contexts, such as avionics@wasm-in-avionics or automotive industries (see https://oxidos.io/).
@@ -181,8 +181,8 @@ Because Wasm is able to provide safety for untrusted code execution, it is curre
 ==== Portable <design_portable>
 // This includes goals: hardware-independent, platform-independent
 Originally Wasm was designed for fast and safe code execution on a client's web browser@bringing-the-web-up-to-speed.
-This means that a variety of web browsers, all running on different platforms and architectures.
-Various devices such as desktop computers, mobile devices and even embedded devices have to be able to run Wasm code.
+This means that a variety of web browsers, all running on different platforms and architectures have to be supported.
+Also various devices types such as desktops, mobile devices and even embedded devices have to be able to run Wasm code.
 
 Thus Wasm was designed to be able to be portable for various target platforms and architectures@spec.
 It does this by defining only the most basic types and instructions necessary to act as a compilation target.
@@ -205,23 +205,22 @@ In comparison, the x64 architecture defines ca. 1500 - 6000 instructions@provabl
 ==== Independence of language <independence-language>
 Wasm is designed to be a compilation target for higher level languages.
 In particular it is not designed for a specific language, programming model or object model@spec[sec.~1.1.1].
-Currently Wasm can already be used as a compilation target by various languages such as C, C++, Rust, Haskell or Ada.
+Currently Wasm can already be used as a compilation target by various languages such as C, C++, Rust, Haskell or Ada, proving its high Interoperability and flexibility regarding programming languages.
 
 ==== Compact <design_compact>
 The representation of the Wasm bytecode format is designed to be compact.
 Especially on the web file size is very important to minimize loading times and achieve better user experiences.
-Also smaller files are faster to load into memory, which might lead to a slight increase in performance.
+Also smaller files are faster to load into memory and processor caches, which might lead to a slight increase in performance.
 
 Research shows that the compactness of Wasm bytecode in non-web contexts is close to native code with around 246% the size of natively compiled x86_64 machine code for the PolyBenchC benchmarks@an-evaluation-of-wasm-in-non-web-environments.
-While Wasm should optimally come as close to native code compactness as possible, this is close to impossible as native code is able to provide a larger variety of instructions exposing hardware-specific behavior.
+While Wasm should optimally come as close to native code compactness as possible, this is close to impossible as native code is able to provide a larger variety of instructions exposing more hardware-specific behavior.
 
 As a concrete examples for how Wasm bytecode is compacted, variable integers are explained in the following:
 Often times, the top-most bytes of integers are 0.
-To reduce the size of integers, their bit information is not stored as a fixed amount of bytes (e.g. 4 bytes for a 32-bit integer) anymore.
+To reduce the size of integers, their bit information is not stored in a fixed amount of bytes (e.g. 4 bytes for a 32-bit integer) anymore.
 Instead only 7 bits per byte are used to store the integer's bits, while the 8th bit is reserved for a flag that indicates whether the next byte also belongs to the integer currently being encoded.
 This allows to store 32-bit unsigned integers in the interval $[0; 127]$ inside one byte, $[128; 16383]$ inside two bytes, etc., while the maximum possible integer value of $2^32-1$ now requires 5 bytes for storage.
 This design is very similar to how Unicode encodes multi-byte characters.
-
 
 ==== Other features <other_features>
 This section lists some other noteworthy features and design goals of Wasm.
@@ -229,9 +228,9 @@ These are not directly related to this work, but instead provide a better overvi
 
 - *Determinism*: The majority of Wasm code is deterministic and undefined behavior is prevented through validation before execution of Wasm code happens.
     There are only three possible sources of indeterminism:
-    - Functions exposed by the host application and imported into a Wasm instance can cause side-effects and introduce indeterminism@spec[sec.~4.4.10].
-    - NaN float values and operations on them are not defined deterministically, because there exists a variety of different NaN values@spec[sec.~2.2.3].
-    - Wasm instances can grow their memory or tables through the `memory.grow` and `table.grow` instructions.
+    + Functions exposed by the host application and imported into a Wasm instances can cause side-effects and introduce indeterminism@spec[sec.~4.4.10].
+    + NaN float values and operations on them are not defined deterministically, because there exists a variety of different NaN values@spec[sec.~2.2.3].
+    + Wasm instances can grow their memory or tables through the `memory.grow` and `table.grow` instructions.
         Wasm runtimes are able to make these instructions fail, either due to missing resources, because of resource limitations or any other reason without determinism@spec[sec.~4.4.6, sec.~4.4.7].
 - *Parallelizable*: Wasm bytecode is designed for operations on it to be easy to parallelize@spec[sec.~1.1.1].
     This applies to decoding, validation and compilation of Wasm bytecode and it may allow for faster startup times of Wasm instances.
@@ -268,7 +267,7 @@ These are not directly related to this work, but instead provide a better overvi
 // WASM is formally specified with no "loopholes"
 
 
-=== Challenges & Limitations <wasm-challenges>
+=== Limitations <wasm-challenges>
 #subpar.grid(
     figure(
         ```
@@ -301,11 +300,10 @@ These are not directly related to this work, but instead provide a better overvi
     label: <fig:comparison-string-c-rust>,
 )
 // Challenges with Wasm in non-web contexts
-This section deals with common challenges and limitations of Wasm especially important in non-web contexts.
-
+This section deals with common limitations of Wasm especially important in non-web contexts.
 
 Wasm provides only a very basic type system with 8 types: 32-bit and 64-bit integers and floats, a 128-bit vector type and three types of references to functions, host objects and the null reference.
-Its type system does not contain any methods to combine multiple data types into a new one, such as structs or classes which are common in most programming languages.
+Its type system does not include any methods to combine multiple data types into a new one, such as structs or classes which are common in most programming languages.
 This is intentional, so that Wasm can be a universal compilation target independent of the higher-level language used (see @independence-language), because not all languages share the same data constructs.
 However this basic type system also has its downsides.
 Because Wasm delegates the responsibility of managing data layouts and representations to compilers, interfaces are now depending on the specific compiler used to create the Wasm module.
@@ -327,41 +325,18 @@ This issue exists for the various types commonly found in programming languages,
 There are multiple solutions, for how Wasm interfaces can be standardized across programming languages:
 + A common serialization format such as JSON, XML or a binary format such as CBOR can be used.
     Before the host invokes a Wasm function, it has to serialize all arguments into a large byte array.
-    Then this byte array passed indirectly as an argument, by writing it into the Wasm instance's linear memory and passing an index to the data to the function.
+    Then this byte array is passed indirectly as an argument, by writing it into the Wasm instance's linear memory and passing an index to the data to the function.
     Internally the function first has to deserialize the data into its original form, before it can execute its program logic.
     At the end of the function, the same procedure is repeated to pass return values back to the host.
     For this approach a library such as Protobuf (see https://protobuf.dev/) could also be used. It provides serialization and deserialization logic for a variety of programming languages.
     However this approach might introduce both a performance and memory overhead, due to the heavy serialization and deserialization necessary.
 
 + Another approach is to specify a custom Wasm interface for every type and function.
-    This is more labour-intensive, as it requires developers to write glue code for every language and function by hand.
+    This is more labour-intensive, as it requires developers to write translation glue code for every language and function by hand.
 
     One project that builds upon this approach is the WebAssembly Component Model presented in @component-model.
     It provides a new language for specifying interfaces and can generate glue code for supported programming languages such as Rust, C, C++, Python, JavaScript, etc.
-    Even though it may look similar to the first solution of using standardized serialization, this approach is specifically tailored to Wasm.
-    Thus is can achieve better performance and efficiency.
-
-Another related challenge are common features of the operating system used by almost all programming languages such as file systems, networking or random number generation.
-Most standard libraries rely on these functions to provide abstractions, e.g. over reading data from a file.
-An interface for these common APIs must be defined, that is language-agnostic, independent of compilers and compatible across all host platforms, on which the Wasm runtime will eventually execute the Wasm code.
-A solution generally accepted by compilers and standard libraries is the WebAssembly System Interface (WASI) presented in @wasi.
-It also relies on the WebAssembly Component Model for language-agnostic interface definitions.
-
-// #todo[
-//     Another problem is the transferral of large binary data objects.
-//     Wasm function only accept Wasm's basic types.
-//     Hosts are able to write into arbitrary linear memory, however the Wasm module's allocator does not know this, which can result in data loss if data get's allocated again and overwritten.
-
-//     Current approach also used by Component Model: Modules expose allocator functions such as `malloc` and `free`, which the host can call, write data into the allocated buffer, and then pass the index to that linear memory location to the Wasm instance as an argument.
-
-//     A better solution in the future could be the Multiple Memory proposal.
-//     It allows Wasm modules to use multiple different linear memories.
-//     Then a Wasm module could import a linear memory owned and managed by the host, which could be used for passing arguments.
-//     This no longer requires interactions between the host and Wasm module prior to the actual function invocations.
-// ]
-
-=== WebAssembly Component Model <component-model>
-// References: Design documents for component model (no spec yet)
+    Even though it may look similar to the first solution of using standardized serialization, this approach is specifically tailored to Wasm and thus it can achieve better performance and efficiency.
 
 #[
     #show raw.where(lang: "wit"): r => {
@@ -415,6 +390,30 @@ It also relies on the WebAssembly Component Model for language-agnostic interfac
     ) <wit-definition-example>
 ]
 
+Another related challenge are common functionalities of the operating system used by almost all programming languages such as file systems, networking or random number generation.
+Most standard libraries rely on these functions to provide abstractions, e.g. over reading data from a file.
+An interface for these common APIs must be defined, that is language-agnostic, independent of compilers and compatible across all host platforms, on which the Wasm runtime will eventually execute the Wasm code.
+A solution generally accepted by compilers and standard libraries is the WebAssembly System Interface (WASI) presented in @wasi.
+It also relies on the WebAssembly Component Model for language-agnostic interface definitions.
+
+// #todo[
+//     Another problem is the transferral of large binary data objects.
+//     Wasm function only accept Wasm's basic types.
+//     Hosts are able to write into arbitrary linear memory, however the Wasm module's allocator does not know this, which can result in data loss if data get's allocated again and overwritten.
+
+//     Current approach also used by Component Model: Modules expose allocator functions such as `malloc` and `free`, which the host can call, write data into the allocated buffer, and then pass the index to that linear memory location to the Wasm instance as an argument.
+
+//     A better solution in the future could be the Multiple Memory proposal.
+//     It allows Wasm modules to use multiple different linear memories.
+//     Then a Wasm module could import a linear memory owned and managed by the host, which could be used for passing arguments.
+//     This no longer requires interactions between the host and Wasm module prior to the actual function invocations.
+// ]
+
+
+
+=== WebAssembly Component Model <component-model>
+// References: Design documents for component model (no spec yet)
+
 // Problem
 One of the main problems with Wasm is accomplishing a common interface between a Wasm module and the host or between multiple Wasm modules, each with their own specific memory layouts and data representations (see @wasm-challenges).
 
@@ -432,13 +431,13 @@ Unlike Wasm, it provides various types such as enums, records, option, bit flags
 @wit-definition-example shows an example for a interface definition in the WIT language.
 There the world `example-library`, which can be thought of as the interface or world, in which a Wasm component lives in, is defined.
 It requires a component to export four functions:
-Three functions for how to add together two signed integers, one function to trim an input string and a function for calculating the sum of a list of unsigned numbers.
+One function for how to add together two signed integers, one function to trim an input string and a one function for calculating the sum of a list of unsigned numbers.
 The fourth function is not exported directly, but instead through an interface, which is able to group together type definitions and functions.
 Here the interface `person-greeter`, which defines the `person` type and a `greet` function is exported by the main world.
 
 // Transition from WIT to canonical ABI
 The WIT language is designed to be used to specify interfaces for all popular languages such as C, C++, Rust, Python, etc.
-it defines high-level types, interfaces and worlds, which can be converted from and to low-level Wasm types.
+It defines high-level types, interfaces and worlds, which can be converted from and to low-level Wasm types.
 // Canonical ABI
 The definition for how a specific type of the WIT language is laid out as basic Wasm types is specified by the Canonical ABI also defined as part of the Wasm component model@component-model-docs[sec.~13].
 
@@ -447,7 +446,7 @@ In order to reduce bugs and simplify this process of having to write glue code, 
 They can be used to generate bindings for a specific WIT interface definition to automate the translation between high-level WIT types and low-level Wasm types@component-model-docs[sec.~8].
 At the time of writing, wit-bindgen can be used to generate bindings for C, Rust, C\#, MoonBit, TeaVM-based Java modules and TinyGo-based modules.
 Generators for other programming languages such as Python and JavaScript also exist: componentize-py and componentize-js.
-On the other side, host applications may want to embed Wasm components into their application, where bindings can also be automatically generated (e.g. for the official Wasm runtime Wasmtime).
+On the other side, host applications may want to embed Wasm components into their application, where bindings can also be automatically generated, e.g. for the official Wasm runtime called `Wasmtime`.
 
 // Use cases
 In addition to being able to define language-agnostic interfaces, the Wasm component model provides another feature.
@@ -466,10 +465,10 @@ Typically programs communicate directly to the operating system for access to th
 However because Wasm modules are completely isolated from the host system by default, Wasm code has no standardized interface to the Wasm runtime for accessing these parts of the host system.
 Because Wasm was originally designed for the web, where programs do not have access to these features of the underlying operating system, there was no need for it until non-web applications emerged.
 
-WASI solves this problem by defining a common interface similar but not the same as the POSIX standard.
+WASI solves this problem by defining a common interface similar to but not the same as the POSIX standard.
 It defines its interface based on the Wasm component model in form of separate WIT definitions for every feature set.
 This then allows programming languages and their standard libraries and compilers to adapt and use these interfaces to support features such as file systems and networking when compiling to Wasm.
-Note that Wasm runtimes also need to support the WASI specification by exposing the respective functions to Wasm components/modules.
+Note that Wasm runtimes also need to support the WASI specification by exposing the respective functions to Wasm components/modules@wasi-github.
 
 == Plugin systems <plugin-systems>
 
@@ -492,7 +491,7 @@ On the side of the host application, a plugin system is implemented as a softwar
 
 @plugin-systems-arch shows a diagram of all relevant software components for an application with an integrated plugin system.
 The host application itself runs on the host system and implements a core application.
-It also contains the plugin system, which is may be hand-written or provided by a library.
+It also contains the plugin system, which may be hand-written or provided by a library.
 This plugin system is used by the host application to embed plugins and interact with them.
 The plugin interface is defined as the common interface, that plugins expect from and provide to the plugin system.
 
@@ -503,5 +502,5 @@ For example, some plugin systems might allow plugins to depend on each other, wh
 
 Because of the high variability of plugin systems, the pros and cons also vary.
 However the main advantages of plugin systems seem to be allowing the extension of host applications with new functionality and being able to enable/disable plugins, depending on whether they are currently required to save system resources.
-The major drawback of plugin systems is the additional complexity introduces, especially when plugin systems are implemented inside host applications, which where not designed with plugin systems in mind from the start.
-Incorrect implementations could result in tight coupling between the core host application and the plugin system or unexpected behavior of the host application due to interference with modifications by plugins.
+The major drawback of plugin systems is the additional complexity introduced, especially when plugin systems are implemented inside host applications that were not designed with plugin system support in mind from the start.
+Also incorrect implementations could result in tight coupling between the core host application and the plugin system or unexpected behavior of the host application due to interference with modifications by plugins.

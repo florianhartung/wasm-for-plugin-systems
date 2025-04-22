@@ -2,12 +2,12 @@
 
 = Introduction
 Web applications are becoming more and more popular and complex requiring the use of compute-intensive algorithms for applications such as 3D visualizations or interactive games@bringing-the-web-up-to-speed.
-Thus the need for faster code execution that cannot be provided by JavaScript grows.
+Thus the need for faster code execution, that cannot be provided by JavaScript, grows.
 Traditionally JavaScript is the only language allowing client side code execution, however it was never designed for these kinds of high-performance tasks.
 
 WebAssembly (Wasm) is a modern web technology developed through collaboration of the four major web browsers providing performance, safety and portability.
-It acts as a compilation target for higher-level languages such as Rust, C or C++, that is fast, safe and portable@spec.
-It is used by popular frameworks such as Qt for building web interfaces powered by C++ code @qt-docs or companies such as Ebay to optimize a slow barcode scanner algorithms@ebay-blog.
+It acts as a compilation target for higher-level languages such as Rust, C or C++@spec.
+It is used by popular frameworks such as Qt for building web interfaces powered by C++ code @qt-docs or companies such as Ebay to optimize a slow barcode scanner algorithm@ebay-blog.
 
 However, Wasm is not limited to web environments, which is by design@spec[sec.~1.1].
 It is already being actively explored in several non-web contexts, such as avionics@wasm-in-avionics, automotive#footnote(link("https://oxidos.io/")) or edge computing@wasm-for-edge-computing.
@@ -25,7 +25,7 @@ This type of software architecture pattern is especially important for text edit
 These editors have to accommodate the highly individual requirements of users such as supporting programming languages, keybindings, themes or other user preferences.
 
 == Motivation & research question //& problem statement
-Most text editor and IDE plugin systems do not have strict measures for plugin isolation to protect users from possibly malicious code.
+Most text editors and IDE plugin systems do not have strict measures for plugin isolation to protect users from possibly malicious code.
 Also plugin execution may be slow at times due to the programming languages used (e.g. JavaScript or Java).
 Other plugin systems might require plugins to be recompiled for every platform, operating system or architecture.
 WebAssembly looks promising as a new technology to build a plugin system on top of.
@@ -38,12 +38,12 @@ It asks the question, if Wasm is the best technology choice today for designing 
 
 == Methodology
 To evaluate whether Wasm is a good technology for plugin systems, multiple methods are used.
-First a technology comparison between various existing plugin systems and plugin system technologies is conducted.
-For that a set of criteria which are required for good and versatile plugin is defined.
+First a technology comparison between various existing plugin systems and plugin system technologies is performed.
+For that a set of criteria to define what makes a plugin system good and versatile is defined.
 This allows to gather information about the current state of the art on plugin systems.
 
 Then Wasm is evaluated using the same criteria.
 These evaluation results can then be used to compare Wasm to existing plugin systems, to then decide whether Wasm can outperform other plugin system technologies in theory.
 
 In the end a proof of concept for a Wasm plugin system for a real text editor is developed.
-This implementation of a minimal plugin system is used to find out, if Wasm and its ecosystem are ready for use in real software projects.
+This implementation of a minimal plugin system is used to find out, if Wasm and its ecosystem are ready for use in real software projects not only in theory but also in practice.

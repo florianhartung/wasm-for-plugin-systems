@@ -1,7 +1,7 @@
 = Results & discussion
-A technology comparison of 3 plugin systems of popular editors and IDEs and a plugin system technology was conducted.
+A technology comparison of 3 plugin systems of popular editors and IDEs and a plugin system technology was performed.
 It revealed significant differences between the five criteria performance, plugin size, plugin isolation, plugin portability and plugin language interoperability, with no single technology standing out drastically across all dimensions.
-WebAssembly (Wasm) was then evaluated against the same criteria and put up for comparison in a technology comparison matrix shown in @technology-comparison-matrix-final.
+WebAssembly (Wasm) was then evaluated against the same criteria and put up for comparison in the final technology comparison matrix shown in @technology-comparison-matrix-final.
 It performed at least equally well as the others in three out of the five criteria, only falling behind with slightly worse performance and plugin size compared to native machine code-based plugin systems.
 Despite these shortcomings, Wasm can offer significantly better plugin isolation through sandboxing and slightly better plugin portability.
 When compared to the plugin systems of the popular Visual Studio Code and IntelliJ-based IDEs, Wasm shows potential to outperform them for all criteria.
@@ -21,11 +21,11 @@ Even though challenges for the Wasm ecosystem exist, multiple software projects,
 
 To answer the research question which asks whether Wasm is the best technology for building good and versatile text editor plugin systems:
 Wasm is certainly among the best technologies for good and versatile text editor plugin systems in theory.
-Even though Wasm and its ecosystem are rapidly evolving, which may present as a challenge for some projects, some projects exist that have already adopted Wasm for their plugin systems.
+Even though Wasm and its ecosystem are rapidly evolving, which may present as a challenge for some projects, others exist that have already adopted Wasm for their plugin systems.
 
 = Outlook
 Looking back at the technology comparison, a set of five criteria was selected to evaluate the technologies under consideration.
-However, in retrospect, it became clear that these criteria were not sufficient for a meaningful evaluation.
+However, in retrospect, it became clear that these criteria were not sufficient for a representative evaluation.
 Instead more criteria regarding interface complexity, developer experience or the plugin system size should have also been considered.
 Also some criteria, such as the performance or plugin size have not been evaluated quantitatively, even though such quantitative analysis can lead to more accurate, objective and reproducible results.
 Furthermore, four plugin system technologies were analyzed, which is also not sufficient and representative of the current state of the art of plugin systems.

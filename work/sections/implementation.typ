@@ -2,9 +2,9 @@
 #import "../util.typ": flex-caption
 
 = Proof of concept: Developing a WebAssembly plugin system for a text editor
-The first part of this work did a technology comparison to find out if Wasm is feasible as a technology for plugin systems.
+The first part of this work performed a technology comparison to find out if Wasm is feasible as a technology for plugin systems.
 In this second part, a basic proof of concept for a Wasm plugin system will be implemented for a text editor.
-To make this process as realistic as possible, to learn as much as possible from this implementation, a text editor that is already being used today by developers will be used.
+To make this process as realistic as possible and maximize knowledge gained from this implementation, a text editor that is already being used today will be used.
 
 The text editor chosen is the Helix editor (#link("https://helix-editor.com/")).
 It is a terminal-based text editor written in Rust with controls similar to Vim, however it provides more features out of the box.
@@ -68,10 +68,10 @@ The core editor project then defines a single WIT definition containing the enti
 Plugins consist of individual Wasm components, which must implement this WIT definition.
 
 @runtime-plugin-loading shows the dataflow for how plugins are loaded into the editor.
-A plugin loader component reads the Wasm Component files and loads them into a Wasm runtime.
+A plugin loader reads the Wasm Component files and loads them into a Wasm runtime.
 The Wasm runtime contains objects such as the linear memory, tables or a stack for every Wasm module/component.
 While instantiating plugins, the plugin loader also makes sure that each plugin implements an interface according to the WIT definition.
-Finally, the Wasm runtime is stored in the core editor state, which is used by helix for providing access to the editor context from most points in the program.
+Finally, the Wasm runtime is stored in the core editor state, which is used by the Helix editor to provide access to the editor context from most points in the program.
 
 The design for allowing plugins to modify the core editor state and event hooks are rather straightforward.
 Modification of the core editor state works by exposing functions to the Wasm components by defining them as imports in the WIT definition.
@@ -120,7 +120,7 @@ These functions are then called by the core editor, each time a certain point in
         The entire WIT definition for all plugin interfaces.
         For more complex interfaces it should be divided into multiple files to modularize feature sets.
     ], [
-        WIT definition with all interfaces for the developed WebAssembly plugin system
+        WIT definition for the developed WebAssembly plugin system
     ]),
 ) <full-wit-definition>
 
@@ -144,13 +144,13 @@ These functions are then called by the core editor, each time a certain point in
 ) <plugin-wit-definition>
 
 == Implementation
-This section provides an insight into chosen parts of the implementation of the Wasm plugin system.
+This section provides an insight into some parts of the implementation of the Wasm plugin system.
 It outlines the choices made during implementation, the technologies used for implementation and the challenges faced.
 
 A central part of the implementation is the Wasm runtime.
 It is used as a library for loading and interacting with Wasm components.
 For this proof of concept the official Wasmtime runtime is chosen.
-It is the official reference implementation for the Wasm specification, providing better support for newer features such as the Wasm Component Model than other runtimes.
+It is the official reference implementation for the Wasm specification, providing better support for newer features such as the Wasm Component Model than other runtimes@component-model-docs.
 Also it supports WASI, which may be useful for future testing on this project.
 Both the Helix editor and the Wasmtime library are written in the Rust, which is why this proof of concept is also fully implemented in Rust.
 
@@ -159,7 +159,7 @@ It defines a WIT package called `helix:plugin`, which contains one WIT interface
 The WIT interface is used here to define complex types, which are then imported and used in the worlds.
 Normally this WIT definition would specify a single world, which contains all the imported and exported functions required for every plugin.
 However in practice every plugin only uses a subset of all interfaces.
-This is why the interface is split into three different worlds, all providing different feature sets to the plugin.
+This is why the interface is split up into three different worlds, all providing different feature sets to the plugin.
 Here a base feature set called `base` is defined.
 It must be implemented by all plugins.
 Additionally two worlds `keyevents` and `modify-buffers` for allowing plugins to hook into key events and for allowing access to the state of currently opened buffers are defined.
@@ -175,9 +175,9 @@ After the developer has written their plugin WIT definition, a tool like `wit-bi
 // - then wit-bindgen or componentize-py/js for component binding generation
 Another challenge during implementation is the storage of plugin metadata inside the Wasm component.
 Wasm modules allow exporting of immutable or mutable globals, which could be used to export a global variable that contains the name of the plugin, its version, description etc.
-However the component model, or specifically its WIT language does not allow the specification of mandatory exported globals.
+However the component model, or more specifically its WIT language, does not allow the specification of mandatory exported globals.
 Thus a workaround is used, where every plugin has to export a function `get-metadata`, as it can be seen in @full-wit-definition, which returns a record of all plugin metadata.
-This function can then be called by the host editor to get and display information about a specific plugin.
+This function can then be called by the host editor to fetch information about a specific plugin.
 
 == Verification and validation
 This section contains a verification and validation of the proof of concept.
@@ -198,14 +198,14 @@ In the following, all functional and non-functional requirements are verified:
 / Plugins as self-contained WASM files: For the implemented plugin system, plugins are standalone WASM files.
     They contain program code, metadata and can additionally contain binary data segments as resources.
 / Sandboxed plugin execution: Plugin execution is completely sandboxed, assuming that Wasmtime as the chosen Wasm runtime does not introduce any loopholes allowing sandbox escape attacks.
-    Plugins can only access interfaces exposed to it by the core editor and it is not able to access other editor state.
+    Plugins can only access interfaces exposed to it by the core editor statically defined via a WIT definition and it is not able to access other editor state.
 
 === Validation
 Furthermore one can validate, whether the implemented plugin system is useable in practice.
-This will be done by doing a rough reevaluation of the criteria defined in @definition-criteria in the following:
+This will be done by doing a rough reevaluation of the criteria defined in @definition-criteria:
 
 / Performance: There were no measurements for the performance of the implemented plugin system due to time-constraints.
-    However Wasmtime compiles the Wasm bytecode at the startup of the editor, which is why there should be only a minimal overhead present when Wasm functions are invoked e.g. due to event hooks.
+    However Wasmtime compiles the Wasm bytecode at the startup of the editor, which is why there should be only a minimal overhead present when Wasm functions are later invoked.
 / Plugin size: There were plugin sizes measured for two different plugins, both containing only the minimum required code for a plugin to load.
     The first plugin is written in Rust with bindings generated by `wit-bindgen` and then compiled on release mode.
     It contains close to zero program logic, except for the relatively small amount of plugin metadata.
@@ -234,4 +234,4 @@ All in all, the implemented Wasm plugin system is able to fulfill all requiremen
 However a more in-depth analysis of the plugin system regarding most of the criteria might be useful in the future.
 Overall, Wasm looks to perform quite well as a plugin system technology.
 Its component model enables quick development without time-consuming tasks like writing bindings by hand.
-Also it could allow for a simple integration of WASI to allow plugins to access underlying operating system features such as the file system or networking.
+Also it could allow for a simple integration of WASI in the future to allow plugins access to underlying operating system features such as the file system or networking.

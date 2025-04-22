@@ -91,7 +91,7 @@ They are chosen specifically for plugin systems for text editors.
 Often times plugins contain foreign code.
 This is especially true for text editors, where plugins are often downloaded from a central registry, also known as plugin/extension marketplaces.
 This means that plugins downloaded from such sources are usually not validated and thus should be treated as foreign code.
-Even though there might be checks in place for malicious contents, foreign code should not be trusted to not access its host environment unless otherwise allowed.
+Even though there might be checks in place for malicious contents, foreign code should not be granted access to its host environment by default.
 
 For this work we define the property of plugin isolation to describe how isolated a plugin's environment is from its host environment.
 While there has to be some kind of interface between both environments to make plugins accessible and usable, this interface must not be considered when evaluating plugin isolation.
@@ -179,7 +179,8 @@ In other words, the larger the set of languages is, in which a plugin can be wri
 The more languages are available, the less effort it requires for users to develop their own plugins without the need of learning a new (possibly domain-specific) programming language.
 
 One could argue, that supporting a variety of different languages can result in higher interface complexity and less adaptability to new changes.
-Even though the complexity and adaptability of interfaces is another important property, which deserves its own rating, it will not be covered in this work.
+However the complexity and adaptability of interfaces should rather be viewed as another important property, that deserves its own rating.
+Due to time-constraints it will not be covered in this work.
 
 / 0 -- Domain-specific custom language: Only a domain-specific language can be used to write plugins in.
   This language is specifically designed for given plugin system technology, which is why it is the least interoperable and might be the most unfamiliar and hardest for developers to learn and use.
@@ -208,7 +209,7 @@ This work mainly focuses on plugin systems for text editors, so text editor plug
 However it could also be interesting to compare text editor plugin system technologies to plugin system technologies for other applications.
 
 To make an appropriate decision for text editor projects, the popularity of different text editors will be as a metric for selection.
-As a source for the most popular text editors and integrated development environments (IDEs), the StackOverflow Developer Survey 2024 will be used@stackoverflow-survey.
+As a source for the most popular text editors and integrated development environments (IDEs), the StackOverflow Developer Survey 2024 is be used@stackoverflow-survey.
 The platform StackOverflow is known as a forum for developers helping each other by asking questions and exchanging information regarding various technical topics such as programming languages, certain APIs, technologies, etc.
 Annually it organizes a survey open to all developers regardless of their background to gather statistics about used programming languages, salaries of developers, used development tools, etc.
 In 2024 a total amount of \~65.000 developers took part in this survey, which is why it can be considered fairly representative.
@@ -246,7 +247,7 @@ Multiple projects and technologies were considered, however due to their similar
 / VST3 for music production: During music production in a digital audio workstation, producers use plugins to simulate a variety of different audio effects, entire instruments or traditional analog devices such as compressors.
   One notable standard used for for these kinds of plugins is the open and free Virtual Studio Technology (VST) 3 standard developed by Steinberg@vst3.
   It specifies a standard for technology on how to implement a plugin system technology between a digital audio workstation (DAW) as the host application and a plugin which applies some effects or produces an audio signal.
-  For example a DAW could sends an audio stream to some plugin, then the plugin could apply an effect such as a simple equalizer on the audio signal and return the signal back to the DAW.
+  For example a DAW could send an audio stream to a plugin, then the plugin could apply effects such as equalization or compression and on the audio signal and return the signal back to the DAW.
 
   On the technical level VST3 plugins are DLLs on Windows, Mach-O Bundles on Mac and packages on Linux. The term package on Linux can have different meanings depending on the Linux distribution and package manager used.
 
@@ -398,7 +399,7 @@ Multiple projects and technologies were considered, however due to their similar
   IntelliJ supports all plugins that can be compiled to Java bytecode, as long as they adhere to the IntelliJ Platform API, which can vary from one IntelliJ-based IDE to another.
 
   While only Java and Kotlin are officially supported, other JVM-based languages such as Groovy or Scala could also be used, as they also compile to Java bytecode.
-  This plugin system, which supports one compilation target used by a variety of languages, is evaluated at a score of 4.
+  This plugin system, which supports one compilation target used by some languages, is evaluated at a score of 3.
 
 === Notepad++
 / Performance:
@@ -572,10 +573,10 @@ Each criterion is rated on a scale from 0 (very poor) to 5 (excellent), however 
 *Visual Studio Code*'s plugin system performs with average scores of 3 across performance, plugin size and plugin isolation.
 It provides good plugin portability from its usage of web technology, but is not able to provide a lot of plugin language interoperability due to the limitation to JavaScript/TypeScript.
 The plugin system used in all *IntelliJ-based IDEs* achieves similar scores for performance and plugin size, however it does not provide any plugin isolation.
-It is able to achieve the same plugin portability as VS Code and a higher score for plugin language interoperability because it allows any JVM-based languages for plugins.
+It is able to achieve the same plugin portability as VS Code and a higher score for plugin language interoperability because it allows any JVM-based language for plugins.
 *Notepad++* is another text editor with efficiency in mind.
 This shows, because it achieves the highest score for performance with plugin sizes that are negligible in practice.
-However it provides terrible plugin isolation and plugin portability due to plugins consisting of natively compiled machine code.
+However it provides no plugin isolation and plugin portability due to plugins consisting of natively compiled machine code.
 On the other hand, native machine code also acts as a universal compilation target, allowing pretty much every other technology to be compiled into a plugin.
 This allows for an optimal plugin language interoperability.
 *VST3* is a standard for a plugin system technology.
