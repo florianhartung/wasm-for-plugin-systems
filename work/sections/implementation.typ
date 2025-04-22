@@ -52,9 +52,7 @@ Also a list of non-requirements is presented to put constraints on the complexit
 caption: flex-caption([
         Dataflow diagram for the process of loading \*.wasm files into a Wasm runtime and storing it in the main editor state.
         The instantiated plugins inside the Wasm runtime contain additional data such as the linear memory, tables, or the program stack.
-    ], [
-        Dataflow for loading Wasm plugins
-    ])
+    ], [Dataflow for loading Wasm plugins])
 ) <runtime-plugin-loading>
 
 This section describes the architecture and technologies used for the Wasm plugin system and plugins.
@@ -120,9 +118,7 @@ These functions are then called by the core editor, each time a certain point in
     caption: flex-caption([
         The entire WIT definition for all plugin interfaces.
         For more complex interfaces it should be divided into multiple files to modularize feature sets.
-    ], [
-        WIT definition for the developed WebAssembly plugin system
-    ]),
+    ], [WIT definition for the developed WebAssembly plugin system]),
 ) <full-wit-definition>
 
 #figure(
@@ -139,9 +135,7 @@ These functions are then called by the core editor, each time a certain point in
     caption: flex-caption([
         A WIT definition for a single plugin.
         It defines a single world `my-example-plugin` as the plugin's interface and reexports/includes a subset of the worlds defined in the main package `helix:plugin` defined in @full-wit-definition.
-    ], [
-        WIT definition for a single example Wasm plugin
-    ])
+    ], [WIT definition for a single example Wasm plugin])
 ) <plugin-wit-definition>
 
 == Implementation

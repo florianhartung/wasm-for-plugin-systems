@@ -25,7 +25,7 @@ To answer the research question which asks whether Wasm is the best technology f
 Wasm is certainly among the best technologies for good and versatile text editor plugin systems in theory.
 Even though Wasm and its ecosystem are rapidly evolving, which may present as a challenge for some projects, others exist that have already adopted Wasm for their plugin systems.
 
-= Outlook
+#top-level-heading[Outlook]
 Looking back at the technology comparison, a set of five criteria was selected to evaluate the technologies under consideration.
 However, in retrospect, it became clear that these criteria were not sufficient for a representative evaluation.
 Instead more criteria regarding interface complexity, developer experience or the plugin system size should have also been considered.

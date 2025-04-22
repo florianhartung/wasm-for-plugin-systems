@@ -62,13 +62,14 @@
   title: [Exploring WebAssembly for versatile plugin systems through the example of a text editor],
   author: "Hartung, Florian",
   course: "TINF22IT1",
-  submissiondate: datetime(year: 2025, month: 04, day: 15),
+  submissiondate: datetime(year: 2025, month: 04, day: 22),
   workperiod_from: datetime(year: 2024, month: 10, day: 15),  
   workperiod_until: datetime(year: 2024, month: 04, day: 22),
   matr_num: 6622800,
   supervisor: "Gerhards, Holger, Prof. Dr.",
   abstract: abstract_en,
   abstract_de: abstract_de,
+  show_jump_to_table_of_contents: false,
 )
 
 #show: setup_utils
