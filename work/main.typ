@@ -4,36 +4,59 @@
 
 #let abstract_en = [
   // Context, previous work
-  Plugin systems are a software architecture pattern for making host applications extensible without modifying the host application itself.
-  They are used in various applications such as real-time audio processing or computer games, but they play a particularly important role in text editors.
-  Text editors and IDEs are applications used primarily by developers for software development.
-  Text editors require a high degree of flexibility to accommodate the highly individual user requirements.
-
-  // Depending on the required technologies and highly individual developer preferences, text editors must be able to adapt to a variety of different use cases.
-  // Such use cases may include language support, complex keybindings or development on a remote server.
-  WebAssembly (Wasm) is a relatively new technology first released in March 2017.
-  It was originally designed as a fast, safe and portable compilation target for higher level languages to enable fast code execution on the web.
-  However, it is designed with no assumptions about its execution environment and its properties make it an interesting technology for non-web contexts such as avionics, distributed computing, embedded devices or automotive as well.
+  Plugin systems allow software applications to be extended without modifying their core code, providing critical flexibility, isolation and reduced complexity of the core code.
+  This type of software architecture pattern is particularly important for text editors and integrated development environments (IDEs), to accommodate for the highly individual user requirements.
+  WebAssembly (Wasm) is a relatively new fast, safe and portable compilation target originally intended for use in web contexts.
+  However, Wasm's design is execution environment agnostic, making it an interesting technology for non-web contexts such as avionics, distributed computing or embedded devices.
 
   // Problem statement, goal
-  This work explores Wasm as a technology for implementing a secure and fast plugin system with portable plugins compiled from higher level languages, such as C, C++, Rust, Python or JavaScript.
-  The question is whether Wasm, as a new and versatile technology, can outperform existing plugin system technologies in terms of performance, security, compatibility and ease of development.
+  This work investigates Wasm as a technology for implementing a secure and fast plugin system with portable plugins compiled from higher level languages such as C, Rust, Python and JavaScript.
+  The question is whether Wasm can outperform existing plugin system technologies, with a focus on text editor plugin systems.
 
   // Methods
-  A technology comparison is conducted for a selection of existing plugin systems to analyze the state of the art of plugin system technologies.
-  Wasm will then be evaluated against the same criteria to provide an objective comparison with existing technologies.
-  Finally, as a proof of concept, a plugin system based on Wasm will be developed for an existing text editor project to provide a better insight into the current state of the rapidly evolving Wasm ecosystem.
+  A technology comparison is performed for selected existing plugin systems to gain insight into the current state of the art of plugin system technologies.
+  Wasm is then evaluated against these results to provide an objective comparison with existing technologies.
+  Finally, as a proof of concept, a Wasm-based plugin system is developed for an existing text editor project to provide a better insight into the current state of the rapidly evolving Wasm ecosystem.
 
   // Results
-  The technology comparison reveals that none of the selected existing plugin system technologies stands out across five criteria.
-  Wasm however performant at least equally well as existing technologies for three out of the five criteria, with only native machine code-based plugin systems providing better performance and plugin size.
-  The development of a proof of concept for a Wasm plugin system for the existing Helix text editor showed that Wasm is ready for use in real software applications with only minor challenges.
-  In hindsight, the technology comparison could be improved by including more criteria and plugin system technologies and using better quantitative measures for evaluation.
-  In the future, Wasm looks promising as a technology, especially for plugin systems for text editors.
-  It is continuously improving though new proposals and the WebAssembly Component Model, allowing it to be easier to integrate into existing software projects.
+  The technology comparison shows that none of the selected existing plugin system technologies stands out across five defined criteria.
+  Wasm, however, matches or exceeds all other technologies in three of the five criteria, falling short only to native machine code-based plugin systems.
+  A basic Wasm plugin system was implemented for the Helix text editor, demonstrating Wasm's real-world viability with only minor challenges.
+
+  // Discussion
+  Improvements to the technology comparison are identified, including the need for a wider range of technologies and criteria, and also quantitative evaluation.
+  The results suggest that Wasm is a promising foundational technology for plugin systems.
+  It continues to be improved by new proposals and new emerging projects such as the WebAssembly Component Model, further strengthening its viability.
 ]
 
-#let abstract_de = todo[Abstract übersetzen]
+#let abstract_de = [
+  // Context, previous work
+  Plugin-Systeme ermöglichen die Erweiterung von Softwareanwendungen ohne Änderung des Quellcodes, wodurch Flexibilität, Isolation und reduzierte Komplexität in der Kernsoftware erreicht werden können.
+  Diese Softwarearchitektur hat besondere Relevanz für Texteditoren und Entwicklungsumgebungen, wo die Anforderungen der Nutzer sehr variabel und individuell sind.
+  WebAssembly (Wasm) ist ein neues Compilation Target, welches schnell, sicher und portabel ist.
+  Ursprünglich wurde es für die Nutzung in Web-Browsern erstellt, allerdings macht es keine Annahmen über die Umgebung, in welcher es ausgeführt wird.
+  Somit ist Wasm für seine Eigenschaften auch interessant außerhalb des Web-Kontexts wie bspw. in der Avionik, verteilten Systemen oder eingebetteten Geräten.
+
+  // Problem statement, goal
+  Diese Studienarbeit erforscht Wasm als eine Technologie für sichere und schnelle Plugin-Systeme mit portablen Plugins, welche von höher-leveligen Sprachen wie C, Rust, Python oder Javascript kompiliert werden.
+  Sie stellt die Frage, ob Wasm bisherige Plugin-System Technologien mit einem Fokus auf Texteditoren übertreffen kann.
+
+  // Methods
+  Dazu wird ein Technologievergleich für ausgewählte bestehende Plugin-Systeme durchgeführt, um einen Einblick in den aktuellen Stand von Plugin-System Technologien zu bekommen.
+  Anschließend wird Wasm mithilfe gleicher Kriterien bewertet, wodurch ein objektiver Vergleich mit bisherigen Technologien ermöglicht wird.
+  Zum Abschluss wird ein Prototyp für ein Wasm-basiertes Plugin-System für einen bestehenden Texteditor entwickelt.
+  So soll herausgefunden werden, ob das sich schnell entwickelnde Wasm und sein Ökosystem auch in der Praxis produktionreif sind.
+
+  // Results
+  Der Technologievergleich zeigt, dass keines der ausgewählten bestehenden Plugin-Systeme über alle fünf Kriterien herausragt.
+  Wasm hingegen, schneidet in drei von den fünf Kriterien mindestens so gut wie andere Plugin-Systeme ab, wobei es nur von solchen übertroffen wird, welche auf kompiliertem Maschinencode basieren.
+  Des Weiteren zeit der entwickelte Wasm Plugin-System Prototyp, dass Wasm mit nur kleinen Hürden bereit für die Nutzung in echten Softwareanwendungen ist.
+
+  // Discussion
+  Es werden Verbesserungen für den Technolgievergleich identifiziert, unter anderem der Notwendigkeit für einen größeren Umfang an Plugin-System Technologien, Kriterien und einer genaueren quantitativen Bewertung der Kriterien.
+  Die Ergebnisse zeigen, dass Wasm eine vielversprechende Technologie für Plugin-Systeme ist.
+  Wasm wird stetig durch neue Proposals und Projekte wie das Wasm Component Model verbessert, was seine Bedeutung weiter stärkt.
+]
 
 #show: dhbw_template.with(
   title: [Exploring WebAssembly for versatile plugin systems through the example of a text editor],

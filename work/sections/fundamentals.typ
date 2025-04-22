@@ -124,11 +124,11 @@ These Wasm runtime libraries often provide common operations to the host applica
 // Web (example)
 In a web context a server might provide this Wasm module to the client's browser, which usually comes with a Wasm runtime.
 Detailed information on the current status of Wasm support for internet browsers can be viewed at #link("https://caniuse.com/wasm").
-A concrete example is Ebay using Wasm for their barcode scanner algorithm to achieve higher performance#footnote(link("https://innovation.ebayinc.com/tech/engineering/webassembly-at-ebay-a-real-world-use-case/")).
+A concrete example is Ebay using Wasm for their barcode scanner algorithm to achieve higher performance@ebay-blog.
 
 // Distributed computing and serverless (example)
 For distributed computing and especially serverless functions a compiled Wasm module could be distributed among multiple different nodes regardless of their platform and architecture while still providing good performance.
-This is what the projects WasmEdge or Fermyon (see #link("https://wasmedge.org/") and #link("https://www.fermyon.com/")) are trying to achieve.
+This is what the projects WasmEdge or Fermyon#footnote[see #link("https://wasmedge.org/") and #link("https://www.fermyon.com/") respectively] are trying to achieve.
 
 === Design goals
 // The design goals are listed here, so they can be later referenced
