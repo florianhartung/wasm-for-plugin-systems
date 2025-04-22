@@ -1,8 +1,9 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption
 #import "@preview/subpar:0.2.2"
+#import "../dhbw_template/lib.typ": top-level-heading
 
-= Fundamentals
+#top-level-heading[Fundamentals]
 This section introduces theoretical and technical fundamentals used in this work.
 First it covers the definition of an instruction set architecture.
 Then it gives an overview over WebAssembly, its features,  limitations and extensions.

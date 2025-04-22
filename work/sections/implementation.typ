@@ -1,7 +1,8 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption
+#import "../dhbw_template/lib.typ": top-level-heading
 
-= Proof of concept: Developing a WebAssembly plugin system for a text editor
+#top-level-heading[Proof of concept: Developing a WebAssembly plugin system for a text editor]
 The first part of this work performed a technology comparison to find out if Wasm is feasible as a technology for plugin systems.
 In this second part, a basic proof of concept for a Wasm plugin system will be implemented for a text editor.
 To make this process as realistic as possible and maximize knowledge gained from this implementation, a text editor that is already being used today will be used.

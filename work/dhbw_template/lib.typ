@@ -2,6 +2,8 @@
 #import "declaration_of_authenticity.typ": declaration_of_authenticity
 #import "@preview/hydra:0.3.0": hydra
 
+#let is_on_new_section_page = state("is_on_new_section_page", false)
+
 #let dhbw_template(
   title: [Placeholder (title)],
   author: [Placeholder (author)],
@@ -101,7 +103,6 @@
   #outline(title: [List of code listings#v(7mm)], target: figure.where(kind: raw))
   #pagebreak()
 
-  #let is_on_new_section_page = state("is_on_new_section_page", false)
   #let get_current_heading = context {
     if is_on_new_section_page.get() {
       return []
@@ -143,16 +144,8 @@
 
   #show ref: set text(blue)
 
-  #[
-    #show heading.where(level: 1): it => {
-      is_on_new_section_page.update(true)
-      // pagebreak(weak: false)
-      colbreak(weak: true)
-      it
-      is_on_new_section_page.update(false)
-    }
-    #contents
-  ]
+
+  #contents
 
   // Don't ask about this, idk either
   #is_on_new_section_page.update(true)
@@ -160,3 +153,10 @@
   #bibliography("../bib.yml", style: "institute-of-electrical-and-electronics-engineers")
   #is_on_new_section_page.update(false)
 ]
+
+#let top-level-heading(name) = {
+    is_on_new_section_page.update(true)
+    pagebreak(weak: true)
+    heading(level: 1, name)
+    is_on_new_section_page.update(false)
+}

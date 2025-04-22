@@ -1,7 +1,8 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption
+#import "../dhbw_template/lib.typ": top-level-heading
 
-= WebAssembly for plugin systems
+#top-level-heading[WebAssembly for plugin systems]
 #figure(
   image("../images/wasm_plugin_system.drawio.png", width: 70%),
   caption: flex-caption(

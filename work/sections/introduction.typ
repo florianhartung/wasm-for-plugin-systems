@@ -1,6 +1,7 @@
 #import "../wip.typ": *
+#import "../dhbw_template/lib.typ": top-level-heading
 
-= Introduction
+#top-level-heading[Introduction]
 Web applications are becoming more and more popular and complex requiring the use of compute-intensive algorithms for applications such as 3D visualizations or interactive games@bringing-the-web-up-to-speed.
 Thus the need for faster code execution, that cannot be provided by JavaScript, grows.
 Traditionally JavaScript is the only language allowing client side code execution, however it was never designed for these kinds of high-performance tasks.

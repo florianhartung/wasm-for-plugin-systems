@@ -1,4 +1,6 @@
-= Results & discussion
+#import "../dhbw_template/lib.typ": top-level-heading
+
+#top-level-heading[Results & discussion]
 A technology comparison of 3 plugin systems of popular editors and IDEs and a plugin system technology was performed.
 It revealed significant differences between the five criteria performance, plugin size, plugin isolation, plugin portability and plugin language interoperability, with no single technology standing out drastically across all dimensions.
 WebAssembly (Wasm) was then evaluated against the same criteria and put up for comparison in the final technology comparison matrix shown in @technology-comparison-matrix-final.

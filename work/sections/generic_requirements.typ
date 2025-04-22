@@ -1,7 +1,8 @@
 #import "../wip.typ": todo, td
 #import "../util.typ": flex-caption, stacked-bar-chart
+#import "../dhbw_template/lib.typ": top-level-heading
 
-= Technology comparison of existing plugin systems
+#top-level-heading[Technology comparison of existing plugin systems]
 // TODO Normally a technology comparison defined weights for each score
 To evaluate whether Wasm is a viable technology for versatile plugin systems, one must first understand what criteria make a plugin system good and versatile.
 This section will perform a technology comparison between several technologies and existing software projects.
